@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import PeriodsList from '@/components/crud/PeriodsList.vue';
+import PeriodsList from '@/components/crud/PeriodsComponents/PeriodsList.vue';
 </script>
 <template>
   <div>

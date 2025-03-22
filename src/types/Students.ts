@@ -5,4 +5,12 @@ export interface IStudent {
   fechaIngreso: Date;
   estado: boolean;
   cursoEscolar: string;
+  idPersona: number
+  idCursoEscolar: number;
+  necesidadesEspeciales: string;
+  contactoEmergencia: string;
+}
+
+export interface IStudentCreate extends Omit<IStudent, "nombreCompleto" | "estado"> {
+  estado: boolean;
 }

@@ -131,7 +131,7 @@ onUnmounted(async () => {
       </div>
 
       <!-- Content -->
-      <div class="flex-1 px-4 py-6">
+      <div class="flex-1 px-4">
         <slot></slot>
       </div>
 

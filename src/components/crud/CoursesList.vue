@@ -5,7 +5,7 @@ import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import AppLayout from '@/layout/AppLayout.vue';
-import type { Courses } from '@/types/Courses'; // Importamos el tipo desde types.ts
+import type { Courses } from '@/types/SchoolYear'; // Importamos el tipo desde types.ts
 // Importamos el tipo desde types.ts
 
 // Definimos el tipo de los datos y columnas fuera de las variables reactivas

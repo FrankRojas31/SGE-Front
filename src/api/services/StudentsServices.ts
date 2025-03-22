@@ -13,7 +13,12 @@ export async function GetStudents(){
 // }'
 export async function PostStudent(student: IStudent){
   return await GenericRequest<IStudent>({ url: urlBase, method : "POST", data: {
-    student
+    matricula: student.matricula,
+    fechaIngreso: student.fechaIngreso,
+    idPersona: student.idPersona,
+    idCursoEscolar: student.idCursoEscolar,
+    contactoEmergencia: student.contactoEmergencia,
+    necesidadesEspeciales: student.necesidadesEspeciales,
   }});
 }
 
@@ -24,7 +29,15 @@ export async function GetStudent(id: number){
 
 //PUT: '/Alumno/5
 export async function PutStudent(student: IStudent){
-  return await GenericRequest<IStudent>({ url: `${urlBase}/${student.id}`, method: "PUT"});
+  return await GenericRequest<IStudent>({ url: `${urlBase}/${student.id}`, method: "PUT" , data: {
+    id: student.id,
+    matricula: student.matricula,
+    fechaIngreso: student.fechaIngreso,
+    idPersona: student.idPersona,
+    idCursoEscolar: student.idCursoEscolar,
+    contactoEmergencia: student.contactoEmergencia,
+    necesidadesEspeciales: student.necesidadesEspeciales,
+  }});
 }
 
 //DELETE: '/Alumno/5'
