@@ -1,118 +1,129 @@
+<script lang="ts" setup>
+import { onMounted, ref } from 'vue';
+import GeneralTable from '@/components/GeneralTable.vue';
+import AppLayout from '@/layout/AppLayout.vue';
+import { useGroupsStore } from '@/stores/GroupsStore';
+import { useToast } from "primevue/usetoast";
+import Toast from 'primevue/toast';
+import { columns } from '@/components/crud/GroupsComponents/TableColumnsGroups';
+import { GetGroups } from '@/utils/helpers';
+import type { Groups } from '@/types/Groups';
+import DeleteModal from '@/components/crud/DeleteModal.vue';
+import CreateModal from './GroupsComponents/CreateModalGroups.vue';
+import EditModalGroups from '@/components/crud/GroupsComponents/EditModalGroups.vue';
+
+const toast = useToast();
+const loading = ref<boolean>(false);
+const groupStore = useGroupsStore();
+const openModalCreate = ref<boolean>(false);
+const openModalEdit = ref<boolean>(false);
+const openModalDelete = ref<boolean>(false);
+const modalItem = ref<Groups>({} as Groups);
+const idItem = ref<number>(0);
+
+// Acción para editar un grupo
+const HandleEdit = async (id: number) => {
+  const response = await groupStore.GetStoreGroup(id);
+  if (response?.success) {
+    openModalEdit.value = true;
+    modalItem.value = groupStore.group;
+  } else {
+    toast.add({ severity: 'error', summary: 'No se encontró el grupo', detail: 'Verifica su existencia', life: 2000 });
+  }
+};
+
+
+
+// Confirmación de edición
+const EditConfirm = async (group: Groups) => {
+  const response = await groupStore.PutStoreGroup(group);
+  if (response?.success) {
+    openModalEdit.value = false;
+    toast.add({ severity: 'success', summary: '¡Actualizado Correctamente!', detail: '¡Se ha actualizado el grupo!', life: 2000 });
+  } else {
+    toast.add({ severity: 'error', summary: '¡Ocurrió un error!', detail: response?.message, life: 2000 });
+  }
+};
+
+// Confirmación de creación
+const CreateConfirm = async (group: Groups) => {
+  const response = await groupStore.PostStoreGroup(group);
+  if (response?.success) {
+    openModalCreate.value = false;
+    toast.add({ severity: 'success', summary: '¡Creado Correctamente!', detail: '¡Se ha creado el grupo!', life: 2000 });
+  } else {
+    toast.add({ severity: 'error', summary: '¡Ocurrió un error!', detail: response?.message, life: 2000 });
+  }
+};
+
+
+
+
+// Acción para eliminar un grupo
+const HandleDelete = async (id: number) => {
+  const response = await groupStore.GetStoreGroup(id);
+  if (response?.success) {
+    openModalDelete.value = true;
+    idItem.value = id;
+  } else {
+    toast.add({ severity: 'error', summary: 'No se encontró el grupo', detail: 'Verifica su existencia', life: 2000 });
+  }
+};
+
+// Confirmación de eliminación
+const DeleteConfirm = async (id: number) => {
+  const response = await groupStore.DeleteStoreGroup(id);
+  if (response?.success) {
+    openModalDelete.value = false;
+    toast.add({ severity: 'success', summary: '¡Eliminado Correctamente!', detail: '¡Se ha eliminado el grupo!', life: 2000 });
+  } else {
+    toast.add({ severity: 'error', summary: '¡Ocurrió un error!', detail: response?.message, life: 2000 });
+  }
+};
+
+
+// Cargar los grupos al montar el componente
+onMounted(async () => {
+  loading.value = true;
+  try {
+    const res = await GetGroups();
+    if (res?.success) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+  } catch (error) {
+    console.error("Error al cargar los datos:", error);
+  } finally {
+    loading.value = false;
+  }
+});
+</script>
+
 <template>
   <AppLayout>
-    <div class="p-6">
-      <GeneralTable :title="'Grupos'" :data="dataEntity" :columns="columns" @edit="openEditModal" @delete="handleDelete"
-        @create="openCreateModal" />
+    <Toast />
+    <GeneralTable
+      :loading="loading"
+      title="Grupos"
+      :data="groupStore.groupsList"
+      :columns="columns"
+      @edit="HandleEdit"
+      @delete="HandleDelete"
+      @create="openModalCreate = true"
+    />
 
-      <!-- Modal para Crear -->
-      <Dialog v-model:visible="showCreateModal" header="Crear Registro" :modal="true" class="rounded-lg shadow-lg">
-        <div v-for="column in columns" :key="column.field" class="mb-4">
-          <label :for="column.field" class="block text-gray-600 font-medium">{{ column.header }}</label>
-          <InputText :id="column.field" v-model="newItem[column.field]"
-            class="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300" />
-        </div>
-        <template #footer>
-          <Button label="Cancelar" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
-            @click="showCreateModal = false" />
-          <Button label="Crear" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-            @click="handleCreate" />
-        </template>
-      </Dialog>
+    <CreateModal
+      :showModal="openModalCreate"
+      @close="openModalCreate = false"
+      @create="CreateConfirm"
+    />
 
-      <!-- Modal para Editar -->
-      <Dialog v-model:visible="showEditModal" header="Editar Registro" :modal="true" class="rounded-lg shadow-lg">
-        <div v-for="column in columns" :key="column.field" class="mb-4">
-          <label :for="column.field" class="block text-gray-600 font-medium">{{ column.header }}</label>
-          <InputText :id="column.field" v-model="editItem[column.field]"
-            class="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300" />
-        </div>
-        <template #footer>
-          <Button label="Cancelar" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
-            @click="showEditModal = false" />
-          <Button label="Guardar" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
-            @click="handleEdit" />
-        </template>
-      </Dialog>
-    </div>
+    <EditModalGroups :modalItem="modalItem" :showModal="openModalEdit" @close="openModalEdit = false" @update="EditConfirm" />
+
+    <DeleteModal
+      :showModal="openModalDelete"
+      :id="idItem"
+      @close="openModalDelete = false"
+      @delete="DeleteConfirm"
+    />
   </AppLayout>
 </template>
-
-<script lang="ts" setup>
-import { ref } from 'vue';
-import GeneralTable from '@/components/GeneralTable.vue';
-import Dialog from 'primevue/dialog';
-import InputText from 'primevue/inputtext';
-import Button from 'primevue/button';
-import AppLayout from '@/layout/AppLayout.vue';
-
-const dataEntity = ref([
-  { id: 1, nombre: 'IDYGS81', descripcion: '22393278' },
-  { id: 2, nombre: 'IDYGS82', descripcion: '22393277' },
-  { id: 3, nombre: 'IDYGS83', descripcion: '22393278' },
-  { id: 3, nombre: 'IDYGS83', descripcion: '22393278' },
-  { id: 3, nombre: 'IDYGS83', descripcion: '22393278' },
-  { id: 3, nombre: 'IDYGS83', descripcion: '22393278' },
-  { id: 3, nombre: 'IDYGS83', descripcion: '22393278' },
-  { id: 3, nombre: 'IDYGS83', descripcion: '22393278' },
-  { id: 3, nombre: 'IDYGS83', descripcion: '22393278' },
-  { id: 3, nombre: 'IDYGS83', descripcion: '22393278' },
-  { id: 3, nombre: 'IDYGS83', descripcion: '22393278' },
-  { id: 3, nombre: 'IDYGS83', descripcion: '22393278' },
-  { id: 3, nombre: 'IDYGS83', descripcion: '22393278' },
-  { id: 3, nombre: 'IDYGS83', descripcion: '22393278' },
-  { id: 3, nombre: 'IDYGS83', descripcion: '22393278' },
-  { id: 3, nombre: 'IDYGS83', descripcion: '22393278' },
-  { id: 3, nombre: 'IDYGS83', descripcion: '22393278' },
-]);
-
-const columns = [
-  { field: 'nombre', header: 'Nombre' },
-  { field: 'descripcion', header: 'Descripción' },
-
-];
-
-const showCreateModal = ref(false);
-const showEditModal = ref(false);
-const newItem = ref({});
-const editItem = ref({});
-const currentEditId = ref(null);
-
-const openCreateModal = () => {
-  newItem.value = { id: dataEntity.value.length + 1 };
-  columns.forEach(col => {
-    newItem.value[col.field] = '';
-  });
-  showCreateModal.value = true;
-};
-
-const handleCreate = () => {
-  if (newItem.value.nombre) {
-    dataEntity.value.push({ ...newItem.value });
-    console.log(`Registro creado con ID: ${newItem.value.id}`);
-  }
-  showCreateModal.value = false;
-};
-
-const openEditModal = (id) => {
-  const item = dataEntity.value.find(item => item.id === id);
-  if (item) {
-    editItem.value = { ...item };
-    currentEditId.value = id;
-    showEditModal.value = true;
-  }
-};
-
-const handleEdit = () => {
-  const index = dataEntity.value.findIndex(item => item.id === currentEditId.value);
-  if (index !== -1) {
-    dataEntity.value[index] = { ...editItem.value };
-    console.log(`Registro editado con ID: ${currentEditId.value}`);
-  }
-  showEditModal.value = false;
-};
-
-const handleDelete = (id) => {
-  dataEntity.value = dataEntity.value.filter(item => item.id !== id);
-  console.log(`Registro eliminado con ID: ${id}`);
-};
-</script>

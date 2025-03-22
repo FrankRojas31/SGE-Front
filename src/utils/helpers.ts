@@ -1,9 +1,11 @@
 import { usePersonStore } from '@/stores/PersonStore';
 import { useSchoolYearStore } from '@/stores/SchoolYearStore';
 import { useStudentStore } from '@/stores/StudentStore';
+import { useGroupsStore } from '@/stores/GroupsStore';
 import { usePeriodsStore } from '@/stores/PeriodsStore'
 import { useSubjectStore } from '@/stores/SubjectStore';
 
+const groupStore = useGroupsStore();
 const schoolYearStore = useSchoolYearStore();
 const personStore = usePersonStore()
 const studentStore = useStudentStore();
@@ -29,3 +31,11 @@ export const GetPeriods = async () => {
 export const GetSubjects = async () => {
   return await subjectStore.GetStoreSubjects();
 }
+
+
+
+// Obtener todos los grupos
+export const GetGroups = async () => {
+  return await groupStore.GetStoreGroups();
+};
+
