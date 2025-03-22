@@ -11,6 +11,8 @@ import CreateModal from './Modals/CreateModal.vue';
 import EditModal from './Modals/EditModal.vue';
 import type { IStudent } from '@/types/Students';
 import DeleteModal from '@/components/crud/DeleteModal.vue'
+import { Button } from 'primevue';
+
 
 const toast = useToast();
 const loading = ref<boolean>(false);
@@ -93,10 +95,15 @@ onMounted(async () => {
   <AppLayout>
     <Toast />
     <GeneralTable :loading="loading" :title="'Estudiantes'" :data="studentsStore.studentsList" :columns="columns"
-      @edit="HandleEdit" @delete="HandleDelete" @create="openModalCreate = true" />
+      @edit="HandleEdit" @delete="HandleDelete" @create="openModalCreate = true">
+      <Button class="mr-2" severity="secondary" icon="pi pi-users" rounded />
+    </GeneralTable>
 
-    <CreateModal :showModal="openModalCreate" @close="openModalCreate = false" @create="CreateConfirm" />
-    <EditModal :modalItem="modalItem" :showModal="openModalEdit" @close="openModalEdit = false" @update="EditConfirm" />
-    <DeleteModal :showModal="openModalDelete" :id="idItem" @close="openModalDelete = false" @delete="DeleteConfirm" />
+    <CreateModal :showModal="openModalCreate" @close="openModalCreate = false" @create="CreateConfirm"
+      @update:visible="openModalCreate = false" />
+    <EditModal :modalItem="modalItem" :showModal="openModalEdit" @close="openModalEdit = false" @update="EditConfirm"
+      @update:visible="openModalEdit = false" />
+    <DeleteModal :showModal="openModalDelete" :id="idItem" @close="openModalDelete = false" @delete="DeleteConfirm"
+      @update:visible="openModalDelete = false" />
   </AppLayout>
 </template>

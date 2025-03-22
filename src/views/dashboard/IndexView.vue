@@ -1,76 +1,43 @@
 <script setup lang="ts">
+import CardsDashboard from '@/components/crud/dashboard/CardsDashboard.vue';
 import AppLayout from '@/layout/AppLayout.vue';
+import { useStudentStore } from '@/stores/StudentStore';
+import { onMounted, ref, computed } from 'vue';
+
+interface ICardsDashboard {
+  title: string;
+  value: string;
+  icon: string;
+  iconColor: string;
+  bgColor: string;
+}
+
+const studentStore = useStudentStore();
+const studentCount = ref<string>('');
+
+onMounted(async () => {
+  await studentStore.GetStoreStudents();
+  studentCount.value = studentStore.studentsList.length.toString();
+})
+
+const Cards = computed<ICardsDashboard[]>(() => [
+  {
+    title: 'Estudiantes', value: studentCount.value, icon: 'pi-users', iconColor: 'text-white', bgColor: 'bg-slate-500' },
+  { title: 'Profesores', value: studentCount.value, icon: 'pi-book', iconColor: 'text-white', bgColor: 'bg-slate-500' },
+  { title: 'Altas Alumnos', value: studentCount.value, icon: 'pi-angle-double-up', iconColor: 'text-white', bgColor: 'bg-[#10b981]' },
+  { title: 'Bajas Alumnos', value: studentCount.value, icon: 'pi-angle-double-down', iconColor: 'text-white', bgColor: 'bg-red-400' }
+])
+
 
 
 </script>
 
 <template>
   <AppLayout>
-    <div class="bg-surface-50 dark:bg-surface-950 px-6 py-8 md:px-12 lg:px-20">
-      <div class="grid grid-cols-12 gap-4">
-        <div class="col-span-12 md:col-span-6 lg:col-span-3">
-          <div class="bg-surface-0 dark:bg-surface-900 shadow p-4 rounded-border bg-white">
-            <div class="flex justify-between mb-4">
-              <div>
-                <span class="block text-surface-500 dark:text-surface-300 font-medium mb-4">Orders</span>
-                <div class="text-surface-900 dark:text-surface-0 font-medium !text-xl">152</div>
-              </div>
-              <div class="flex items-center justify-center bg-blue-100 dark:bg-blue-400/30 rounded-border w-10 h-10">
-                <i class="pi pi-shopping-cart text-blue-500 dark:text-blue-200 !text-xl" />
-              </div>
-            </div>
-            <span class="text-green-500 font-medium">24 new </span>
-            <span class="text-surface-500 dark:text-surface-300">since last visit</span>
-          </div>
-
-        </div>
-        <div class="col-span-12 md:col-span-6 lg:col-span-3">
-          <div class="bg-surface-0 dark:bg-surface-900 shadow p-4 rounded-border bg-white">
-            <div class="flex justify-between mb-4">
-              <div>
-                <span class="block text-surface-500 dark:text-surface-300 font-medium mb-4">Revenue</span>
-                <div class="text-surface-900 dark:text-surface-0 font-medium !text-xl">$2.100</div>
-              </div>
-              <div
-                class="flex items-center justify-center bg-orange-100 dark:bg-orange-400/30 rounded-border w-10 h-10">
-                <i class="pi pi-map-marker text-orange-500 dark:text-orange-200 !text-xl" />
-              </div>
-            </div>
-            <span class="text-green-500 font-medium">%52+ </span>
-            <span class="text-surface-500 dark:text-surface-300">since last week</span>
-          </div>
-        </div>
-        <div class="col-span-12 md:col-span-6 lg:col-span-3">
-          <div class="bg-surface-0 dark:bg-surface-900 shadow p-4 rounded-border bg-white">
-            <div class="flex justify-between mb-4">
-              <div>
-                <span class="block text-surface-500 dark:text-surface-300 font-medium mb-4">Customers</span>
-                <div class="text-surface-900 dark:text-surface-0 font-medium !text-xl">28441</div>
-              </div>
-              <div class="w-10 h-10 flex items-center justify-center bg-cyan-100 dark:bg-cyan-400/30 rounded-border">
-                <i class="pi pi-inbox text-cyan-500 dark:text-cyan-200 !text-xl" />
-              </div>
-            </div>
-            <span class="text-green-500 font-medium">520 </span>
-            <span class="text-surface-500 dark:text-surface-300">newly registered</span>
-          </div>
-        </div>
-        <div class="col-span-12 md:col-span-6 lg:col-span-3">
-          <div class="bg-surface-0 dark:bg-surface-900 shadow p-4 rounded-border bg-white">
-            <div class="flex justify-between mb-4">
-              <div>
-                <span class="block text-surface-500 dark:text-surface-300 font-medium mb-4">Comments</span>
-                <div class="text-surface-900 dark:text-surface-0 font-medium !text-xl">152 Unread</div>
-              </div>
-              <div
-                class="w-10 h-10 flex items-center justify-center bg-purple-100 dark:bg-purple-400/30 rounded-border">
-                <i class="pi pi-comment text-purple-500 dark:text-purple-200 !text-xl" />
-              </div>
-            </div>
-            <span class="text-green-500 font-medium">85 </span>
-            <span class="text-surface-500 dark:text-surface-300">responded</span>
-          </div>
-        </div>
+    <div class="px-6 py-7">
+      <div class="grid grid-cols-4 gap-4">
+        <CardsDashboard v-for="(card, index) in Cards" :key="index" :title="card.title" :value="card.value"
+          :icon="card.icon" :iconColor="card.iconColor" :bgColor="card.bgColor" :description="card.description" />
       </div>
     </div>
   </AppLayout>

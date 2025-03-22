@@ -84,7 +84,7 @@ const router = createRouter({
         {
       path: '/subjects',
       name: 'Materias',
-      component: () => import("@/views/crud/SubjetcView.vue"),
+      component: () => import("@/views/crud/SubjectView.vue"),
       meta: {
         requiresAuth: false,
         MenuOnly: true,

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import GeneralTable from '@/components/GeneralTable.vue';
-import {usePeriodsStore} from '@/stores/PeriodsStore';
+import { usePeriodsStore } from '@/stores/PeriodsStore';
 import { useToast } from "primevue/usetoast";
 import Toast from 'primevue/toast';
 import { columns } from './TableColumns';
@@ -45,7 +45,7 @@ const HandleEdit = async (id: number) => {
   const response = await periodsStore.GetStorePeriod(id);
   if (response?.success) {
     openModalEdit.value = true;
-    modalItem.value = periodsStore.period;
+    modalItem.value = response.data;
   } else {
     toast.add({ severity: 'error', summary: 'No se encontro el periodo', detail: 'Verifica su existencia', life: 2000 });
   }
@@ -101,15 +101,8 @@ const FormatDate = () => {
 <template>
   <AppLayout>
     <Toast />
-    <GeneralTable
-    :title="'Periodos'"
-    :columns="columns"
-    :data="FormatDate()"
-    :loading="loading"
-    @edit="HandleEdit"
-    @delete="HandleDelete"
-    @create="openModalCreate = true"
-    />
+    <GeneralTable :title="'Periodos'" :columns="columns" :data="FormatDate()" :loading="loading" @edit="HandleEdit"
+      @delete="HandleDelete" @create="openModalCreate = true" />
     <CreateModal :showModal="openModalCreate" @close="openModalCreate = false" @create="CreateConfirm" />
     <DeleteModal :showModal="openModalDelete" :id="idItem" @close="openModalDelete = false" @delete="DeleteConfirm" />
     <EditModal :modalItem="modalItem" :showModal="openModalEdit" @close="openModalEdit = false" @update="EditConfirm" />

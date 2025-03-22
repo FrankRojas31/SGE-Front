@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { IStudent } from '@/types/Students';
-import { ref, computed, watch, onMounted } from 'vue';
+import { ref, computed, watch } from 'vue';
 import Dialog from 'primevue/dialog';
 import Checkbox from 'primevue/checkbox';
 import Button from 'primevue/button';
@@ -23,7 +23,6 @@ const props = defineProps<{
   modalItem: IStudent;
 }>();
 
-const studentlocal = ref<IStudent>({ ...props.modalItem })
 const selectedPerson = ref<IPerson | null>(null);
 const selectedSchoolYear = ref<ISchoolYear | null>(null);
 
@@ -61,7 +60,7 @@ defineEmits<{
         <InputGroupAddon>
           <i class="pi pi-address-book"></i>
         </InputGroupAddon>
-        <InputNumber v-model="studentlocal.matricula" :useGrouping="false" />
+        <InputNumber v-model="props.modalItem.matricula" :useGrouping="false" />
       </InputGroup>
     </div>
 
@@ -71,24 +70,24 @@ defineEmits<{
         <InputGroupAddon>
           <i class="pi pi-phone"></i>
         </InputGroupAddon>
-        <InputText v-model="studentlocal.contactoEmergencia" placeholder="Ej: 555-123-4567" fluid />
+        <InputText v-model="props.modalItem.contactoEmergencia" placeholder="Ej: 555-123-4567" fluid />
       </InputGroup>
     </div>
 
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Necesidades Especiales</label>
-      <InputText v-model="studentlocal.necesidadesEspeciales" placeholder="Describa necesidades especiales" fluid />
+      <InputText v-model="props.modalItem.necesidadesEspeciales" placeholder="Describa necesidades especiales" fluid />
     </div>
 
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Fecha de Ingreso</label>
-      <DatePicker v-model="studentlocal.fechaIngreso" :showOnFocus="true" showIcon fluid />
+      <DatePicker v-model="props.modalItem.fechaIngreso" :showOnFocus="true" showIcon fluid />
     </div>
 
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Estado de Usuario</label>
       <div class="flex items-center mt-2">
-        <Checkbox v-model="studentlocal.estado" inputId="estado" :binary="true" />
+        <Checkbox v-model="props.modalItem.estado" inputId="estado" :binary="true" />
         <label for="estado" class="ml-2 text-gray-600">BAJA</label>
       </div>
     </div>
