@@ -48,6 +48,12 @@ const router = createRouter({
         MenuOnly: false,
       },
     },
+    {
+      path: '/persons',
+      name: 'Persons',
+      component: () => import('@/views/crud/PersonsView.vue')
+    },
+    
 
 
     //Rutas del Navbars
