@@ -111,6 +111,15 @@ const DeleteConfirm = async (id: number) => {
   }
 }
 
+const FormatDate = () => {
+  return personsStore.personsList.map((person) => {
+    return {
+      ...person,
+      fechaNacimiento: new Date(person.fechaNacimiento).toLocaleDateString()
+    }
+  })
+}
+
 onMounted(async () => {
   loading.value = true
   try {
@@ -129,37 +138,15 @@ onMounted(async () => {
 <template>
   <AppLayout>
     <Toast />
-    <GeneralTable
-      :loading="loading"
-      :title="'Personas'"
-      :data="personsStore.personsList"
-      :columns="columnsPerson"
-      @edit="HandleEdit"
-      @delete="HandleDelete"
-      @create="showCreateModal = true"
-    />
+    <GeneralTable :loading="loading" :title="'Personas'" :data="FormatDate()" :columns="columnsPerson" @edit="HandleEdit"
+      @delete="HandleDelete" @create="showCreateModal = true" />
 
-    <CreateModal
-      :showModal="showCreateModal"
-      @close="showCreateModal = false"
-      @create="CreateConfirm"
-      @update="EditConfirm"
-      @update:visible="showCreateModal = false"
-    />
-    <EditModal
-      :showModal="showEditModal"
-      :modalItem="modalItem"
-      @close="showEditModal = false"
-      @update="EditConfirm"
-      @update:visible="showEditModal = false"
-    />
+    <CreateModal :showModal="showCreateModal" @close="showCreateModal = false" @create="CreateConfirm"
+      @update="EditConfirm" @update:visible="showCreateModal = false" />
+    <EditModal :showModal="showEditModal" :modalItem="modalItem" @close="showEditModal = false" @update="EditConfirm"
+      @update:visible="showEditModal = false" />
 
-    <DeleteModal
-      :showModal="showDeleteModal"
-      :id="idItem"
-      @close="showDeleteModal = false"
-      @delete="DeleteConfirm"
-      @update:visible="showDeleteModal = false"
-    />
+    <DeleteModal :showModal="showDeleteModal" :id="idItem" @close="showDeleteModal = false" @delete="DeleteConfirm"
+      @update:visible="showDeleteModal = false" />
   </AppLayout>
 </template>
