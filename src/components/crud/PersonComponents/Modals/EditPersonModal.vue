@@ -1,18 +1,32 @@
 <script lang="ts" setup>
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
+import DatePicker from 'primevue/datepicker';
 import InputText from 'primevue/inputtext';
 import type { IPerson } from '@/types/Persons';
+import { ref, watch } from 'vue';
 
 const props = defineProps<{
   showModal: boolean;
   modalItem: IPerson;
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'close'): void;
   (e: 'update', person: IPerson): void;
 }>();
+
+const fechaNacimiento = ref(new Date(props.modalItem.fechaNacimiento));
+
+watch(() => props.modalItem.fechaNacimiento, (newDate) => {
+  fechaNacimiento.value = new Date(newDate);
+});
+
+const HandleUpdate = () => {
+  props.modalItem.fechaNacimiento = fechaNacimiento.value;
+  emit('update', props.modalItem)
+}
+
 </script>
 
 <template>
@@ -32,12 +46,12 @@ defineEmits<{
     </div>
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Fecha de Nacimiento</label>
-      <InputText v-model="props.modalItem.fechaNacimiento" placeholder="YYYY-MM-DD" fluid />
+      <DatePicker v-model="fechaNacimiento" :showOnFocus="true" showIcon class="w-full" required />
     </div>
 
     <template #footer>
       <Button label="Cancelar" severity="secondary" @click="$emit('close')" />
-      <Button label="Guardar" severity="success" @click="$emit('update', props.modalItem)" />
+      <Button label="Guardar" severity="success" @click="HandleUpdate" />
     </template>
   </Dialog>
 </template>

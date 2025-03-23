@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, defineProps, defineEmits } from 'vue';
+import { ref } from 'vue';
 import type { IPerson } from '@/types/Persons';
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
@@ -32,7 +32,6 @@ const HandleCancel = () => {
   modalItem.value = {} as IPerson;
   emit('close');
 };
-
 
 </script>
 
