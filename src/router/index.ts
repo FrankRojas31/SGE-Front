@@ -48,13 +48,6 @@ const router = createRouter({
         MenuOnly: false,
       },
     },
-    {
-      path: '/persons',
-      name: 'Persons',
-      component: () => import('@/views/crud/PersonsView.vue')
-    },
-    
-
 
     //Rutas del Navbars
     {
@@ -65,6 +58,16 @@ const router = createRouter({
         requiresAuth: true,
         MenuOnly: true,
         icon: 'pi pi-chart-pie'
+      }
+    },
+    {
+      path: '/persons',
+      name: 'Personas',
+      component: () => import('@/views/crud/PersonsView.vue'),
+      meta: {
+        requiresAuth: false,
+        MenuOnly: true,
+        icon: 'pi pi-user'
       }
     },
     {
