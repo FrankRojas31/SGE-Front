@@ -120,6 +120,15 @@ const router = createRouter({
         icon: 'pi pi-sitemap'
       }
     },
+    {
+      path: '/groupsstudents/:id',
+      name: 'a',
+      component: () => import("@/views/others/pruebas.vue"),
+      meta: {
+        requiresAuth: false,
+        MenuOnly: false,
+      }
+    },
   ],
 })
 

@@ -11,6 +11,8 @@ import type { Groups } from '@/types/Groups';
 import DeleteModal from '@/components/crud/DeleteModal.vue';
 import CreateModal from './GroupsComponents/CreateModalGroups.vue';
 import EditModalGroups from '@/components/crud/GroupsComponents/EditModalGroups.vue';
+import { Button } from 'primevue';
+import { useRouter } from 'vue-router';
 
 const toast = useToast();
 const loading = ref<boolean>(false);
@@ -96,34 +98,31 @@ onMounted(async () => {
     loading.value = false;
   }
 });
+
+const router = useRouter();
+
+const HandleButton = (id: number) => {
+  console.log(id);
+  router.push(`groupsstudents/${id}`)
+}
+
 </script>
 
 <template>
   <AppLayout>
     <Toast />
-    <GeneralTable
-      :loading="loading"
-      title="Grupos"
-      :data="groupStore.groupsList"
-      :columns="columns"
-      @edit="HandleEdit"
-      @delete="HandleDelete"
-      @create="openModalCreate = true"
-    />
+    <GeneralTable :loading="loading" title="Grupos" :data="groupStore.groupsList" :columns="columns" @edit="HandleEdit"
+      @delete="HandleDelete" @create="openModalCreate = true">
+      <template #customButton="{ data }">
+        <Button icon="pi pi-users" rounded class="mr-2" @click="HandleButton(data.id)" />
+      </template>
+    </GeneralTable>
 
-    <CreateModal
-      :showModal="openModalCreate"
-      @close="openModalCreate = false"
-      @create="CreateConfirm"
-    />
+    <CreateModal :showModal="openModalCreate" @close="openModalCreate = false" @create="CreateConfirm" />
 
-    <EditModalGroups :modalItem="modalItem" :showModal="openModalEdit" @close="openModalEdit = false" @update="EditConfirm" />
+    <EditModalGroups :modalItem="modalItem" :showModal="openModalEdit" @close="openModalEdit = false"
+      @update="EditConfirm" />
 
-    <DeleteModal
-      :showModal="openModalDelete"
-      :id="idItem"
-      @close="openModalDelete = false"
-      @delete="DeleteConfirm"
-    />
+    <DeleteModal :showModal="openModalDelete" :id="idItem" @close="openModalDelete = false" @delete="DeleteConfirm" />
   </AppLayout>
 </template>
