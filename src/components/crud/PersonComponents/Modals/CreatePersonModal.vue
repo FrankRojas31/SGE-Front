@@ -55,7 +55,8 @@ const HandleCancel = () => {
 
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Fecha de Nacimiento</label>
-      <DatePicker v-model="modalItem.fechaNacimiento" :showOnFocus="true" showIcon class="w-full" required />
+      <DatePicker v-model="modalItem.fechaNacimiento" placeholder="Selecciona la fecha de Nacimiento"
+        :showOnFocus="true" showIcon class="w-full" required />
     </div>
 
     <template #footer>
