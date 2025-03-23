@@ -101,7 +101,7 @@ const tableAriaLabel = 'Tabla de datos interactiva';
 
         <Column header="Acciones">
           <template #body="{ data }">
-            <slot name="customButton" :data="data" @click="$emit('id', data.id)" />
+            <slot name="customButton" :data="data" />
             <Button class="mr-2" icon="pi pi-pencil" severity="success" rounded @click="$emit('edit', data.id)"
               aria-label="Editar registro" />
             <Button icon="pi pi-trash" severity="danger" rounded @click="$emit('delete', data.id)"
