@@ -13,7 +13,10 @@ export async function GetPersons(){
 // }'
 export async function PostPerson(person: IPerson){
   return await GenericRequest<IPerson>({ url: urlBase, method : "POST", data: {
-    person
+    nombre: person.nombre,
+    apellidoPaterno: person.apellidoPaterno,
+    apellidoMaterno: person.apellidoMaterno,
+    fechaNacimiento: person.fechaNacimiento,
   }});
 }
 
@@ -24,7 +27,13 @@ export async function GetPerson(id: number){
 
 //PUT: '/Persona/5
 export async function PutPerson(person: IPerson){
-  return await GenericRequest<IPerson>({ url: `${urlBase}/${person.id}`, method: "PUT"});
+  return await GenericRequest<IPerson>({ url: `${urlBase}/${person.id}`, method: "PUT", data: {
+    id: person.id,
+    nombre: person.nombre,
+    apellidoPaterno: person.apellidoPaterno,
+    apellidoMaterno: person.apellidoMaterno,
+    fechaNacimiento: person.fechaNacimiento,
+  }});
 }
 
 //DELETE: '/Persona/5'
