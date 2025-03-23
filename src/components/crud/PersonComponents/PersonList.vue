@@ -10,6 +10,7 @@ import EditModal from "./Modals/EditPersonModal.vue";
 import DeleteModal from "@/components/crud/DeleteModal.vue";
 import type { IPerson } from "@/types/Persons";
 import { GetPersons } from "@/utils/helpers";
+import { columnsPerson } from "./TableColumns";
 
 const toast = useToast();
 const loading = ref(false);
@@ -19,13 +20,6 @@ const showEditModal = ref(false);
 const showDeleteModal = ref(false);
 const modalItem = ref<IPerson>({} as IPerson);
 const idItem = ref<number>(0);
-
-const columns = [
-  { field: "nombre", header: "Nombre" },
-  { field: "apellidoPaterno", header: "Apellido Paterno" },
-  { field: "apellidoMaterno", header: "Apellido Materno" },
-  { field: "fechaNacimiento", header: "Fecha de Nacimiento" },
-];
 
 const HandleEdit = async (id: number) => {
   const response = await personsStore.GetStorePerson(id);
@@ -95,34 +89,14 @@ onMounted(async () => {
 <template>
   <AppLayout>
     <Toast />
-    <GeneralTable 
-      :loading="loading" 
-      title="Personas" 
-      :data="personsStore.personsList" 
-      :columns="columns"
-      @edit="HandleEdit" 
-      @delete="HandleDelete" 
-      @create="showCreateModal = true" 
-    />
+    <GeneralTable :loading="loading" :title="'Personas'" :data="personsStore.personsList" :columns="columnsPerson"
+      @edit="HandleEdit" @delete="HandleDelete" @create="showCreateModal = true" />
 
-    <CreateModal 
-      :showModal="showCreateModal" 
-      @close="showCreateModal = false" 
-      @create="CreateConfirm" 
-    />
-
-    <EditModal 
-      :showModal="showEditModal" 
-      :modalItem="modalItem" 
-      @close="showEditModal = false" 
-      @update="EditConfirm" 
-    />
-
-    <DeleteModal 
-      :showModal="showDeleteModal" 
-      :id="idItem" 
-      @close="showDeleteModal = false" 
-      @delete="DeleteConfirm" 
-    />
+    <CreateModal :showModal="showCreateModal" @close="showCreateModal = false" @create="CreateConfirm"
+      @update="EditConfirm" @update:visible="showCreateModal = false" />
+    <EditModal :showModal="showEditModal" :modalItem="modalItem" @close="showEditModal = false"
+      @update:visible="showEditModal = false" />
+    <DeleteModal :showModal="showDeleteModal" :id="idItem" @close="showDeleteModal = false" @delete="DeleteConfirm"
+      @update:visible="showDeleteModal = false" />
   </AppLayout>
 </template>
