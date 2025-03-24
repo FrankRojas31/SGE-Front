@@ -16,6 +16,10 @@ export const GetPersons = async () => {
   return await personStore.GetStorePersons();
 };
 
+export const GetPersonsWithOutStudet = async () => {
+  return await personStore.GetStorePersonsWithOutStudent();
+}
+
 export const GetSchoolYear = async () => {
   return await schoolYearStore.GetStoreSchoolYears();
 };
@@ -32,9 +36,6 @@ export const GetSubjects = async () => {
   return await subjectStore.GetStoreSubjects();
 }
 
-
-
-// Obtener todos los grupos
 export const GetGroups = async () => {
   return await groupStore.GetStoreGroups();
 };

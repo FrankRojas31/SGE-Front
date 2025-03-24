@@ -14,20 +14,20 @@ const emit = defineEmits<{
   (e: 'update', group: Groups): void;
 }>();
 
-const handleClose = () => {
+const HandleUpdate = () => {
+  emit('update', props.modalItem);
+};
+
+const HandleCancel = () => {
   emit('close');
 };
 
 </script>
+
 <template>
-  <Dialog
-    v-model:visible="props.showModal"
-    header="Editar Grupo"
-    modal
-    :style="{ width: '30rem' }"
-    class="rounded-lg shadow-lg"
-    @update:visible="handleClose"
-  >
+  <Dialog v-model:visible="props.showModal" header="Editar Grupo" modal :style="{ width: '30rem' }"
+    class="rounded-lg shadow-lg" @update:visible="HandleCancel">
+    <!-- Nombre del Grupo -->
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Nombre del Grupo</label>
       <InputText v-model="props.modalItem.nombre" placeholder="Ingresa el nombre del grupo" class="w-full" />
@@ -39,8 +39,8 @@ const handleClose = () => {
     </div>
 
     <template #footer>
-      <Button label="Cancelar" severity="secondary" @click="handleClose" />
-      <Button label="Actualizar" severity="success" @click="$emit('update',props.modalItem)" />
+      <Button label="Cancelar" severity="secondary" @click="HandleCancel" />
+      <Button label="Actualizar" severity="success" @click="HandleUpdate" />
     </template>
   </Dialog>
 </template>

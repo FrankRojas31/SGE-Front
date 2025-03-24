@@ -83,6 +83,7 @@ onMounted(async () => {
     loading.value = false;
   }
 });
+
 </script>
 
 <template>
@@ -91,11 +92,9 @@ onMounted(async () => {
     <GeneralTable :loading="loading" :title="'Materias'" :data="subjectStore.subjectsList" :columns="columnsSubject"
       @edit="HandleEdit" @delete="HandleDelete" @create="openModalCreate = true" />
 
-    <CreateModal :showModal="openModalCreate" @close="openModalCreate = false" @create="CreateConfirm"
-      @update:visible="openModalCreate = false" />
+    <CreateModal :showModal="openModalCreate" @close="openModalCreate = false" @create="CreateConfirm" />
     <EditModal :showModal="openModalEdit" :modalItem="modalItem" @close="openModalEdit = false"
       @update:visible="openModalEdit = false" @update="EditConfirm" />
-    <DeleteModal :showModal="openModalDelete" @delete="DeleteConfirm" :id="idItem"
-      @update:visible="openModalDelete = false" />
+    <DeleteModal :showModal="openModalDelete" @delete="DeleteConfirm" :id="idItem" />
   </AppLayout>
 </template>
