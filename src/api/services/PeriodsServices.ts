@@ -1,4 +1,4 @@
-import { estatusPeriodo, type IPeriods } from "@/types/Periods";
+import type { IPeriods } from "@/types/Periods";
 import { GenericRequest } from "../GenericRequest";
 
 const urlBase = "Periodos";

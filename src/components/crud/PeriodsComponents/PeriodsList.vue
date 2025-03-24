@@ -106,6 +106,5 @@ const FormatDate = () => {
     <CreateModal :showModal="openModalCreate" @close="openModalCreate = false" @create="CreateConfirm" />
     <DeleteModal :showModal="openModalDelete" :id="idItem" @close="openModalDelete = false" @delete="DeleteConfirm" />
     <EditModal :modalItem="modalItem" :showModal="openModalEdit" @close="openModalEdit = false" @update="EditConfirm" />
-
   </AppLayout>
 </template>

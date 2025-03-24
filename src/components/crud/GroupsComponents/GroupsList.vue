@@ -5,12 +5,12 @@ import AppLayout from '@/layout/AppLayout.vue';
 import { useGroupsStore } from '@/stores/GroupsStore';
 import { useToast } from "primevue/usetoast";
 import Toast from 'primevue/toast';
-import { columns } from '@/components/crud/GroupsComponents/TableColumnsGroups';
+import { columns } from '@/components/crud/GroupsComponents/TableColumns';
 import { GetGroups } from '@/utils/helpers';
 import type { Groups } from '@/types/Groups';
 import DeleteModal from '@/components/crud/DeleteModal.vue';
-import CreateModal from './GroupsComponents/CreateModalGroups.vue';
-import EditModalGroups from '@/components/crud/GroupsComponents/EditModalGroups.vue';
+import CreateModal from './Modals/CreateModalGroups.vue';
+import EditModalGroups from '@/components/crud/GroupsComponents/Modals/EditModalGroups.vue';
 import { Button } from 'primevue';
 import { useRouter } from 'vue-router';
 
@@ -23,7 +23,6 @@ const openModalDelete = ref<boolean>(false);
 const modalItem = ref<Groups>({} as Groups);
 const idItem = ref<number>(0);
 
-// Acción para editar un grupo
 const HandleEdit = async (id: number) => {
   const response = await groupStore.GetStoreGroup(id);
   if (response?.success) {
@@ -34,9 +33,6 @@ const HandleEdit = async (id: number) => {
   }
 };
 
-
-
-// Confirmación de edición
 const EditConfirm = async (group: Groups) => {
   const response = await groupStore.PutStoreGroup(group);
   if (response?.success) {
@@ -47,7 +43,6 @@ const EditConfirm = async (group: Groups) => {
   }
 };
 
-// Confirmación de creación
 const CreateConfirm = async (group: Groups) => {
   const response = await groupStore.PostStoreGroup(group);
   if (response?.success) {
@@ -58,10 +53,6 @@ const CreateConfirm = async (group: Groups) => {
   }
 };
 
-
-
-
-// Acción para eliminar un grupo
 const HandleDelete = async (id: number) => {
   const response = await groupStore.GetStoreGroup(id);
   if (response?.success) {
@@ -72,7 +63,6 @@ const HandleDelete = async (id: number) => {
   }
 };
 
-// Confirmación de eliminación
 const DeleteConfirm = async (id: number) => {
   const response = await groupStore.DeleteStoreGroup(id);
   if (response?.success) {
@@ -83,8 +73,6 @@ const DeleteConfirm = async (id: number) => {
   }
 };
 
-
-// Cargar los grupos al montar el componente
 onMounted(async () => {
   loading.value = true;
   try {
@@ -119,10 +107,8 @@ const HandleButton = (id: number) => {
     </GeneralTable>
 
     <CreateModal :showModal="openModalCreate" @close="openModalCreate = false" @create="CreateConfirm" />
-
     <EditModalGroups :modalItem="modalItem" :showModal="openModalEdit" @close="openModalEdit = false"
       @update="EditConfirm" />
-
     <DeleteModal :showModal="openModalDelete" :id="idItem" @close="openModalDelete = false" @delete="DeleteConfirm" />
   </AppLayout>
 </template>

@@ -16,22 +16,26 @@ const emit = defineEmits<{
   (e: 'update', person: IPerson): void;
 }>();
 
-const fechaNacimiento = ref(new Date(props.modalItem.fechaNacimiento));
+const dateBorn = ref(new Date(props.modalItem.fechaNacimiento));
 
 watch(() => props.modalItem.fechaNacimiento, (newDate) => {
-  fechaNacimiento.value = new Date(newDate);
+  dateBorn.value = new Date(newDate);
 });
 
 const HandleUpdate = () => {
-  props.modalItem.fechaNacimiento = fechaNacimiento.value;
+  props.modalItem.fechaNacimiento = dateBorn.value;
   emit('update', props.modalItem)
+}
+
+const HandleCancel = () => {
+  emit('close');
 }
 
 </script>
 
 <template>
   <Dialog v-model:visible="props.showModal" header="Editar Persona" modal :style="{ width: '30rem' }"
-    class="rounded-lg shadow-lg">
+    class="rounded-lg shadow-lg" @update:visible="HandleCancel">
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Nombre</label>
       <InputText v-model="props.modalItem.nombre" placeholder="Ej. Juan" fluid />
@@ -46,12 +50,12 @@ const HandleUpdate = () => {
     </div>
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Fecha de Nacimiento</label>
-      <DatePicker v-model="fechaNacimiento" placeholder="Selecciona la fecha de Nacimiento" :showOnFocus="true" showIcon
+      <DatePicker v-model="dateBorn" placeholder="Selecciona la fecha de Nacimiento" :showOnFocus="true" showIcon
         class="w-full" required />
     </div>
 
     <template #footer>
-      <Button label="Cancelar" severity="secondary" @click="$emit('close')" />
+      <Button label="Cancelar" severity="secondary" @click="HandleCancel" />
       <Button label="Guardar" severity="success" @click="HandleUpdate" />
     </template>
   </Dialog>
