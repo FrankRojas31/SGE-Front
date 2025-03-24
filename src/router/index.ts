@@ -58,7 +58,6 @@ const router = createRouter({
       },
     },
 
-
     //Rutas del Navbars
     {
       path: '/dashboard',
@@ -68,6 +67,16 @@ const router = createRouter({
         requiresAuth: true,
         MenuOnly: true,
         icon: 'pi pi-chart-pie'
+      }
+    },
+    {
+      path: '/persons',
+      name: 'Personas',
+      component: () => import('@/views/crud/PersonsView.vue'),
+      meta: {
+        requiresAuth: false,
+        MenuOnly: true,
+        icon: 'pi pi-user'
       }
     },
     {
@@ -93,11 +102,21 @@ const router = createRouter({
         {
       path: '/subjects',
       name: 'Materias',
-      component: () => import("@/views/crud/SubjetcView.vue"),
+      component: () => import("@/views/crud/SubjectView.vue"),
       meta: {
         requiresAuth: false,
         MenuOnly: true,
         icon: 'pi pi-book'
+      }
+    },
+    {
+      path: '/groups',
+      name: 'Grupos',
+      component: () => import("@/views/crud/GroupsView.vue"),
+      meta: {
+        requiresAuth: false,
+        MenuOnly: true,
+        icon: 'pi pi-sitemap'
       }
     },
     {
@@ -111,13 +130,12 @@ const router = createRouter({
       }
     },
     {
-      path: '/groups',
-      name: 'Grupos',
-      component: () => import("@/views/crud/GroupsView.vue"),
+      path: '/groupsstudents/:id',
+      name: 'a',
+      component: () => import("@/views/others/pruebas.vue"),
       meta: {
         requiresAuth: false,
-        MenuOnly: true,
-        icon: 'pi pi-sitemap'
+        MenuOnly: false,
       }
     },
   ],

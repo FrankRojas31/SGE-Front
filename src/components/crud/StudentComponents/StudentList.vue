@@ -12,23 +12,28 @@ import EditModal from './Modals/EditModal.vue';
 import type { IStudent } from '@/types/Students';
 import DeleteModal from '@/components/crud/DeleteModal.vue'
 import { Button } from 'primevue';
-
+import { usePersonStore } from '@/stores/PersonStore';
+import { GetPersonsWithOutStudent } from '@/api/services/PersonsServices';
 
 const toast = useToast();
 const loading = ref<boolean>(false);
 const studentsStore = useStudentStore();
+const personStore = usePersonStore();
 const openModalCreate = ref<boolean>(false);
 const openModalEdit = ref<boolean>(false);
 const openModalDelete = ref<boolean>(false);
 const modalItem = ref<IStudent>({} as IStudent);
 const idItem = ref<number>(0);
 
-
 const HandleEdit = async (id: number) => {
   const response = await studentsStore.GetStoreStudent(id);
   if (response?.success) {
-    openModalEdit.value = true;
-    modalItem.value = response.data
+    const res = await personStore.GetStorePerson(studentsStore.student.idPersona);
+    if (res?.success) {
+      openModalEdit.value = true;
+      modalItem.value = response.data;
+      modalItem.value.nombreCompleto = studentsStore.student.nombreCompleto;
+    }
   } else {
     toast.add({ severity: 'error', summary: 'No se encontro al alumno', detail: 'Verifica su existencia', life: 2000 });
   }
@@ -74,6 +79,15 @@ const DeleteConfirm = async (id: number) => {
   }
 }
 
+const FormatDate = () => {
+  return studentsStore.studentsList.map((students) => {
+    return {
+      ...students,
+      fechaIngreso: new Date(students.fechaIngreso).toLocaleDateString()
+    }
+  })
+}
+
 onMounted(async () => {
   loading.value = true;
   try {
@@ -81,7 +95,7 @@ onMounted(async () => {
     if (res?.success) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
-    await Promise.all([GetPersons(), GetSchoolYear()]);
+    await Promise.all([GetPersons(), GetSchoolYear(), GetPersonsWithOutStudent()]);
   } catch (error) {
     console.error("Error al cargar los datos:", error);
   } finally {
@@ -94,16 +108,13 @@ onMounted(async () => {
 <template>
   <AppLayout>
     <Toast />
-    <GeneralTable :loading="loading" :title="'Estudiantes'" :data="studentsStore.studentsList" :columns="columns"
-      @edit="HandleEdit" @delete="HandleDelete" @create="openModalCreate = true">
+    <GeneralTable :loading="loading" :title="'Estudiantes'" :data="FormatDate()" :columns="columns" @edit="HandleEdit"
+      @delete="HandleDelete" @create="openModalCreate = true">
       <Button class="mr-2" severity="secondary" icon="pi pi-users" rounded />
     </GeneralTable>
 
-    <CreateModal :showModal="openModalCreate" @close="openModalCreate = false" @create="CreateConfirm"
-      @update:visible="openModalCreate = false" />
-    <EditModal :modalItem="modalItem" :showModal="openModalEdit" @close="openModalEdit = false" @update="EditConfirm"
-      @update:visible="openModalEdit = false" />
-    <DeleteModal :showModal="openModalDelete" :id="idItem" @close="openModalDelete = false" @delete="DeleteConfirm"
-      @update:visible="openModalDelete = false" />
+    <CreateModal :showModal="openModalCreate" @close="openModalCreate = false" @create="CreateConfirm" />
+    <EditModal :modalItem="modalItem" :showModal="openModalEdit" @close="openModalEdit = false" @update="EditConfirm" />
+    <DeleteModal :showModal="openModalDelete" :id="idItem" @close="openModalDelete = false" @delete="DeleteConfirm" />
   </AppLayout>
 </template>

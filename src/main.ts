@@ -30,11 +30,13 @@ const spanishLocale = {
   medium: 'Medio',
   strong: 'Fuerte',
   passwordPrompt: 'Ingrese una contraseña',
+  emptyFilterMessage: 'No se encontraron resultados',
+  emptyMessage: 'No hay opciones disponibles',
+  emptySearchMessage: 'No se encontraron resultados'
 };
 
 const app = createApp(App);
 app.directive('tooltip', Tooltip);
-
 app.use(PrimeVue, {
   theme: {
     preset: Aura,
@@ -44,7 +46,7 @@ app.use(PrimeVue, {
       cssLayer: false,
     },
   },
-  locale: spanishLocale,
+  locale: spanishLocale
 });
 app.use(ToastService);
 app.use(createPinia());

@@ -1,9 +1,11 @@
 import { usePersonStore } from '@/stores/PersonStore';
 import { useSchoolYearStore } from '@/stores/SchoolYearStore';
 import { useStudentStore } from '@/stores/StudentStore';
+import { useGroupsStore } from '@/stores/GroupsStore';
 import { usePeriodsStore } from '@/stores/PeriodsStore'
 import { useSubjectStore } from '@/stores/SubjectStore';
 
+const groupStore = useGroupsStore();
 const schoolYearStore = useSchoolYearStore();
 const personStore = usePersonStore()
 const studentStore = useStudentStore();
@@ -13,6 +15,10 @@ const periodsStore = usePeriodsStore();
 export const GetPersons = async () => {
   return await personStore.GetStorePersons();
 };
+
+export const GetPersonsWithOutStudet = async () => {
+  return await personStore.GetStorePersonsWithOutStudent();
+}
 
 export const GetSchoolYear = async () => {
   return await schoolYearStore.GetStoreSchoolYears();
@@ -29,3 +35,8 @@ export const GetPeriods = async () => {
 export const GetSubjects = async () => {
   return await subjectStore.GetStoreSubjects();
 }
+
+export const GetGroups = async () => {
+  return await groupStore.GetStoreGroups();
+};
+

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
@@ -21,11 +21,35 @@ const statusOptions = computed(() =>
     }))
 );
 
+const dateFirst = ref(new Date(props.modalItem.fechaInicio));
+const dateEnd = ref(new Date(props.modalItem.fechaFin));
+
+watch(() => props.modalItem.fechaInicio, (newVal) => {
+  dateFirst.value = new Date(newVal);
+});
+
+watch(() => props.modalItem.fechaFin, (newVal) => {
+  dateEnd.value = new Date(newVal);
+})
+
+const HandleEdit = () => {
+  emit('update', props.modalItem);
+}
+
+const HandleCancel = () => {
+  emit('close');
+};
+
+const emit = defineEmits<{
+  (e: 'close'): void;
+  (e: 'update', period: IPeriods): void;
+}>();
+
 </script>
 
 <template>
   <Dialog v-model:visible="props.showModal" header="Editar Período" modal :style="{ width: '30rem' }"
-    class="rounded-lg shadow-lg">
+    class="rounded-lg shadow-lg" @update:visible="HandleCancel">
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Nombre</label>
       <InputText v-model="props.modalItem.nombre" placeholder="Ingrese el nombre del período" fluid class="w-full" />
@@ -38,13 +62,13 @@ const statusOptions = computed(() =>
 
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Fecha de Inicio</label>
-      <DatePicker v-model="props.modalItem.fechaInicio" :showOnFocus="true" showIcon fluid class="w-full"
+      <DatePicker v-model="dateFirst" :showOnFocus="true" showIcon fluid class="w-full"
         placeholder="Selecciona la fecha de inicio" />
     </div>
 
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Fecha de Fin</label>
-      <DatePicker v-model="props.modalItem.fechaFin" :showOnFocus="true" showIcon fluid class="w-full"
+      <DatePicker v-model="dateEnd" :showOnFocus="true" showIcon fluid class="w-full"
         placeholder="Selecciona la fecha de fin" />
     </div>
 
@@ -52,13 +76,13 @@ const statusOptions = computed(() =>
       <label class="block text-gray-600 text-lg font-medium">
         Estado
       </label>
-      <Select :options="statusOptions" optionLabel="label" optionValue="value"
+      <Select :options="statusOptions" optionLabel="label" optionValue="value" fluid filter
         v-model="props.modalItem.estatusPeriodo" />
     </div>
 
     <template #footer>
-      <Button label="Cancelar" severity="secondary" @click="$emit('close')" />
-      <Button label="Guardar" severity="success" @click="$emit('update', props.modalItem)" />
+      <Button label="Cancelar" severity="secondary" @click="HandleCancel" />
+      <Button label="Guardar" severity="success" @click="HandleEdit" />
     </template>
   </Dialog>
 </template>
