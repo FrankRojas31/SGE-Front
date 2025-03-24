@@ -30,6 +30,7 @@ defineEmits<{
   (e: 'edit', id: number): void;
   (e: 'delete', id: number): void;
   (e: 'create'): void;
+  (e: 'id', id: number): void
 }>();
 
 // Estados reactivos
@@ -56,8 +57,7 @@ const tableAriaLabel = 'Tabla de datos interactiva';
 
 <template>
   <div class="container mx-auto px-4 sm:px-6 lg:px-2 py-6">
-    <h2
-      class="text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl lg:leading-tight transition-all duration-200">
+    <h2 class="text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl lg:leading-tight transition-all duration-200">
       {{ props.title }}
     </h2>
     <div class="flex flex-col sm:flex-row justify-end items-center mb-6 gap-4">
@@ -101,7 +101,7 @@ const tableAriaLabel = 'Tabla de datos interactiva';
 
         <Column header="Acciones">
           <template #body="{ data }">
-            <slot></slot>
+            <slot name="customButton" :data="data" />
             <Button class="mr-2" icon="pi pi-pencil" severity="success" rounded @click="$emit('edit', data.id)"
               aria-label="Editar registro" />
             <Button icon="pi pi-trash" severity="danger" rounded @click="$emit('delete', data.id)"

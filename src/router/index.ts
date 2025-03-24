@@ -49,7 +49,6 @@ const router = createRouter({
       },
     },
 
-
     //Rutas del Navbars
     {
       path: '/dashboard',
@@ -59,6 +58,16 @@ const router = createRouter({
         requiresAuth: true,
         MenuOnly: true,
         icon: 'pi pi-chart-pie'
+      }
+    },
+    {
+      path: '/persons',
+      name: 'Personas',
+      component: () => import('@/views/crud/PersonsView.vue'),
+      meta: {
+        requiresAuth: false,
+        MenuOnly: true,
+        icon: 'pi pi-user'
       }
     },
     {
@@ -109,6 +118,15 @@ const router = createRouter({
         requiresAuth: false,
         MenuOnly: true,
         icon: 'pi pi-sitemap'
+      }
+    },
+    {
+      path: '/groupsstudents/:id',
+      name: 'a',
+      component: () => import("@/views/others/pruebas.vue"),
+      meta: {
+        requiresAuth: false,
+        MenuOnly: false,
       }
     },
   ],
