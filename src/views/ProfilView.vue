@@ -43,6 +43,7 @@ import { useUserStore } from '@/stores/userStore';
 import { ref } from 'vue';
 import AppLayout from '@/layout/AppLayout.vue';
 import { useToast } from 'primevue/usetoast';
+import Toast from 'primevue/toast'
 
 const toast = useToast();
 const userStore = useUserStore();
