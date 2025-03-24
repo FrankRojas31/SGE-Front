@@ -6,7 +6,6 @@ import Button from 'primevue/button';
 import type { Groups } from '@/types/Groups';
 
 const modalItem = ref<Groups>({} as Groups);
-
 const props = defineProps<{
   showModal: boolean;
 }>();

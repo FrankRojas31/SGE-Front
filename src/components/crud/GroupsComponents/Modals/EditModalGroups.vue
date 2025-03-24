@@ -33,7 +33,6 @@ const HandleCancel = () => {
       <InputText v-model="props.modalItem.nombre" placeholder="Ingresa el nombre del grupo" class="w-full" />
     </div>
 
-    <!-- Descripción -->
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Descripción</label>
       <InputText v-model="props.modalItem.descripcion" placeholder="Ingresa la descripción del grupo" class="w-full" />
