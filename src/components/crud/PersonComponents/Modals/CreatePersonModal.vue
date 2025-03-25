@@ -17,13 +17,6 @@ const emit = defineEmits<{
 
 const modalItem = ref<IPerson>({} as IPerson);
 
-const HandleVisibleChange = (visible: boolean) => {
-  if (!visible) {
-    modalItem.value = {} as IPerson;
-    emit('close');
-  }
-};
-
 const HandleCreate = () => {
   emit('create', modalItem.value);
 }
@@ -37,7 +30,7 @@ const HandleCancel = () => {
 
 <template>
   <Dialog v-model:visible="props.showModal" header="Crear Persona" modal :style="{ width: '30rem' }"
-    class="rounded-lg shadow-lg" @update:visible="HandleVisibleChange">
+    class="rounded-lg shadow-lg" @update:visible="HandleCancel">
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Nombre</label>
       <InputText v-model="modalItem.nombre" placeholder="Ej: Juan" class="w-full" required />

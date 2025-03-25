@@ -2,7 +2,6 @@
 import type { IStudent } from '@/types/Students';
 import { ref, computed } from 'vue';
 import Dialog from 'primevue/dialog';
-import Checkbox from 'primevue/checkbox';
 import Button from 'primevue/button';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
@@ -27,7 +26,7 @@ const selectedPerson = ref<IPerson | null>(null);
 const selectedSchoolYear = ref<ISchoolYear | null>(null);
 
 const formattedPersons = computed(() => {
-  return personStore.personsList.map((person) => ({
+  return personStore.personsWithOutStudent.map((person) => ({
     ...person,
     fullName: `${person.nombre} ${person.apellidoPaterno} ${person.apellidoMaterno}`,
   }));
@@ -42,7 +41,7 @@ const emit = defineEmits<{
   (e: 'create', student: IStudent): void
 }>();
 
-const handleCreate = () => {
+const HandleCreate = () => {
   if (selectedPerson.value) {
     modalItem.value.idPersona = selectedPerson.value.id;
   }
@@ -52,18 +51,23 @@ const handleCreate = () => {
   emit('create', modalItem.value);
 };
 
+const HandleClose = () => {
+  modalItem.value = {} as IStudent;
+  emit('close')
+}
+
 </script>
 
 <template>
   <Dialog v-model:visible="props.showModal" header="Crear Registro" modal :style="{ width: '30rem' }"
-    class="rounded-lg shadow-lg">
+    class="rounded-lg shadow-lg" @update:visible="HandleClose">
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Matrícula</label>
       <InputGroup>
         <InputGroupAddon>
           <i class="pi pi-address-book"></i>
         </InputGroupAddon>
-        <InputNumber v-model="modalItem.matricula" :useGrouping="false" />
+        <InputNumber placeholder="22393186" v-model="modalItem.matricula" :useGrouping="false" />
       </InputGroup>
     </div>
 
@@ -84,15 +88,8 @@ const handleCreate = () => {
 
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Fecha de Ingreso</label>
-      <DatePicker v-model="modalItem.fechaIngreso" :showOnFocus="true" showIcon fluid />
-    </div>
-
-    <div class="mb-4">
-      <label class="block text-gray-600 text-lg font-medium">Estado de Usuario</label>
-      <div class="flex items-center mt-2">
-        <Checkbox v-model="modalItem.estado" inputId="estado" :binary="true" />
-        <label for="estado" class="ml-2 text-gray-600">BAJA</label>
-      </div>
+      <DatePicker v-model="modalItem.fechaIngreso" placeholder="Selecciona una Fecha de Ingreso" :showOnFocus="true"
+        showIcon fluid />
     </div>
 
     <div class="mb-4">
@@ -108,8 +105,8 @@ const handleCreate = () => {
     </div>
 
     <template #footer>
-      <Button label="Cancelar" severity="secondary" @click="$emit('close')" />
-      <Button label="Crear" severity="success" @click="handleCreate" />
+      <Button label="Cancelar" severity="secondary" @click="HandleClose" />
+      <Button label="Crear" severity="success" @click="HandleCreate" />
     </template>
   </Dialog>
 </template>

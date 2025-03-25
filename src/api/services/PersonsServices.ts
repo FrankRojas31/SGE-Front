@@ -8,6 +8,11 @@ export async function GetPersons(){
   return await GenericRequest<IPerson[]>({ url: `${urlBase}`, method: "GET" });
 }
 
+// GET: '/GetPersonaSinAlumno'
+export async function GetPersonsWithOutStudent(){
+  return await GenericRequest<IPerson[]>({ url: `${urlBase}/GetPersonaSinAlumno`, method: "GET" });
+}
+
 // POST: '/Persona/{
 //    data
 // }'

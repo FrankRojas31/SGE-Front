@@ -15,28 +15,20 @@ const emit = defineEmits<{
   (e: 'create', group: Groups): void;
 }>();
 
-const handleCreate = () => {
+const HandleCreate = () => {
   emit('create', modalItem.value);
 };
 
-const handleClose = () => {
+const HandleCancel = () => {
   modalItem.value = {} as Groups;
   emit('close');
 };
 
-
-
 </script>
 
 <template>
-  <Dialog
-    v-model:visible="props.showModal"
-    header="Crear Grupo"
-    modal
-    :style="{ width: '30rem' }"
-    class="rounded-lg shadow-lg"
-    @update:visible="handleClose"
-  >
+  <Dialog v-model:visible="props.showModal" header="Crear Grupo" modal :style="{ width: '30rem' }"
+    class="rounded-lg shadow-lg" @update:visible="HandleCancel">
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Nombre del Grupo</label>
       <InputText v-model="modalItem.nombre" placeholder="Ingresa el nombre del grupo" class="w-full" />
@@ -48,8 +40,8 @@ const handleClose = () => {
     </div>
 
     <template #footer>
-      <Button label="Cancelar" severity="secondary" @click="handleClose" />
-      <Button label="Crear" severity="success" @click="handleCreate" />
+      <Button label="Cancelar" severity="secondary" @click="HandleCancel" />
+      <Button label="Crear" severity="success" @click="HandleCreate" />
     </template>
   </Dialog>
 </template>
