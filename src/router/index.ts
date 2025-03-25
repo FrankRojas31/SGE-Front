@@ -39,6 +39,15 @@ const router = createRouter({
         MenuOnly: false,
       }
     },
+    {
+      path: '/profil',
+      name: 'perfil',
+      component: () => import("@/views/ProfilView.vue"),
+      meta: {
+        requiresAuth: false,
+        MenuOnly: false,
+      }
+    },
      {
       path: '/:patchMatch(.*)*',
       name: 'NotFound',

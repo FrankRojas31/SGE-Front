@@ -110,7 +110,7 @@ onUnmounted(async () => {
 
           <div v-if="showDropdown"
             class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 border border-[#10b981bb]">
-            <a href="#"
+            <a href="/profil"
               class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#10b98170] hover:text-[#186219] transition ease-in-out duration-300 group">
               <i class="pi pi-user text-[#10b981bb] group-hover:text-[#186219] transition ease-in-out duration-300"></i>
               <span>Perfil</span>
