@@ -27,7 +27,6 @@ const HandleCancel = () => {
 <template>
   <Dialog v-model:visible="props.showModal" header="Editar Curso" modal :style="{ width: '30rem' }"
     class="rounded-lg shadow-lg" @update:visible="HandleCancel">
-    <!-- Nombre del Curso -->
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Nombre del Curso</label>
       <InputText v-model="props.modalItem.nombre" placeholder="Ingresa el nombre del curso" class="w-full" />

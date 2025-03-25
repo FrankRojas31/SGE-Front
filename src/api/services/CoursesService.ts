@@ -3,7 +3,6 @@ import { GenericRequest } from "../GenericRequest";
 
 const urlBase = "CursoEscolar";
 
-// Obtener todos los cursos
 export async function GetCourses() {
   return await GenericRequest<Courses[]>({
     url: `${urlBase}`,
@@ -11,7 +10,6 @@ export async function GetCourses() {
   });
 }
 
-// Obtener un curso por ID
 export async function GetCourse(id: number) {
   return await GenericRequest<Courses>({
     url: `${urlBase}/${id}`,
@@ -19,7 +17,6 @@ export async function GetCourse(id: number) {
   });
 }
 
-// Crear un nuevo curso
 export async function PostCourse(course: Courses) {
   return await GenericRequest<Courses>({
     url: urlBase,
@@ -27,12 +24,10 @@ export async function PostCourse(course: Courses) {
     data: {
       nombre: course.nombre,
       descripcion: course.descripcion,
-      // Agrega aquí otros campos necesarios para crear un curso
     },
   });
 }
 
-// Actualizar un curso existente
 export async function PutCourse(course: Courses) {
   return await GenericRequest<Courses>({
     url: `${urlBase}/${course.id}`,
@@ -44,7 +39,6 @@ export async function PutCourse(course: Courses) {
   });
 }
 
-// Eliminar un curso por ID
 export async function DeleteCourse(id: number) {
   return await GenericRequest<Courses>({
     url: `${urlBase}/${id}`,
