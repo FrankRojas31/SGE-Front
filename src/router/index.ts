@@ -138,6 +138,15 @@ const router = createRouter({
         MenuOnly: false,
       }
     },
+    {
+      path: '/subjectsunits/:id',
+      name: 'a',
+      component: () => import("@/components/crud/SubjectComponents/UnitsView.vue"),
+      meta: {
+        requiresAuth: false,
+        MenuOnly: false,
+      }
+    },
   ],
 })
 
