@@ -12,10 +12,10 @@ import DeleteModal from '@/components/crud/DeleteModal.vue';
 import CreateModal from './Modals/CreateModalGroups.vue';
 import EditModalGroups from '@/components/crud/GroupsComponents/Modals/EditModalGroups.vue';
 import { Button } from 'primevue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import MessageStatic from '@/components/helpers/MessageStatic.vue';
 import { GetPeriodActive } from '@/api/services/PeriodsServices';
-import { IPeriods } from '@/types/Periods';
+import type { IPeriods } from '@/types/Periods';
 
 const toast = useToast();
 const loading = ref<boolean>(false);
@@ -94,9 +94,12 @@ onMounted(async () => {
 
 const router = useRouter();
 
-const HandleButton = (id: number) => {
-  console.log(id);
-  router.push(`groupsstudents/${id}`)
+const HandleButtonStudents = (id: number) => {
+  router.push(`/groupStudents/${id}`)
+}
+
+const HandleButtonSubject = (id: number) => {
+  router.push(`/groupSubjects/${id}`)
 }
 
 const HandlePeriodActive = async () => {
@@ -118,7 +121,10 @@ const HandlePeriodActive = async () => {
     <GeneralTable :loading="loading" title="Grupos" :data="groupStore.groupsList" :columns="columns" @edit="HandleEdit"
       @delete="HandleDelete" @create="openModalCreate = true">
       <template #customButton="{ data }">
-        <Button icon="pi pi-users" rounded class="mr-2" @click="HandleButton(data.id)" />
+        <Button v-tooltip="'Agregar Materias'" icon="pi pi-book" severity="warn" variant="outlined" rounded raised
+          class="mr-2" @click="HandleButtonSubject(data.id)" />
+        <Button v-tooltip="'Agregar Alumnos'" icon="pi pi-users" severity="success" variant="outlined" raised rounded
+          class="mr-2" @click="HandleButtonStudents(data.id)" />
       </template>
     </GeneralTable>
 
