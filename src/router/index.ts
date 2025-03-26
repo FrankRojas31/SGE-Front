@@ -80,6 +80,16 @@ const router = createRouter({
       }
     },
     {
+      path: '/users',
+      name: 'Usuarios',
+      component: () => import('@/views/crud/UsersView.vue'),
+      meta: {
+        requiresAuth: false,
+        MenuOnly: true,
+        icon: 'pi pi-users'
+      }
+    },
+    {
       path: '/teachers',
       name: 'Profesores',
       component: () => import("@/views/crud/TeachersView.vue"),
