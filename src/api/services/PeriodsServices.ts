@@ -8,6 +8,11 @@ export async function GetPeriods(){
   return await GenericRequest<IPeriods[]>({ url: `${urlBase}`, method: "GET" });
 }
 
+// GET: '/GetPeriodoActivo'
+export async function GetPeriodActive(){
+  return await GenericRequest<IPeriods>({ url: `${urlBase}/GetPeriodoActivo`, method: "GET" });
+}
+
 // POST: '/Periodos/{
 //    data
 // }'
