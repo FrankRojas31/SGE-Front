@@ -10,6 +10,8 @@ import CreateModal from './Modals/CreateModal.vue';
 import { Toast, useToast } from 'primevue';
 import DeleteModal from '../DeleteModal.vue';
 import EditModal from './Modals/EditModal.vue';
+import { Button } from 'primevue';
+import { useRouter } from 'vue-router';
 
 const toast = useToast();
 const loading = ref<boolean>(false);
@@ -84,13 +86,23 @@ onMounted(async () => {
   }
 });
 
+const router = useRouter();
+
+const HandleButton = (id: number) => {
+  router.push(`subjectsunits/${id}`)
+}
+
 </script>
 
 <template>
   <AppLayout>
     <Toast />
     <GeneralTable :loading="loading" :title="'Materias'" :data="subjectStore.subjectsList" :columns="columnsSubject"
-      @edit="HandleEdit" @delete="HandleDelete" @create="openModalCreate = true" />
+      @edit="HandleEdit" @delete="HandleDelete" @create="openModalCreate = true">
+      <template #customButton="{ data }">
+        <Button icon="pi pi-list" rounded class="mr-2" @click="HandleButton(data.id)" />
+      </template>
+    </GeneralTable>
 
     <CreateModal :showModal="openModalCreate" @close="openModalCreate = false" @create="CreateConfirm" />
     <EditModal :showModal="openModalEdit" :modalItem="modalItem" @close="openModalEdit = false"

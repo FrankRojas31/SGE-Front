@@ -1,9 +1,8 @@
-import type {Groups} from "@/types/Groups";
+import type { Groups } from "@/types/Groups";
 import { GenericRequest } from "../GenericRequest";
 
 const urlBase = "Grupos";
 
-// Obtener todos los grupos
 export async function GetGroups() {
   return await GenericRequest<Groups[]>({
     url: `${urlBase}`,
@@ -11,7 +10,14 @@ export async function GetGroups() {
   });
 }
 
-// Obtener un grupo por ID
+// GET: '/GetGruposEnPeriodo'
+export async function GetGroupsInPeriodActive(){
+  return await GenericRequest<Groups[]>({
+    url: `${urlBase}/GetGruposEnPeriodo`,
+    method: "GET"
+  })
+}
+
 export async function GetGroup(id: number) {
   return await GenericRequest<Groups>({
     url: `${urlBase}/${id}`,
@@ -19,20 +25,17 @@ export async function GetGroup(id: number) {
   });
 }
 
-// Crear un nuevo grupo
 export async function PostGroup(group: Groups) {
   return await GenericRequest<Groups>({
-    url: urlBase,
+    url: `${urlBase}/PostGrupoEnPeriodo`,
     method: "POST",
     data: {
       nombre: group.nombre,
       descripcion: group.descripcion,
-      // Agrega aquí otros campos necesarios para crear un grupo
     },
   });
 }
 
-// Actualizar un grupo existente
 export async function PutGroup(group: Groups) {
   return await GenericRequest<Groups>({
     url: `${urlBase}/${group.id}`,
@@ -41,12 +44,10 @@ export async function PutGroup(group: Groups) {
       id: group.id,
       nombre: group.nombre,
       descripcion: group.descripcion,
-      // Agrega aquí otros campos que puedan ser actualizados
     },
   });
 }
 
-// Eliminar un grupo por ID
 export async function DeleteGroup(id: number) {
   return await GenericRequest<Groups>({
     url: `${urlBase}/${id}`,

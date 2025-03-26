@@ -24,6 +24,7 @@ const props = defineProps<{
   data: TableData[];
   columns: ColumnConfig<TableData>[];
   loading?: boolean;
+  disabledCreate?: boolean;
 }>();
 
 defineEmits<{
@@ -70,7 +71,7 @@ const tableAriaLabel = 'Tabla de datos interactiva';
         </IconField>
 
         <Button label="Nuevo" icon="pi pi-plus" class="p-button-raised p-button-success w-full sm:w-auto min-w-[100px]"
-          @click="$emit('create')" aria-label="Crear nuevo registro" />
+          @click="$emit('create')" aria-label="Crear nuevo registro" :disabled="props.disabledCreate" />
       </div>
     </div>
 
@@ -102,10 +103,10 @@ const tableAriaLabel = 'Tabla de datos interactiva';
         <Column header="Acciones">
           <template #body="{ data }">
             <slot name="customButton" :data="data" />
-            <Button class="mr-2" icon="pi pi-pencil" severity="success" rounded @click="$emit('edit', data.id)"
-              aria-label="Editar registro" />
-            <Button icon="pi pi-trash" severity="danger" rounded @click="$emit('delete', data.id)"
-              aria-label="Eliminar registro" />
+            <Button v-tooltip="'Editar'" class="mr-2" icon="pi pi-pencil" severity="success" rounded raised
+              @click="$emit('edit', data.id)" aria-label="Editar registro" />
+            <Button v-tooltip="'Eliminar'" icon="pi pi-trash" severity="danger" rounded raised
+              @click="$emit('delete', data.id)" aria-label="Eliminar registro" />
           </template>
         </Column>
       </DataTable>

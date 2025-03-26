@@ -1,23 +1,17 @@
 <script lang="ts" setup>
-import { ref, computed, onUnmounted, onBeforeMount } from 'vue';
+import { computed, onMounted } from 'vue';
 import Dialog from 'primevue/dialog';
-import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
+import InputText from 'primevue/inputtext';
 import DatePicker from 'primevue/datepicker';
 import Select from 'primevue/select';
-import { usePersonStore } from '@/stores/PersonStore';  // Añadido para traer las personas
-import { type ITeachers } from '@/types/Teachers';
+import { type ITeachers} from '@/types/Teachers';
 import type { IPerson } from '@/types/Persons';
-
-const modalItem = ref<ITeachers>({} as ITeachers);
-const personStore = usePersonStore();
-
-const props = defineProps<{
-  showModal: boolean;
-}>();
+import { usePersonStore } from '@/stores/PersonStore';
+import { ref } from 'vue';
 
 const selectedPerson = ref<IPerson | null>(null);
-
+const personStore = usePersonStore();
 
 const formattedPersons = computed(() => {
   return personStore.personsList.map((person) => ({
@@ -26,21 +20,17 @@ const formattedPersons = computed(() => {
   }));
 });
 
+const props = defineProps<{
+  showModal: boolean;
+  modalItem: ITeachers;
+}>();
 
 const emit = defineEmits<{
   (e: 'close'): void;
-  (e: 'create', teacher: ITeachers): void;
+  (e: 'update', teacher: ITeachers): void;
 }>();
 
-const handleCreate = () => {
-  if (selectedPerson.value) {
-    modalItem.value.idPersona = selectedPerson.value.id;  // Asignar la persona seleccionada
-  }
-  emit('create', modalItem.value);
-};
-
 const handleClose = () => {
-  modalItem.value = {} as ITeachers;
   emit('close');
 };
 </script>
@@ -48,7 +38,7 @@ const handleClose = () => {
 <template>
   <Dialog
     v-model:visible="props.showModal"
-    header="Crear Profesor"
+    header="Editar Profesor"
     modal
     :style="{ width: '30rem' }"
     class="rounded-lg shadow-lg"
@@ -86,7 +76,7 @@ const handleClose = () => {
       />
     </div>
 
-    
+    <!-- Nuevo apartado para seleccionar persona -->
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Persona</label>
       <Select
@@ -101,7 +91,7 @@ const handleClose = () => {
 
     <template #footer>
       <Button label="Cancelar" severity="secondary" @click="handleClose" />
-      <Button label="Crear" severity="success" @click="handleCreate" />
+      <Button label="Actualizar" severity="success" @click="$emit('update',props.modalItem)" />
     </template>
   </Dialog>
 </template>
