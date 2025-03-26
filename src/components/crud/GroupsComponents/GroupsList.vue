@@ -13,6 +13,9 @@ import CreateModal from './Modals/CreateModalGroups.vue';
 import EditModalGroups from '@/components/crud/GroupsComponents/Modals/EditModalGroups.vue';
 import { Button } from 'primevue';
 import { useRouter } from 'vue-router';
+import MessageStatic from '@/components/helpers/MessageStatic.vue';
+import { GetPeriodActive } from '@/api/services/PeriodsServices';
+import { IPeriods } from '@/types/Periods';
 
 const toast = useToast();
 const loading = ref<boolean>(false);
@@ -22,6 +25,7 @@ const openModalEdit = ref<boolean>(false);
 const openModalDelete = ref<boolean>(false);
 const modalItem = ref<Groups>({} as Groups);
 const idItem = ref<number>(0);
+const periodActive = ref<IPeriods>({} as IPeriods);
 
 const HandleEdit = async (id: number) => {
   const response = await groupStore.GetStoreGroup(id);
@@ -77,6 +81,7 @@ onMounted(async () => {
   loading.value = true;
   try {
     const res = await GetGroups();
+    await HandlePeriodActive();
     if (res?.success) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
@@ -94,11 +99,22 @@ const HandleButton = (id: number) => {
   router.push(`groupsstudents/${id}`)
 }
 
+const HandlePeriodActive = async () => {
+  const response = await GetPeriodActive();
+  if (response?.success) {
+    periodActive.value = response.data;
+  }
+}
+
 </script>
 
 <template>
   <AppLayout>
     <Toast />
+    <div class="px-2 mt-3">
+      <MessageStatic :message="`Se encuentra activo el Periodo: ${periodActive.nombre}`" icon="pi pi-spin pi-cog"
+        severity="success" />
+    </div>
     <GeneralTable :loading="loading" title="Grupos" :data="groupStore.groupsList" :columns="columns" @edit="HandleEdit"
       @delete="HandleDelete" @create="openModalCreate = true">
       <template #customButton="{ data }">

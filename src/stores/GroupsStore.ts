@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { GetGroups, PostGroup, GetGroup, PutGroup, DeleteGroup } from '@/api/services/GroupsService';
+import { PostGroup, GetGroup, PutGroup, DeleteGroup, GetGroupsInPeriodActive } from '@/api/services/GroupsService';
 import type { Groups } from '@/types/Groups';
 
 export const useGroupsStore = defineStore('Groups', () => {
@@ -8,7 +8,7 @@ export const useGroupsStore = defineStore('Groups', () => {
   const group = ref<Groups>({} as Groups);
 
   async function GetStoreGroups() {
-    const response = await GetGroups();
+    const response = await GetGroupsInPeriodActive();
     if (response?.success === true) {
       groupsList.value = response.data;
     }
