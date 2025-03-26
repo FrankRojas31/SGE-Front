@@ -133,28 +133,11 @@ onMounted(async () => {
 <template>
   <AppLayout>
     <Toast />
-    <GeneralTable
-      :loading="loading"
-      title="Usuarios"
-      :data="usersStore.users"
-      :columns="columnsUser"
-      @edit="HandleEdit"
-      @delete="HandleDelete"
-      @create="openCreateModal = true"
-    />
+    <GeneralTable :loading="loading" title="Usuarios" :data="usersStore.users" :columns="columnsUser" @edit="HandleEdit"
+      @delete="HandleDelete" @create="openCreateModal = true" />
 
-    <CreateModal :showModal="openCreateModal" @close="openCreateModal = false" @create="CreateConfirm"/>
-    <EditModal
-      :showModal="openEditModal"
-      :modalItem="modalItem"
-      @close="openEditModal = false"
-      @update="EditConfirm"
-    />
-    <DeleteModal
-      :showModal="openDeleteModal"
-      :id="idItem"
-      @close="openDeleteModal = false"
-      @delete="DeleteConfirm"
-    />
+    <CreateModal :showModal="openCreateModal" @close="openCreateModal = false" @create="CreateConfirm" />
+    <EditModal :showModal="openEditModal" :modalItem="modalItem" @close="openEditModal = false" @update="EditConfirm" />
+    <DeleteModal :showModal="openDeleteModal" :id="idItem" @close="openDeleteModal = false" @delete="DeleteConfirm" />
   </AppLayout>
 </template>

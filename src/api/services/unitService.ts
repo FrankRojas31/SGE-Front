@@ -3,9 +3,9 @@ import { GenericRequest } from "../GenericRequest";
 
 const urlBase = "Unidades";
 
-export async function GetUnits() {
+export async function GetUnits(id: number) {
   return await GenericRequest<Units[]>({
-    url: `${urlBase}`,
+    url: `${urlBase}/GetUnidadesDeGrupo/${id}`,
     method: "GET",
   });
 }

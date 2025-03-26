@@ -1,7 +1,7 @@
 import axios from "axios";
 import type { IUser } from "@/types/Users";
 
-const urlBase = "Account"; // URL base de la API
+const urlBase = "Account";
 
 export class UserService {
   // Obtener todos los usuarios
