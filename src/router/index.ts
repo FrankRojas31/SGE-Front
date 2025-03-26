@@ -147,6 +147,14 @@ const router = createRouter({
       component: () => import("@/views/others/pruebas.vue")
     },
     {
+      path: '/subjectsunits/:id',
+      name: 'a',
+      component: () => import("@/components/crud/SubjectComponents/UnitsView.vue"),
+      meta: {
+        requiresAuth: false,
+        MenuOnly: false,
+      }
+    },
       path: '/groupSubjects/:id',
       name: 'Grupos Materias',
       component: () => import("@/views/others/pruebas.vue"),
