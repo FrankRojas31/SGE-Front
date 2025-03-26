@@ -6,7 +6,7 @@ import { useUnitsStore } from '@/stores/UnitStore';
 import { useToast } from "primevue/usetoast";
 import Toast from 'primevue/toast';
 import { columnsUnits } from '@/components/crud/SubjectComponents/TableUnits';
-import { GetUnits} from '@/utils/helpers';
+import { GetUnits } from '@/utils/helpers';
 import type { Units } from '@/types/Unit';
 import DeleteModal from '@/components/crud/DeleteModal.vue';
 import CreateModal from './ModalsUnit/CreateModalUnit.vue';
@@ -21,6 +21,7 @@ const modalEdit = ref<boolean>(false);
 const modalDelete = ref<boolean>(false);
 const selectedUnit = ref<Units>({} as Units);
 const selectedUnitId = ref<number>(0);
+const route = useRoute();
 
 const openEditModal = async (id: number) => {
   const response = await UnitStore.GetStoreUnit(id);
@@ -86,23 +87,18 @@ onMounted(async () => {
   }
 });
 
-const router = useRoute();
-
-
-
 </script>
 
 <template>
   <AppLayout>
     <Toast />
-    <GeneralTable :loading="loading" title="Unidades" :data="UnitStore.unitsList" :columns="columnsUnits" @edit="openEditModal"
-      @delete="openDeleteModal" @create="modalCreate = true">
+    <GeneralTable :loading="loading" title="Unidades" :data="UnitStore.unitsList" :columns="columnsUnits"
+      @edit="openEditModal" @delete="openDeleteModal" @create="modalCreate = true">
     </GeneralTable>
 
-    <CreateModal :showModal="modalCreate" @close="modalCreate = false" @create="confirmCreate" />
+    <CreateModal :id="route.params.id" :showModal="modalCreate" @close="modalCreate = false" @create="confirmCreate" />
 
-    <EditModalUnit :modalItem="selectedUnit" :showModal="modalEdit" @close="modalEdit = false"
-      @update="confirmEdit" />
+    <EditModalUnit :modalItem="selectedUnit" :showModal="modalEdit" @close="modalEdit = false" @update="confirmEdit" />
     <DeleteModal :showModal="modalDelete" :id="selectedUnitId" @close="modalDelete = false" @delete="confirmDelete" />
   </AppLayout>
 </template>

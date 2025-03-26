@@ -19,7 +19,7 @@ const props = defineProps<{
 const selectedPerson = ref<IPerson | null>(null);
 
 const formattedPersons = computed(() => {
-  return personStore.personsList.map((person) => ({
+  return personStore.personsWithOutStudent.map((person) => ({
     ...person,
     fullName: `${person.nombre} ${person.apellidoPaterno} ${person.apellidoMaterno}`,
   }));
@@ -44,14 +44,8 @@ const handleClose = () => {
 </script>
 
 <template>
-  <Dialog
-    v-model:visible="props.showModal"
-    header="Crear Profesor"
-    modal
-    :style="{ width: '30rem' }"
-    class="rounded-lg shadow-lg"
-    @update:visible="handleClose"
-  >
+  <Dialog v-model:visible="props.showModal" header="Crear Profesor" modal :style="{ width: '30rem' }"
+    class="rounded-lg shadow-lg" @update:visible="handleClose">
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">No. de Empleado</label>
       <InputText v-model="modalItem.noEmpleado" placeholder="Ingrese el número de empleado" class="w-full" />
@@ -74,27 +68,15 @@ const handleClose = () => {
 
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Fecha de Ingreso</label>
-      <DatePicker
-        v-model="modalItem.fechaIngreso"
-        :showOnFocus="true"
-        showIcon
-        fluid
-        class="w-full"
-        placeholder="Selecciona la fecha de ingreso"
-      />
+      <DatePicker v-model="modalItem.fechaIngreso" :showOnFocus="true" showIcon fluid class="w-full"
+        placeholder="Selecciona la fecha de ingreso" />
     </div>
 
 
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Persona</label>
-      <Select
-        v-model="selectedPerson"
-        :options="formattedPersons"
-        optionLabel="fullName"
-        placeholder="Selecciona una persona"
-        class="w-full"
-        filter
-      />
+      <Select v-model="selectedPerson" :options="formattedPersons" optionLabel="fullName"
+        placeholder="Selecciona una persona" class="w-full" filter />
     </div>
 
     <template #footer>

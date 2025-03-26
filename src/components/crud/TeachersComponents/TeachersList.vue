@@ -6,7 +6,7 @@ import { useTeachersStore } from '@/stores/TeachersStore.ts';
 import { useToast } from "primevue/usetoast";
 import Toast from 'primevue/toast';
 import { columns } from '@/components/crud/TeachersComponents/TableColumns';
-import { GetTeachers } from '@/utils/helpers';
+import { GetPersonsWithOutStudent, GetTeachers } from '@/utils/helpers';
 import type { ITeachers } from '@/types/Teachers';
 import DeleteModal from '@/components/crud/DeleteModal.vue';
 import EditModalTeachers from '@/components/crud/TeachersComponents/Modals/EditModalTeachers.vue';
@@ -78,6 +78,7 @@ onMounted(async () => {
   loading.value = true;
   try {
     const res = await GetTeachers();
+    const res1 = await GetPersonsWithOutStudent();
     if (res?.success) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
@@ -99,8 +100,8 @@ const HandleButton = (id: number) => {
 <template>
   <AppLayout>
     <Toast />
-    <GeneralTable :loading="loading" title="Profesores" :data="teacherStore.teachersList" :columns="columns" @edit="HandleEdit"
-      @delete="HandleDelete" @create="openModalCreate = true">
+    <GeneralTable :loading="loading" title="Profesores" :data="teacherStore.teachersList" :columns="columns"
+      @edit="HandleEdit" @delete="HandleDelete" @create="openModalCreate = true">
       <template #customButton="{ data }">
         <Button icon="pi pi-users" rounded class="mr-2" @click="HandleButton(data.id)" />
       </template>

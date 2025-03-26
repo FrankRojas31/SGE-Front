@@ -24,6 +24,7 @@ export async function PostUnit(unit: Units) {
     data: {
       nombre: unit.nombre,
       descripcion: unit.descripcion,
+      idMateria: unit.idMateria,
     },
   });
 }
@@ -36,6 +37,7 @@ export async function PutUnit(unit: Units) {
       id: unit.id,
       nombre: unit.nombre,
       descripcion: unit.descripcion,
+      idMateria: unit.idMateria,
     },
   });
 }
