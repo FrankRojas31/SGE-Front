@@ -139,15 +139,18 @@ const router = createRouter({
         icon: 'pi pi-th-large'
       }
     },
+
+    // Rutas Hijas con Parametros.
     {
-      path: '/groupsstudents/:id',
-      name: 'a',
-      component: () => import("@/views/others/pruebas.vue"),
-      meta: {
-        requiresAuth: false,
-        MenuOnly: false,
-      }
+      path: '/groupStudents/:id',
+      name: 'Grupo Alumno',
+      component: () => import("@/views/others/pruebas.vue")
     },
+    {
+      path: '/groupSubjects/:id',
+      name: 'Grupos Materias',
+      component: () => import("@/views/others/pruebas.vue"),
+    }
   ],
 })
 

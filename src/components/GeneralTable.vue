@@ -102,10 +102,10 @@ const tableAriaLabel = 'Tabla de datos interactiva';
         <Column header="Acciones">
           <template #body="{ data }">
             <slot name="customButton" :data="data" />
-            <Button class="mr-2" icon="pi pi-pencil" severity="success" rounded @click="$emit('edit', data.id)"
-              aria-label="Editar registro" />
-            <Button icon="pi pi-trash" severity="danger" rounded @click="$emit('delete', data.id)"
-              aria-label="Eliminar registro" />
+            <Button v-tooltip="'Editar'" class="mr-2" icon="pi pi-pencil" severity="success" rounded raised
+              @click="$emit('edit', data.id)" aria-label="Editar registro" />
+            <Button v-tooltip="'Eliminar'" icon="pi pi-trash" severity="danger" rounded raised
+              @click="$emit('delete', data.id)" aria-label="Eliminar registro" />
           </template>
         </Column>
       </DataTable>
