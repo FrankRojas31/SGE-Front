@@ -104,6 +104,7 @@ const HandleButtonSubject = (id: number) => {
 
 const HandlePeriodActive = async () => {
   const response = await GetPeriodActive();
+  console.log(response);
   if (response?.success) {
     periodActive.value = response.data;
   }
@@ -115,7 +116,7 @@ const HandlePeriodActive = async () => {
   <AppLayout>
     <Toast />
     <div class="px-2 mt-3">
-      <MessageStatic :message="`Se encuentra activo el Periodo: ${periodActive.nombre}`" icon="pi pi-spin pi-cog"
+      <MessageStatic :message="`El período activo actualmente es: ${periodActive.nombre}`" icon="pi pi-spin pi-cog"
         severity="success" />
     </div>
     <GeneralTable :loading="loading" title="Grupos" :data="groupStore.groupsList" :columns="columns" @edit="HandleEdit"

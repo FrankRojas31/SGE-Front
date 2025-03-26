@@ -89,7 +89,6 @@ onMounted(async () => {
 const router = useRouter();
 
 const HandleButton = (id: number) => {
-  console.log(id);
   router.push(`subjectsunits/${id}`)
 }
 

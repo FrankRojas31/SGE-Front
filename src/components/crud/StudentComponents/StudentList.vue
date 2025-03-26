@@ -13,7 +13,7 @@ import type { IStudent } from '@/types/Students';
 import DeleteModal from '@/components/crud/DeleteModal.vue'
 import { Button } from 'primevue';
 import { usePersonStore } from '@/stores/PersonStore';
-import { GetPersonsWithOutStudent } from '@/api/services/PersonsServices';
+import { GetPersonsWithOutStudent } from '@/utils/helpers';
 
 const toast = useToast();
 const loading = ref<boolean>(false);
@@ -92,6 +92,7 @@ onMounted(async () => {
   loading.value = true;
   try {
     const res = await GetStudents();
+    const res1 = await GetPersonsWithOutStudent();
     if (res?.success) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }

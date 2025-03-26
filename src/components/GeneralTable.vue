@@ -24,6 +24,7 @@ const props = defineProps<{
   data: TableData[];
   columns: ColumnConfig<TableData>[];
   loading?: boolean;
+  disabledCreate?: boolean;
 }>();
 
 defineEmits<{
@@ -70,7 +71,7 @@ const tableAriaLabel = 'Tabla de datos interactiva';
         </IconField>
 
         <Button label="Nuevo" icon="pi pi-plus" class="p-button-raised p-button-success w-full sm:w-auto min-w-[100px]"
-          @click="$emit('create')" aria-label="Crear nuevo registro" />
+          @click="$emit('create')" aria-label="Crear nuevo registro" :disabled="props.disabledCreate" />
       </div>
     </div>
 

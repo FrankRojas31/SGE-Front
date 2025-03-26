@@ -22,7 +22,7 @@ export const GetPersons = async () => {
   return await personStore.GetStorePersons();
 };
 
-export const GetPersonsWithOutStudet = async () => {
+export const GetPersonsWithOutStudent = async () => {
   return await personStore.GetStorePersonsWithOutStudent();
 }
 
