@@ -29,7 +29,7 @@
     <AppLayout>
       <div class="flex justify-center items-center min-h-[calc(100vh-5rem)] py-12">
         <div
-          class="w-full max-w-4xl bg-white dark:bg-gray-800 shadow-2xl rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-3xl">
+          class="w-full max-w-4xl bg-white shadow-2xl rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-3xl">
           <div class="p-10">
             <Toast />
             <div class="flex flex-col items-center text-center space-y-4">
