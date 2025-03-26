@@ -46,6 +46,10 @@ export const GetGroups = async () => {
   return await groupStore.GetStoreGroups();
 };
 
+export const GetGroup = async (id: number) => {
+  return await groupStore.GetStoreGroup(id);
+}
+
 export const GetTeachers = async () => {
   return await teachersStore.GetStoreTeachers();
 };
