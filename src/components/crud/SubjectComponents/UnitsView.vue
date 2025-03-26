@@ -22,6 +22,7 @@ const modalDelete = ref<boolean>(false);
 const selectedUnit = ref<Units>({} as Units);
 const selectedUnitId = ref<number>(0);
 const route = useRoute();
+const idGrupo = Number(route.params.id);
 
 const openEditModal = async (id: number) => {
   const response = await UnitStore.GetStoreUnit(id);
@@ -34,7 +35,7 @@ const openEditModal = async (id: number) => {
 };
 
 const confirmEdit = async (unit: Units) => {
-  const response = await UnitStore.PutStoreUnit(unit);
+  const response = await UnitStore.PutStoreUnit(unit, idGrupo);
   if (response?.success) {
     modalEdit.value = false;
     toast.add({ severity: 'success', summary: '¡Actualizado Correctamente!', detail: '¡Se ha actualizado el curso!', life: 2000 });
@@ -44,7 +45,7 @@ const confirmEdit = async (unit: Units) => {
 };
 
 const confirmCreate = async (unit: Units) => {
-  const response = await UnitStore.PostStoreUnit(unit);
+  const response = await UnitStore.PostStoreUnit(unit, idGrupo);
   if (response?.success) {
     modalCreate.value = false;
     toast.add({ severity: 'success', summary: '¡Creado Correctamente!', detail: '¡Se ha creado el curso!', life: 2000 });
@@ -64,7 +65,7 @@ const openDeleteModal = async (id: number) => {
 };
 
 const confirmDelete = async (id: number) => {
-  const response = await UnitStore.DeleteStoreUnit(id);
+  const response = await UnitStore.DeleteStoreUnit(id, idGrupo);
   if (response?.success) {
     modalDelete.value = false;
     toast.add({ severity: 'success', summary: '¡Eliminado Correctamente!', detail: '¡Se ha eliminado el curso!', life: 2000 });
@@ -76,7 +77,7 @@ const confirmDelete = async (id: number) => {
 onMounted(async () => {
   loading.value = true;
   try {
-    const res = await GetUnits();
+    const res = await GetUnits(Number(route.params.id));
     if (res?.success) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
@@ -96,7 +97,8 @@ onMounted(async () => {
       @edit="openEditModal" @delete="openDeleteModal" @create="modalCreate = true">
     </GeneralTable>
 
-    <CreateModal :id="route.params.id" :showModal="modalCreate" @close="modalCreate = false" @create="confirmCreate" />
+    <CreateModal :id="Number(route.params.id)" :showModal="modalCreate" @close="modalCreate = false"
+      @create="confirmCreate" />
 
     <EditModalUnit :modalItem="selectedUnit" :showModal="modalEdit" @close="modalEdit = false" @update="confirmEdit" />
     <DeleteModal :showModal="modalDelete" :id="selectedUnitId" @close="modalDelete = false" @delete="confirmDelete" />

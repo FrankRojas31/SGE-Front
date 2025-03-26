@@ -26,6 +26,7 @@ export const GetPersons = async () => {
 
 export const GetUsers = async () => {
   return await usersStore.GetStoreUsers();
+}
 
 export const GetPersonsWithOutStudent = async () => {
   return await personStore.GetStorePersonsWithOutStudent();
@@ -63,6 +64,6 @@ export const GetCourses = async () => {
   return await courseStore.GetStoreCourses();
 };
 
-export const GetUnits = async () => {
-  return await UnitStore.GetStoreUnits();
+export const GetUnits = async (id: number) => {
+  return await UnitStore.GetStoreUnits(id);
 };

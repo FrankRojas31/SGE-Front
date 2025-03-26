@@ -7,18 +7,18 @@ export const useUnitsStore = defineStore('Units', () => {
   const unitsList = ref<Units[]>([]);
   const unit = ref<Units>({} as Units);
 
-  async function GetStoreUnits() {
-    const response = await GetUnits();
+  async function GetStoreUnits(id: number) {
+    const response = await GetUnits(id);
     if (response?.success === true) {
       unitsList.value = response.data;
     }
     return response;
   }
 
-  async function PostStoreUnit(unit: Units) {
+  async function PostStoreUnit(unit: Units, id:number) {
     const response = await PostUnit(unit);
     if (response?.success === true) {
-      await GetStoreUnits();
+      await GetStoreUnits(id);
     }
     return response;
   }
@@ -31,18 +31,18 @@ export const useUnitsStore = defineStore('Units', () => {
     return response;
   }
 
-  async function PutStoreUnit(unit: Units) {
+  async function PutStoreUnit(unit: Units, id:number) {
     const response = await PutUnit(unit);
     if (response?.success === true) {
-      await GetStoreUnits();
+      await GetStoreUnits(id);
     }
     return response;
   }
 
-  async function DeleteStoreUnit(id: number) {
+  async function DeleteStoreUnit(id: number, idgroup: number) {
     const response = await DeleteUnit(id);
     if (response?.success === true) {
-      await GetStoreUnits();
+      await GetStoreUnits(idgroup);
     }
     return response;
   }
