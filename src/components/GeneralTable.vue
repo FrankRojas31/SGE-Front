@@ -15,7 +15,7 @@ interface ColumnConfig<T> {
 }
 
 interface TableData {
-  id: number;
+  id: number | string;
   [key: string]: any;
 }
 

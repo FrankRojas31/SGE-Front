@@ -1,54 +1,20 @@
+import { GetUsers } from "@/api/services/UserService";
+import type { IAuthUser } from "@/types/Auth/Users";
 import { defineStore } from "pinia";
-import { UserService } from "@/api/services/UserService";
-import type { IUser } from "@/types/Users";
+import { ref } from "vue";
 
-export const useUserStore = defineStore("userStore", {
-  state: () => ({
-    users: [] as IUser[],
-    selectedUser: null as IUser | null,
-  }),
-  actions: {
-    async fetchUsers() {
-      try {
-        this.users = await UserService.getUsers();
-      } catch (error) {
-        console.error("Error al obtener usuarios:", error);
-      }
-    },
+export const useUserStore = defineStore("userStore", () => {
+  const usersList = ref<IAuthUser[]>([]);
 
-    async fetchUserById(id: string) {
-      try {
-        this.selectedUser = await UserService.getUserById(id);
-      } catch (error) {
-        console.error("Error al obtener usuario:", error);
-      }
-    },
+  async function GetUsersStore(){
+    const response = await GetUsers();
 
-    async addUser(user: IUser) {
-      try {
-        await UserService.createUser(user);
-        await this.fetchUsers();
-      } catch (error) {
-        console.error("Error al crear usuario:", error);
-      }
-    },
+    if(response?.success){
+      usersList.value = response.data;
+    }
 
-    async updateUser(user: IUser) {
-      try {
-        await UserService.updateUser(user);
-        await this.fetchUsers();
-      } catch (error) {
-        console.error("Error al actualizar usuario:", error);
-      }
-    },
+    return response;
+  }
 
-    async removeUser(id: string) {
-      try {
-        await UserService.deleteUser(id);
-        await this.fetchUsers();
-      } catch (error) {
-        console.error("Error al eliminar usuario:", error);
-      }
-    },
-  },
+  return { GetUsersStore, usersList }
 });
