@@ -1,16 +1,23 @@
 <script lang="ts" setup>
 import AppLogo from '@/components/global/AppLogo.vue'
+import { useAuthStore } from '@/stores/auth/AuthStore';
+import type { ILoginUser } from '@/types/Auth/Users';
 import { toTypedSchema } from '@vee-validate/yup';
 import { Button } from 'primevue';
+import Toast from 'primevue/toast';
+import { useToast } from "primevue/usetoast";
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
+import Message from 'primevue/message';
 
+const toast = useToast();
+const auth = useAuthStore();
 const { errors, defineField, handleSubmit } = useForm({
   validationSchema: toTypedSchema(
     yup.object({
-      email: yup.string().email('Porfavor ingresa un email valido').required('Porfavor ingresa un email'),
+      email: yup.string().email('Por favor ingresa un email valido').required('Porfavor ingresa un email'),
       password: yup.string()
-        .required('Porfavor ingresa una contraseña')
+        .required('Por favor ingresa una contraseña')
         .min(8, 'La contraseña debe tener al menos 8 caracteres')
         .matches(/^\S*$/, 'No puede contener espacios en blanco')
     })
@@ -27,15 +34,22 @@ const [password, passwordAttrs] = defineField('password', {
 
 const onSubmit = handleSubmit(async (values) => {
   if (Object.keys(errors.value).length === 0) {
-    console.log(values);
-  } else {
-    console.error(errors.value)
+    const login: ILoginUser = {
+      email: values.email,
+      password: values.password
+    }
+    const response = await auth.LoginStore(login);
+    if (response?.success)
+      toast.add({ severity: "success", summary: "¡Correcto!", detail: "¡Has Iniciado Sesión Correctamente!", life: 2000 })
+    else
+      toast.add({ severity: "error", summary: "¡Error!", detail: `¡Upss... ${response?.message}!`, life: 2000 })
   }
 });
 
 </script>
 
 <template>
+  <Toast />
   <div class="font-sans">
     <div class="relative min-h-screen flex items-center justify-center bg-[#f8f8f8]">
       <div class="relative sm:max-w-sm w-full">
@@ -84,30 +98,10 @@ const onSubmit = handleSubmit(async (values) => {
             </div>
             <!-- Fin: Contraseña -->
 
-            <div class="mt-5 flex">
-              <label class="inline-flex items-center w-full cursor-pointer">
-                <input type="checkbox" class="mt-1" name="remember" />
-                <span class="ml-1 text-sm text-gray-600">Recuérdame</span>
-              </label>
-              <div class="w-full text-right">
-                <a class="underline text-sm text-gray-600 hover:text-gray-900" href="#">
-                  <RouterLink to="/password" class="underline text-sm text-gray-600 hover:text-gray-900">
-                    ¿Olvidó su contraseña?
-                  </RouterLink>
-                </a>
-              </div>
-            </div>
-
-            <div class="mt-4">
+            <div class="mt-4 mb-5">
               <Button type="submit" class="w-full py-3 rounded-md shadow-md ">
                 Iniciar Sesión
               </Button>
-            </div>
-            <div class="text-center w-full mt-3 mb-3">
-              <label class="text-sm">¿No tienes cuenta?</label>
-              <RouterLink to="/register" class="underline text-sm text-gray-600 hover:text-gray-900">
-                Regístrate
-              </RouterLink>
             </div>
           </form>
         </div>

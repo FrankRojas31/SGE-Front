@@ -44,10 +44,10 @@ export const useGroupsStudentStore = defineStore('GroupsStudent', () => {
   }
 
   // Eliminar una relación por ID
-  async function DeleteStoreGroupsStudent(id: number) {
-    const response = await DeleteGroupsStudent(id);
+  async function DeleteStoreGroupsStudent(id: number, idStudents: number[]) {
+    const response = await DeleteGroupsStudent(id, idStudents);
     if (response?.success === true) {
-      await GetStoreGroupsStudent(); // Refrescar la lista
+      await GetStoreGroupsStudent();
     }
     return response;
   }
