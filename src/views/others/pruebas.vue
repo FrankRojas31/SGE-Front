@@ -38,6 +38,8 @@
               <span class="ml-2 text-sm text-gray-600">Seleccionar todos</span>
             </div>
           </div>
+        </template>
+      </Card>
 
           <DataTable :value="paginatedAvailable" :rows="itemsPerPage" class="p-datatable-sm" :rowHover="true"
             v-model:selection="selectedAvailable" dataKey="id">
@@ -118,12 +120,11 @@ import { useGroupsStudentStore } from '@/stores/GroupsStudentStore';
 import type { Groups } from '@/types/Groups';
 import type { IStudent } from '@/types/Students';
 import Button from 'primevue/button';
-import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
+import Select from 'primevue/select';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import Checkbox from 'primevue/checkbox';
-import Paginator from 'primevue/paginator';
+import Card from 'primevue/card';
 import AppLayout from '@/layout/AppLayout.vue';
 
 const route = useRoute();
@@ -189,9 +190,13 @@ const paginatedAvailable = computed(() => {
 });
 
 const paginatedEnrolled = computed(() => {
+  let filtered = enrolledStudents.value;
+  if (searchQuery.value && typeof searchQuery.value !== 'string') {
+    filtered = filtered.filter(student => student.id === searchQuery.value.id);
+  }
   const start = firstEnrolled.value;
   const end = start + itemsPerPage.value;
-  return enrolledStudents.value.slice(start, end);
+  return filtered.slice(start, end);
 });
 
 const toggleSelectAllAvailable = () => {
@@ -269,22 +274,17 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* Ajustes de estilo para mejorar la apariencia */
-.container {
+.sistema-calificaciones {
   max-width: 1400px;
 }
 
-/* Estilo del título */
-h2 {
-  font-family: 'Roboto', sans-serif;
-  font-weight: 700;
-  color: #2D3748;
-}
-
-/* Estilo de los subtítulos */
-h3 {
-  font-family: 'Roboto', sans-serif;
+:deep(.p-datatable .p-datatable-thead > tr > th) {
+  background-color: #f3f4f6 !important;
+  color: #1f2937 !important;
   font-weight: 600;
+  font-size: 0.85rem !important;
+  padding: 0.5rem !important;
+  min-width: 60px !important;
 }
 
 /* Ajustes de las tablas */
@@ -303,7 +303,6 @@ h3 {
   background-color: #F1F5F9 !important;
 }
 
-/* Estilo de los botones */
 .p-button-success {
   background-color: #28A745 !important;
   border-color: #28A745 !important;
@@ -320,10 +319,10 @@ h3 {
   padding: 0.5rem 1.5rem;
 }
 
-/* Estilo de la paginación */
-.p-paginator {
-  background-color: #F8F9FA !important;
-  border: none;
+h2 {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+  color: #2D3748;
 }
 
 .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
