@@ -168,7 +168,7 @@ const router = createRouter({
     {
       path: '/groupSubjects/:id',
       name: 'Grupos Materias',
-      component: () => import("@/views/others/pruebas.vue"),
+      component: () => import("@/views/others/GroupsSubjects.vue"),
     }
   ],
 })

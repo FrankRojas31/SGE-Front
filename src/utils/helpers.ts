@@ -20,17 +20,19 @@ const courseStore = useCoursesStore();
 const usersStore = useUserStore();
 const UnitStore = useUnitsStore();
 
+
 export const GetPersons = async () => {
   return await personStore.GetStorePersons();
 };
 
 export const GetUsers = async () => {
-  return await usersStore.GetStoreUsers();
+  return await usersStore.GetStore();
 }
 
 export const GetPersonsWithOutStudent = async () => {
   return await personStore.GetStorePersonsWithOutStudent();
 }
+
 
 export const GetSchoolYear = async () => {
   return await schoolYearStore.GetStoreSchoolYears();
@@ -55,7 +57,9 @@ export const GetGroups = async () => {
 export const GetGroup = async (id: number) => {
   return await groupStore.GetStoreGroup(id);
 }
-
+export const GetSubjectsForId = async (id: number) => {
+  return await groupStore.GetStoreGroup(id);
+}
 export const GetTeachers = async () => {
   return await teachersStore.GetStoreTeachers();
 };
