@@ -20,108 +20,10 @@ const openDeleteModal = ref(false)
 const modalItem = ref<IUser>({} as IUser)
 const idItem = ref<string>('')
 
-const HandleEdit = async (id: string) => {
-  try {
-    await usersStore.fetchUserById(id)
-    if (usersStore.selectedUser) {
-      openEditModal.value = true
-      modalItem.value = { ...usersStore.selectedUser }
-    } else {
-      toast.add({
-        severity: 'error',
-        summary: 'No se encontró al usuario',
-        detail: 'Verifica su existencia',
-        life: 2000,
-      })
-    }
-  } catch (error) {
-    console.error('Error al obtener usuario:', error)
-  }
-}
-
-const EditConfirm = async (user: IUser) => {
-  try {
-    await usersStore.updateUser(user)
-    openEditModal.value = false
-    toast.add({
-      severity: 'success',
-      summary: '¡Actualizado Correctamente!',
-      detail: 'Se ha actualizado el usuario',
-      life: 2000,
-    })
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: '¡Ocurrió un error!',
-      detail: 'No se pudo actualizar el usuario',
-      life: 2000,
-    })
-  }
-}
-
-const CreateConfirm = async (user: IUser) => {
-  try {
-    await usersStore.addUser(user)
-    openCreateModal.value = false
-    toast.add({
-      severity: 'success',
-      summary: '¡Creado Correctamente!',
-      detail: 'Se ha creado el usuario',
-      life: 2000,
-    })
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: '¡Ocurrió un error!',
-      detail: 'No se pudo crear el usuario',
-      life: 2000,
-    })
-  }
-}
-
-const HandleDelete = async (id: string) => {
-  try {
-    await usersStore.fetchUserById(id)
-    if (usersStore.selectedUser) {
-      openDeleteModal.value = true
-      idItem.value = id
-    } else {
-      toast.add({
-        severity: 'error',
-        summary: 'No se encontró al usuario',
-        detail: 'Verifica su existencia',
-        life: 2000,
-      })
-    }
-  } catch (error) {
-    console.error('Error al obtener usuario:', error)
-  }
-}
-
-const DeleteConfirm = async (id: string) => {
-  try {
-    await usersStore.removeUser(id)
-    openDeleteModal.value = false
-    toast.add({
-      severity: 'success',
-      summary: '¡Eliminado Correctamente!',
-      detail: 'Se ha eliminado el usuario',
-      life: 2000,
-    })
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: '¡Ocurrió un error!',
-      detail: 'No se pudo eliminar el usuario',
-      life: 2000,
-    })
-  }
-}
-
 onMounted(async () => {
   loading.value = true
   try {
-    await usersStore.fetchUsers()
+    await usersStore.GetUsersStore();
   } catch (error) {
     console.error('Error al cargar los datos:', error)
   } finally {
@@ -133,7 +35,7 @@ onMounted(async () => {
 <template>
   <AppLayout>
     <Toast />
-    <GeneralTable :loading="loading" title="Usuarios" :data="usersStore.users" :columns="columnsUser" @edit="HandleEdit"
+    <GeneralTable :loading="loading" title="Usuarios" :data="usersStore.usersList" :columns="columnsUser" @edit="HandleEdit"
       @delete="HandleDelete" @create="openCreateModal = true" />
 
     <CreateModal :showModal="openCreateModal" @close="openCreateModal = false" @create="CreateConfirm" />

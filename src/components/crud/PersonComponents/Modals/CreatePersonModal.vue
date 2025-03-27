@@ -19,6 +19,7 @@ const modalItem = ref<IPerson>({} as IPerson);
 
 const HandleCreate = () => {
   emit('create', modalItem.value);
+  modalItem.value = {} as IPerson;
 }
 
 const HandleCancel = () => {
