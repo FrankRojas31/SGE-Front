@@ -102,6 +102,10 @@ const HandleButtonSubject = (id: number) => {
   router.push(`/groupSubjects/${id}`)
 }
 
+const HandleButtonCalifications = (id: number) => {
+  router.push(`/groupCalifications/${id}`)
+}
+
 const HandlePeriodActive = async () => {
   const response = await GetPeriodActive();
   console.log(response);
@@ -126,6 +130,8 @@ const HandlePeriodActive = async () => {
           class="mr-2" @click="HandleButtonSubject(data.id)" />
         <Button v-tooltip="'Agregar Alumnos'" icon="pi pi-users" severity="success" variant="outlined" raised rounded
           class="mr-2" @click="HandleButtonStudents(data.id)" />
+          <Button v-tooltip="'Agregar Calificaciones'" icon="pi pi-users" severity="success" variant="outlined" raised rounded
+          class="mr-2" @click="HandleButtonCalifications(data.id)" />
       </template>
     </GeneralTable>
 

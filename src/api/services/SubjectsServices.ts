@@ -1,7 +1,13 @@
 import type { ISubject } from '@/types/Subject';
+import type { Units } from '@/types/Unit';
 import { GenericRequest } from "../GenericRequest";
 
 const urlBase = "Materias";
+
+// GET: 'GET /Materias/GetUnidadesDeMateria/'
+export async function GetUnitsForSubject(id: number) {
+  return await GenericRequest<Units[]>({ url: `${urlBase}/GetUnidadesDeMateria/${id}`, method: "GET" });
+}
 
 // GET: '/Materias'
 export async function GetSubjects(){

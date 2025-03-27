@@ -1,419 +1,238 @@
 <template>
-  <AppLayout>
-    <div class="container mx-auto p-6">
-      <!-- Encabezado -->
-      <div class="flex justify-between items-center mb-6">
-        <div class="flex items-center">
-          <Button
-            icon="pi pi-arrow-left"
-            class="p-button-text p-button-rounded p-button-lg mr-3"
-            @click="goBack"
-          />
-          <div>
-            <h2 class="text-3xl font-bold text-gray-800">
-              {{ group?.nombre || 'Cargando...' }} - Informática
-            </h2>
-            <p class="text-sm text-gray-600 mt-1">
-              {{ enrolledStudents.length }} de {{ availableStudents.length + enrolledStudents.length }} alumnos inscritos
-            </p>
-          </div>
-        </div>
-        <div class="flex items-center space-x-3">
-          <InputText
-            v-model="searchQuery"
-            placeholder="Buscar alumno..."
-            class="p-inputtext-sm"
-            style="width: 220px"
-          />
-          <Dropdown
-            v-model="itemsPerPage"
-            :options="[10, 20, 30]"
-            placeholder="Mostrar"
-            class="p-dropdown-sm"
-            style="width: 120px"
-          />
-        </div>
-      </div>
-
-      <!-- Contenido principal -->
-      <div v-if="loading">Cargando...</div>
-      <div v-else-if="!group">Grupo no encontrado</div>
-      <div v-else class="grid grid-cols-2 gap-6">
-        <!-- Alumnos Disponibles -->
-        <div class="bg-white shadow-lg rounded-lg p-6">
-          <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-semibold text-gray-800">
-              Alumnos Disponibles
-              <span class="text-gray-500 text-sm">({{ availableStudents.length }})</span>
-            </h3>
-            <div class="flex items-center">
-              <Checkbox
-                v-model="selectAllAvailable"
-                :binary="true"
-                @change="toggleSelectAllAvailable"
-              />
-              <span class="ml-2 text-sm text-gray-600">Seleccionar todos</span>
-            </div>
-          </div>
-
-          <DataTable
-            :value="paginatedAvailable"
-            :rows="itemsPerPage"
-            class="p-datatable-sm"
-            :rowHover="true"
-            v-model:selection="selectedAvailable"
-            dataKey="id"
-          >
-            <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
-            <Column field="nombreCompleto" header="Nombre">
-              <template #body="{ data }">
-                <div>
-                  <p class="font-medium text-gray-800">{{ data.nombreCompleto }}</p>
-                  <p class="text-sm text-gray-500">{{ data.email }}</p>
-                </div>
-              </template>
-            </Column>
-            <Column field="matricula" header="Matrícula" headerStyle="width: 8rem">
-              <template #body="{ data }">
-                <span class="text-gray-700">{{ data.matricula }}</span>
-              </template>
-            </Column>
-          </DataTable>
-
-          <!-- Paginación -->
-          <Paginator
-            v-model:first="firstAvailable"
-            :rows="itemsPerPage"
-            :totalRecords="availableStudents.length"
-            template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
-            class="mt-4"
-          />
-        </div>
-
-        <!-- Alumnos Inscritos -->
-        <div class="bg-white shadow-lg rounded-lg p-6">
-          <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-semibold text-gray-800">
-              Alumnos Inscritos
-              <span class="text-gray-500 text-sm">({{ enrolledStudents.length }})</span>
-            </h3>
-            <div class="flex items-center">
-              <Checkbox
-                v-model="selectAllEnrolled"
-                :binary="true"
-                @change="toggleSelectAllEnrolled"
-              />
-              <span class="ml-2 text-sm text-gray-600">Seleccionar todos</span>
-            </div>
-          </div>
-
-          <DataTable
-            :value="paginatedEnrolled"
-            :rows="itemsPerPage"
-            class="p-datatable-sm"
-            :rowHover="true"
-            v-model:selection="selectedEnrolled"
-            dataKey="id"
-          >
-            <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
-            <Column field="nombreCompleto" header="Nombre">
-              <template #body="{ data }">
-                <div>
-                  <p class="font-medium text-gray-800">{{ data.nombreCompleto }}</p>
-                  <p class="text-sm text-gray-500">{{ data.email }}</p>
-                </div>
-              </template>
-            </Column>
-            <Column field="matricula" header="Matrícula" headerStyle="width: 8rem">
-              <template #body="{ data }">
-                <span class="text-gray-700">{{ data.matricula }}</span>
-              </template>
-            </Column>
-          </DataTable>
-
-          <!-- Paginación -->
-          <Paginator
-            v-model:first="firstEnrolled"
-            :rows="itemsPerPage"
-            :totalRecords="enrolledStudents.length"
-            template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
-            class="mt-4"
-          />
-        </div>
-      </div>
-
-      <!-- Botones de acción -->
-      <div class="flex justify-between mt-6">
-        <Button
-          label="Añadir al grupo"
-          icon="pi pi-plus"
-          class="p-button-raised p-button-success text-sm"
-          @click="addToGroup"
-          :disabled="!selectedAvailable.length"
-        />
-        <Button
-          label="Quitar del grupo"
-          icon="pi pi-minus"
-          class="p-button-raised p-button-danger text-sm"
-          @click="removeFromGroup"
-          :disabled="!selectedEnrolled.length"
-        />
+  <div class="sistema-calificaciones">
+    <!-- Cabecera con filtros -->
+    <div class="flex flex-column md:flex-row justify-content-between gap-3 mb-4">
+      <div class="flex flex-column sm:flex-row gap-2 align-items-center">
+        <Dropdown v-model="grupoSeleccionado" :options="grupos" optionLabel="nombre" optionValue="id" placeholder="Seleccionar grupo" class="w-full sm:w-14rem" />
+        <Dropdown v-model="materiaSeleccionada" :options="materiasFiltradas" optionLabel="nombre" optionValue="id" placeholder="Todas las materias" class="w-full sm:w-14rem" />
+        <Select v-model="alumnoSeleccionado" :options="alumnosFiltrados" showClear optionLabel="nombre" placeholder="Buscar alumno..." class="w-full sm:w-14rem" />
       </div>
     </div>
-  </AppLayout>
+
+    <!-- Tabla de calificaciones -->
+    <Card class="p-0">
+      <template #content>
+        <div class="overflow-x-auto">
+          <DataTable :value="alumnosFiltrados" stripedRows class="p-datatable-sm">
+            <Column field="nombre" header="ALUMNO" frozen class="font-bold min-w-12rem" />
+            <template v-for="materia in materiasFiltradas" :key="materia.id">
+              <template v-if="!materiaSeleccionada || materia.id === materiaSeleccionada">
+                <template v-for="unidad in unidadesPorMateria(materia.id)" :key="unidad.id">
+                  <Column :header="unidad.nombre" class="text-center p-2 border-left-1 border-gray-200">
+                    <template #body="{ data }">
+                      <div class="calificacion-celda relative" :class="getCalificacionClass(obtenerCalificacion(data.id, materia.id, unidad.id))">
+                        <span class="block w-full h-full py-1 px-2">
+                          {{ obtenerCalificacion(data.id, materia.id, unidad.id) === '-' ? '-' : obtenerCalificacion(data.id, materia.id, unidad.id) }}
+                        </span>
+                        <!-- Menú que aparece al pasar el cursor o al hacer focus -->
+                        <div class="calificacion-menu absolute top-0 left-0 w-full h-full flex align-items-center justify-content-center bg-white bg-opacity-90" tabindex="0" @click.stop>
+                          <div v-if="obtenerCalificacion(data.id, materia.id, unidad.id) !== '-'" class="flex gap-1 p-1">
+                            <button class="text-blue-500 hover:text-blue-700" aria-label="Editar calificación"><i class="pi pi-file-edit text-sm"></i></button>
+                            <button class="text-gray-500 hover:text-gray-700" aria-label="Agregar calificación"><i class="pi pi-file-plus text-sm"></i></button>
+                            <button class="text-gray-500 hover:text-gray-700" aria-label="Guardar cambios"><i class="pi pi-save text-sm"></i></button>
+                            <button class="text-gray-500 hover:text-gray-700" aria-label="Cerrar menú"><i class="pi pi-times text-sm"></i></button>
+                          </div>
+                          <div v-else class="flex gap-1 p-1">
+                            <button class="text-gray-500 hover:text-gray-700" aria-label="Agregar calificación"><i class="pi pi-file-edit text-sm"></i></button>
+                          </div>
+                        </div>
+                      </div>
+                    </template>
+                  </Column>
+                </template>
+                <Column header="Prom." class="text-center p-2 border-left-1 border-gray-200">
+                  <template #body="{ data }">
+                    <div :class="getCalificacionClass(calcularPromedioMateria(data.id, materia.id))" class="font-medium px-2 py-1 border-round">
+                      {{ calcularPromedioMateria(data.id, materia.id) }}
+                    </div>
+                  </template>
+                </Column>
+              </template>
+            </template>
+            <Column header="PROMEDIO GENERAL" class="text-center p-2 border-left-1 border-gray-200">
+              <template #body="{ data }">
+                <div :class="getCalificacionClass(calcularPromedioGeneral(data.id))" class="font-medium px-2 py-1 border-round">
+                  {{ calcularPromedioGeneral(data.id) }}
+                </div>
+              </template>
+            </Column>
+          </DataTable>
+        </div>
+      </template>
+    </Card>
+
+    <div class="text-sm text-gray-500 text-center mt-3">
+      Total: {{ alumnosFiltrados.length }} alumnos | Última actualización: 26/03/2025
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { GetGroup } from '@/utils/helpers';
-import { useGroupsStudentStore } from '@/stores/GroupsStudentStore';
-import type { Groups } from '@/types/Groups';
-import type { IStudent } from '@/types/Students';
-import Button from 'primevue/button';
-import InputText from 'primevue/inputtext';
+import { ref, computed } from 'vue';
 import Dropdown from 'primevue/dropdown';
+import Select from 'primevue/select';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import Checkbox from 'primevue/checkbox';
-import Paginator from 'primevue/paginator';
-import AppLayout from '@/layout/AppLayout.vue';
+import Card from 'primevue/card';
 
-const route = useRoute();
-const router = useRouter();
-const group = ref<Groups | null>(null);
-const loading = ref(true);
-const availableStudentsList = ref<IStudent[]>([]);
-const enrolledStudentsList = ref<IStudent[]>([]);
-const selectedAvailable = ref<IStudent[]>([]); // Cambiado a IStudent[] para PrimeVue DataTable
-const selectedEnrolled = ref<IStudent[]>([]); // Cambiado a IStudent[] para PrimeVue DataTable
-const selectAllAvailable = ref(false);
-const selectAllEnrolled = ref(false);
-const searchQuery = ref<string>(''); // Para búsqueda (no implementada aún)
-const itemsPerPage = ref<number>(10);
-const firstAvailable = ref<number>(0);
-const firstEnrolled = ref<number>(0);
+// Datos
+const grupos = ref([
+  { id: 1, nombre: "1° A - Primaria" },
+  { id: 2, nombre: "2° B - Primaria" },
+  { id: 3, nombre: "3° A - Secundaria" },
+]);
+const materias = ref([
+  { id: 1, nombre: "Matemáticas", grupoId: 1 },
+  { id: 2, nombre: "Español", grupoId: 1 },
+  { id: 3, nombre: "Ciencias Naturales", grupoId: 1 },
+  { id: 4, nombre: "Matemáticas", grupoId: 2 },
+  { id: 5, nombre: "Historia", grupoId: 2 },
+  { id: 6, nombre: "Física", grupoId: 3 },
+  { id: 7, nombre: "Química", grupoId: 3 },
+]);
+const unidades = ref([
+  { id: 1, nombre: "Unidad 1", materiaId: 1 },
+  { id: 2, nombre: "Unidad 2", materiaId: 1 },
+  { id: 3, nombre: "Unidad 3", materiaId: 1 },
+  { id: 4, nombre: "Unidad 1", materiaId: 2 },
+  { id: 5, nombre: "Unidad 2", materiaId: 2 },
+  { id: 6, nombre: "Unidad 1", materiaId: 3 },
+  { id: 7, nombre: "Unidad 1", materiaId: 4 },
+]);
+const alumnos = ref([
+  { id: 1, nombre: "Ana García", grupoId: 1 },
+  { id: 2, nombre: "Carlos Pérez", grupoId: 1 },
+  { id: 3, nombre: "María Rodríguez", grupoId: 1 },
+  { id: 4, nombre: "Juan López", grupoId: 1 },
+  { id: 5, nombre: "Sofía Martínez", grupoId: 1 },
+  { id: 6, nombre: "Pedro Sánchez", grupoId: 2 },
+  { id: 7, nombre: "Laura Torres", grupoId: 2 },
+  { id: 8, nombre: "Miguel Ramírez", grupoId: 3 },
+]);
+const calificaciones = ref([
+  { id: 1, alumnoId: 1, materiaId: 1, unidadId: 1, calificacion: 8.5 },
+  { id: 2, alumnoId: 1, materiaId: 1, unidadId: 2, calificacion: 9.0 },
+  { id: 3, alumnoId: 1, materiaId: 2, unidadId: 4, calificacion: 7.8 },
+  { id: 4, alumnoId: 2, materiaId: 1, unidadId: 1, calificacion: 7.5 },
+  { id: 5, alumnoId: 2, materiaId: 1, unidadId: 2, calificacion: 8.0 },
+  { id: 6, alumnoId: 2, materiaId: 2, unidadId: 4, calificacion: 8.2 },
+  { id: 7, alumnoId: 3, materiaId: 1, unidadId: 1, calificacion: 9.5 },
+  { id: 8, alumnoId: 3, materiaId: 1, unidadId: 2, calificacion: 9.0 },
+  { id: 9, alumnoId: 3, materiaId: 2, unidadId: 4, calificacion: 9.3 },
+  { id: 10, alumnoId: 4, materiaId: 1, unidadId: 1, calificacion: 6.5 },
+  { id: 11, alumnoId: 4, materiaId: 1, unidadId: 2, calificacion: 7.0 },
+  { id: 12, alumnoId: 4, materiaId: 2, unidadId: 4, calificacion: 7.2 },
+  { id: 13, alumnoId: 5, materiaId: 1, unidadId: 1, calificacion: 8.0 },
+  { id: 14, alumnoId: 5, materiaId: 1, unidadId: 2, calificacion: 8.5 },
+  { id: 15, alumnoId: 5, materiaId: 2, unidadId: 4, calificacion: 8.7 },
+  { id: 16, alumnoId: 6, materiaId: 4, unidadId: 7, calificacion: 7.8 },
+  { id: 17, alumnoId: 7, materiaId: 4, unidadId: 7, calificacion: 8.9 },
+  { id: 18, alumnoId: 8, materiaId: 6, unidadId: 1, calificacion: 9.2 },
+]);
 
-const groupsStudentStore = useGroupsStudentStore();
+// Estados
+const grupoSeleccionado = ref(1);
+const materiaSeleccionada = ref(null);
+const alumnoSeleccionado = ref(null);
 
-// Obtener datos del grupo
-const fetchGroup = async (id: number) => {
-  try {
-    const response = await GetGroup(id);
-    group.value = response?.success ? response.data : null;
-  } catch (error) {
-    console.error('Error al cargar el grupo:', error);
-    group.value = null;
+// Computed
+const materiasFiltradas = computed(() => materias.value.filter(m => m.grupoId === grupoSeleccionado.value));
+const alumnosFiltrados = computed(() => {
+  const filtered = alumnos.value.filter(a => a.grupoId === grupoSeleccionado.value);
+  if (alumnoSeleccionado.value) {
+    return filtered.filter(a => a.id === alumnoSeleccionado.value.id);
   }
-};
-
-// Obtener alumnos sin grupo y alumnos del grupo
-const fetchStudents = async (groupId: number) => {
-  try {
-    const sinGrupoResponse = await groupsStudentStore.GetStoreGroupsStudentsWhithoutGroup();
-    console.log('Sin grupo:', sinGrupoResponse);
-    availableStudentsList.value = sinGrupoResponse?.success ? sinGrupoResponse.data : [];
-
-    const conGrupoResponse = await groupsStudentStore.GetStoreGroupsStudentsWhithGroup(groupId);
-    console.log('Con grupo:', conGrupoResponse);
-    enrolledStudentsList.value = conGrupoResponse?.success ? conGrupoResponse.data : [];
-  } catch (error) {
-    console.error('Error al cargar los datos:', error);
-    availableStudentsList.value = [];
-    enrolledStudentsList.value = [];
-  } finally {
-    loading.value = false;
-  }
-};
-
-// Alumnos disponibles (con email generado)
-const availableStudents = computed(() => {
-  return availableStudentsList.value.map((student) => ({
-    ...student,
-    email: `${student.nombreCompleto.toLowerCase().replace(/\s/g, '.')}@ejemplo.com`,
-  }));
+  return filtered;
 });
 
-// Alumnos inscritos (con email generado)
-const enrolledStudents = computed(() => {
-  return enrolledStudentsList.value.map((student) => ({
-    ...student,
-    email: `${student.nombreCompleto.toLowerCase().replace(/\s/g, '.')}@ejemplo.com`,
-  }));
-});
+// Métodos
+const unidadesPorMateria = (materiaId: number) => unidades.value.filter(u => u.materiaId === materiaId);
 
-// Paginación para alumnos disponibles
-const paginatedAvailable = computed(() => {
-  const start = firstAvailable.value;
-  const end = start + itemsPerPage.value;
-  return availableStudents.value.slice(start, end);
-});
-
-// Paginación para alumnos inscritos
-const paginatedEnrolled = computed(() => {
-  const start = firstEnrolled.value;
-  const end = start + itemsPerPage.value;
-  return enrolledStudents.value.slice(start, end);
-});
-
-// Seleccionar todos los disponibles
-const toggleSelectAllAvailable = () => {
-  if (selectAllAvailable.value) {
-    selectedAvailable.value = [...paginatedAvailable.value];
-  } else {
-    selectedAvailable.value = [];
-  }
+const obtenerCalificacion = (alumnoId: number, materiaId: number, unidadId: number) => {
+  const c = calificaciones.value.find(c => c.alumnoId === alumnoId && c.materiaId === materiaId && c.unidadId === unidadId);
+  return c ? c.calificacion : '-';
 };
 
-// Seleccionar todos los inscritos
-const toggleSelectAllEnrolled = () => {
-  if (selectAllEnrolled.value) {
-    selectedEnrolled.value = [...paginatedEnrolled.value];
-  } else {
-    selectedEnrolled.value = [];
-  }
+const calcularPromedioMateria = (alumnoId: number, materiaId: number) => {
+  const cs = calificaciones.value.filter(c => c.alumnoId === alumnoId && c.materiaId === materiaId);
+  return cs.length ? (cs.reduce((acc: number, c: any) => acc + c.calificacion, 0) / cs.length).toFixed(1) : '-';
 };
 
-// Añadir alumnos al grupo
-const addToGroup = async () => {
-  try {
-    const groupId = Number(route.params.id);
-    const selectedIds = selectedAvailable.value.map((student) => student.id);
-
-    if (!selectedIds.length) {
-      console.warn('No hay alumnos seleccionados');
-      return;
-    }
-
-    console.log('Request que se enviará:', {
-      url: `/api/GruposAlumnos/PostAlumnosaGrupo/${groupId}`,
-      method: 'POST',
-      body: selectedIds,
-    });
-
-    const response = await groupsStudentStore.PostStoreAlumnosaGrupo(groupId, selectedIds);
-    console.log('Respuesta del servidor:', response || 'No se recibió respuesta');
-
-    if (response?.success) {
-      await fetchStudents(groupId);
-      selectedAvailable.value = [];
-      selectAllAvailable.value = false;
-    } else {
-      console.error('Error al añadir alumnos:', response?.message);
-    }
-  } catch (error) {
-    console.error('Error al añadir alumnos:', error);
-  }
+const calcularPromedioGeneral = (alumnoId: number) => {
+  const cs = calificaciones.value.filter(c => c.alumnoId === alumnoId);
+  return cs.length ? (cs.reduce((acc: number, c: any) => acc + c.calificacion, 0) / cs.length).toFixed(1) : '-';
 };
 
-// Quitar alumnos del grupo
-const removeFromGroup = async () => {
-  try {
-    const groupId = Number(route.params.id);
-    const selectedIds = selectedEnrolled.value.map((student) => student.id);
-
-    if (!selectedIds.length) {
-      console.warn('No hay alumnos seleccionados para quitar');
-      return;
-    }
-
-    for (const studentId of selectedIds) {
-      const groupStudent = enrolledStudentsList.value.find((gs) => gs.id === studentId);
-      if (groupStudent) {
-        await groupsStudentStore.DeleteStoreGroupsStudent(groupStudent.id);
-      }
-    }
-    await fetchStudents(groupId);
-    selectedEnrolled.value = [];
-    selectAllEnrolled.value = false;
-  } catch (error) {
-    console.error('Error al quitar alumnos:', error);
-  }
+const getCalificacionClass = (calificacion: any) => {
+  if (calificacion === '-') return '';
+  const cal = typeof calificacion === 'string' ? parseFloat(calificacion) : calificacion;
+  if (cal >= 9) return 'bg-green-50 text-green-700';
+  if (cal >= 7) return 'bg-blue-50 text-blue-700';
+  if (cal >= 6) return 'bg-yellow-50 text-yellow-700';
+  return 'bg-red-50 text-red-700';
 };
-
-// Volver atrás
-const goBack = () => {
-  router.push('/groups');
-};
-
-// Cargar datos al montar
-onMounted(async () => {
-  const groupId = Number(route.params.id);
-  await Promise.all([fetchGroup(groupId), fetchStudents(groupId)]);
-});
 </script>
 
-<style scoped>
-/* Ajustes de estilo para mejorar la apariencia */
-.container {
-  max-width: 1400px;
-}
-
-/* Estilo del título */
-h2 {
-  font-family: 'Roboto', sans-serif;
-  font-weight: 700;
-  color: #2D3748;
-}
-
-/* Estilo de los subtítulos */
-h3 {
-  font-family: 'Roboto', sans-serif;
+<style>
+:deep(.p-datatable .p-datatable-thead > tr > th) {
+  background-color: #f3f4f6 !important;
+  color: #1f2937 !important;
   font-weight: 600;
+  font-size: 0.85rem !important;
+  padding: 0.5rem !important;
+  min-width: 60px !important;
 }
-
-/* Ajustes de las tablas */
-.p-datatable .p-datatable-thead > tr > th {
-  background-color: #D4EFDF !important;
-  color: #2D3748;
-  font-weight: 600;
-  font-family: 'Roboto', sans-serif;
+:deep(.p-datatable .p-datatable-tbody > tr) {
+  background-color: #ffffff !important;
 }
-
-.p-datatable .p-datatable-tbody > tr {
-  transition: background-color 0.2s;
+:deep(.p-datatable .p-datatable-tbody > tr:nth-child(even)) {
+  background-color: #f9fafb !important;
 }
-
-.p-datatable .p-datatable-tbody > tr:hover {
-  background-color: #F1F5F9 !important;
+:deep(.p-datatable .p-datatable-tbody > tr > td) {
+  color: #374151 !important;
+  padding: 0 !important;
+  font-size: 0.85rem !important;
+  min-width: 60px !important;
+  min-height: 32px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
-
-/* Estilo de los botones */
-.p-button-success {
-  background-color: #28A745 !important;
-  border-color: #28A745 !important;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 500;
-  padding: 0.5rem 1.5rem;
+:deep(.p-dropdown) {
+  border-color: #d1d5db !important;
+  font-size: 0.85rem !important;
 }
-
-.p-button-danger {
-  background-color: #DC3545 !important;
-  border-color: #DC3545 !important;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 500;
-  padding: 0.5rem 1.5rem;
+:deep(.p-dropdown .p-dropdown-label) {
+  color: #374151 !important;
+  padding: 0.25rem 0.5rem !important;
 }
-
-/* Estilo de la paginación */
-.p-paginator {
-  background-color: #F8F9FA !important;
-  border: none;
+:deep(.p-select) {
+  border-color: #d1d5db !important;
+  font-size: 0.85rem !important;
 }
-
-.p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
-  background-color: #28A745 !important;
-  color: white !important;
-  border-radius: 50%;
+:deep(.p-select .p-select-label) {
+  color: #374151 !important;
+  padding: 0.25rem 0.5rem !important;
 }
-
-/* Ajustes de espaciado y sombras */
-.shadow-lg {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+.calificacion-celda {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
-
-/* Ajustes de tipografía general */
-p, span {
-  font-family: 'Roboto', sans-serif;
+.calificacion-celda:hover .calificacion-menu,
+.calificacion-celda:focus-within .calificacion-menu {
+  display: flex;
+  opacity: 1;
+}
+.calificacion-menu {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
 }
 </style>
