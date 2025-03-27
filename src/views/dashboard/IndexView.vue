@@ -5,6 +5,10 @@ import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, Li
 import CardsDashboard from '@/components/crud/dashboard/CardsDashboard.vue';
 import AppLayout from '@/layout/AppLayout.vue';
 import { useStudentStore } from '@/stores/StudentStore';
+import { useGroupsStore } from '@/stores/GroupsStore';
+import { useSubjectStore } from '@/stores/SubjectStore';
+import { usePeriodsStore } from '@/stores/PeriodsStore';
+import { usePersonStore } from '@/stores/PersonStore';
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 
@@ -17,18 +21,30 @@ interface ICardsDashboard {
 }
 
 const studentStore = useStudentStore();
+const groupsStore = useGroupsStore();
+const subjectsStore = useSubjectStore();
+const personsStore = usePersonStore();
 const studentCount = ref<string>('');
+const groupsCount = ref<string>('');
+const subjectsCount = ref<string>('');
+const personsCount = ref<string>('');
 
 onMounted(async () => {
   await studentStore.GetStoreStudents();
+  await groupsStore.GetStoreGroups();
+  await subjectsStore.GetStoreSubjects();
+  await personsStore.GetStorePersons();
   studentCount.value = studentStore.studentsList.length.toString();
+  groupsCount.value = groupsStore.groupsList.length.toString();
+  subjectsCount.value = subjectsStore.subjectsList.length.toString();
+  personsCount.value = personsStore.personsList.length.toString();
 });
 
 const Cards = computed<ICardsDashboard[]>(() => [
-  { title: 'Estudiantes', value: studentCount.value, icon: 'pi-users', iconColor: 'text-white', bgColor: 'bg-slate-500' },
-  { title: 'Profesores', value: studentCount.value, icon: 'pi-book', iconColor: 'text-white', bgColor: 'bg-slate-500' },
-  { title: 'Altas Alumnos', value: studentCount.value, icon: 'pi-angle-double-up', iconColor: 'text-white', bgColor: 'bg-[#10b981]' },
-  { title: 'Bajas Alumnos', value: studentCount.value, icon: 'pi-angle-double-down', iconColor: 'text-white', bgColor: 'bg-red-400' }
+  { title: 'Estudiantes Totales', value: studentCount.value, icon: 'pi-user', iconColor: 'text-white', bgColor: 'bg-emerald-600' },
+  { title: 'Grupos Totales', value: groupsCount.value, icon: 'pi-users', iconColor: 'text-white', bgColor: 'bg-emerald-600' },
+  { title: 'Personas Totales', value: personsCount.value, icon: 'pi-id-card', iconColor: 'text-white', bgColor: 'bg-emerald-600' },
+  { title: 'Materias Totales', value: subjectsCount.value, icon: 'pi-book', iconColor: 'text-white', bgColor: 'bg-emerald-600' },
 ]);
 
 const tableData = ref([

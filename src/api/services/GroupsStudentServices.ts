@@ -43,9 +43,10 @@ export async function PutGroupStudent(groupStudent: IGroupsStudent) {
 }
 
 // DELETE: '/GruposAlumnos/{id}'
-export async function DeleteGroupsStudent(id: number) {
-  return await GenericRequest<IGroupsStudent>({ url: `${urlBase}/${id}`, method: "DELETE" });
+export async function DeleteGroupsStudent(id: number, IdStudents: number[]) {
+  return await GenericRequest<IGroupsStudent>({ url: `${urlBase}/DeleteAlumnosEnGrupo/${id}`, method: "DELETE", data: IdStudents });
 }
+
 // GET: '/GruposAlumnos/GetAlumnoSinGrupo'
 export async function GetAlumnoSinGrupo() {
   return await GenericRequest<IGroupsStudent[]>({ url: `${urlBase}/GetAlumnosSinGrupo`, method: "GET" });

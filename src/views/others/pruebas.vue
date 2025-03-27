@@ -4,34 +4,21 @@
       <!-- Encabezado -->
       <div class="flex justify-between items-center mb-6">
         <div class="flex items-center">
-          <Button
-            icon="pi pi-arrow-left"
-            class="p-button-text p-button-rounded p-button-lg mr-3"
-            @click="goBack"
-          />
+          <Button icon="pi pi-arrow-left" class="p-button-text p-button-rounded p-button-lg mr-3" @click="goBack" />
           <div>
             <h2 class="text-3xl font-bold text-gray-800">
               {{ group?.nombre || 'Cargando...' }} - Informática
             </h2>
             <p class="text-sm text-gray-600 mt-1">
-              {{ enrolledStudents.length }} de {{ availableStudents.length + enrolledStudents.length }} alumnos inscritos
+              {{ enrolledStudents.length }} de {{ availableStudents.length + enrolledStudents.length }} alumnos
+              inscritos
             </p>
           </div>
         </div>
         <div class="flex items-center space-x-3">
-          <InputText
-            v-model="searchQuery"
-            placeholder="Buscar alumno..."
-            class="p-inputtext-sm"
-            style="width: 220px"
-          />
-          <Dropdown
-            v-model="itemsPerPage"
-            :options="[10, 20, 30]"
-            placeholder="Mostrar"
-            class="p-dropdown-sm"
-            style="width: 120px"
-          />
+          <InputText v-model="searchQuery" placeholder="Buscar alumno..." class="p-inputtext-sm" style="width: 220px" />
+          <Dropdown v-model="itemsPerPage" :options="[10, 20, 30]" placeholder="Mostrar" class="p-dropdown-sm"
+            style="width: 120px" />
         </div>
       </div>
 
@@ -47,23 +34,13 @@
               <span class="text-gray-500 text-sm">({{ availableStudents.length }})</span>
             </h3>
             <div class="flex items-center">
-              <Checkbox
-                v-model="selectAllAvailable"
-                :binary="true"
-                @change="toggleSelectAllAvailable"
-              />
+              <Checkbox v-model="selectAllAvailable" :binary="true" @change="toggleSelectAllAvailable" />
               <span class="ml-2 text-sm text-gray-600">Seleccionar todos</span>
             </div>
           </div>
 
-          <DataTable
-            :value="paginatedAvailable"
-            :rows="itemsPerPage"
-            class="p-datatable-sm"
-            :rowHover="true"
-            v-model:selection="selectedAvailable"
-            dataKey="id"
-          >
+          <DataTable :value="paginatedAvailable" :rows="itemsPerPage" class="p-datatable-sm" :rowHover="true"
+            v-model:selection="selectedAvailable" dataKey="id">
             <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
             <Column field="nombreCompleto" header="Nombre">
               <template #body="{ data }">
@@ -81,13 +58,8 @@
           </DataTable>
 
           <!-- Paginación -->
-          <Paginator
-            v-model:first="firstAvailable"
-            :rows="itemsPerPage"
-            :totalRecords="availableStudents.length"
-            template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
-            class="mt-4"
-          />
+          <Paginator v-model:first="firstAvailable" :rows="itemsPerPage" :totalRecords="availableStudents.length"
+            template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink" class="mt-4" />
         </div>
 
         <!-- Alumnos Inscritos -->
@@ -98,23 +70,13 @@
               <span class="text-gray-500 text-sm">({{ enrolledStudents.length }})</span>
             </h3>
             <div class="flex items-center">
-              <Checkbox
-                v-model="selectAllEnrolled"
-                :binary="true"
-                @change="toggleSelectAllEnrolled"
-              />
+              <Checkbox v-model="selectAllEnrolled" :binary="true" @change="toggleSelectAllEnrolled" />
               <span class="ml-2 text-sm text-gray-600">Seleccionar todos</span>
             </div>
           </div>
 
-          <DataTable
-            :value="paginatedEnrolled"
-            :rows="itemsPerPage"
-            class="p-datatable-sm"
-            :rowHover="true"
-            v-model:selection="selectedEnrolled"
-            dataKey="id"
-          >
+          <DataTable :value="paginatedEnrolled" :rows="itemsPerPage" class="p-datatable-sm" :rowHover="true"
+            v-model:selection="selectedEnrolled" dataKey="id">
             <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
             <Column field="nombreCompleto" header="Nombre">
               <template #body="{ data }">
@@ -132,32 +94,17 @@
           </DataTable>
 
           <!-- Paginación -->
-          <Paginator
-            v-model:first="firstEnrolled"
-            :rows="itemsPerPage"
-            :totalRecords="enrolledStudents.length"
-            template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
-            class="mt-4"
-          />
+          <Paginator v-model:first="firstEnrolled" :rows="itemsPerPage" :totalRecords="enrolledStudents.length"
+            template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink" class="mt-4" />
         </div>
       </div>
 
       <!-- Botones de acción -->
       <div class="flex justify-between mt-6">
-        <Button
-          label="Añadir al grupo"
-          icon="pi pi-plus"
-          class="p-button-raised p-button-success text-sm"
-          @click="addToGroup"
-          :disabled="!selectedAvailable.length"
-        />
-        <Button
-          label="Quitar del grupo"
-          icon="pi pi-minus"
-          class="p-button-raised p-button-danger text-sm"
-          @click="removeFromGroup"
-          :disabled="!selectedEnrolled.length"
-        />
+        <Button label="Añadir al grupo" icon="pi pi-plus" class="p-button-raised p-button-success text-sm"
+          @click="addToGroup" :disabled="!selectedAvailable.length" />
+        <Button label="Quitar del grupo" icon="pi pi-minus" class="p-button-raised p-button-danger text-sm"
+          @click="removeFromGroup" :disabled="!selectedEnrolled.length" />
       </div>
     </div>
   </AppLayout>
@@ -185,18 +132,17 @@ const group = ref<Groups | null>(null);
 const loading = ref(true);
 const availableStudentsList = ref<IStudent[]>([]);
 const enrolledStudentsList = ref<IStudent[]>([]);
-const selectedAvailable = ref<IStudent[]>([]); // Cambiado a IStudent[] para PrimeVue DataTable
-const selectedEnrolled = ref<IStudent[]>([]); // Cambiado a IStudent[] para PrimeVue DataTable
+const selectedAvailable = ref<IStudent[]>([]);
+const selectedEnrolled = ref<IStudent[]>([]);
 const selectAllAvailable = ref(false);
 const selectAllEnrolled = ref(false);
-const searchQuery = ref<string>(''); // Para búsqueda (no implementada aún)
+const searchQuery = ref<string>('');
 const itemsPerPage = ref<number>(10);
 const firstAvailable = ref<number>(0);
 const firstEnrolled = ref<number>(0);
 
 const groupsStudentStore = useGroupsStudentStore();
 
-// Obtener datos del grupo
 const fetchGroup = async (id: number) => {
   try {
     const response = await GetGroup(id);
@@ -207,15 +153,11 @@ const fetchGroup = async (id: number) => {
   }
 };
 
-// Obtener alumnos sin grupo y alumnos del grupo
 const fetchStudents = async (groupId: number) => {
   try {
     const sinGrupoResponse = await groupsStudentStore.GetStoreGroupsStudentsWhithoutGroup();
-    console.log('Sin grupo:', sinGrupoResponse);
     availableStudentsList.value = sinGrupoResponse?.success ? sinGrupoResponse.data : [];
-
     const conGrupoResponse = await groupsStudentStore.GetStoreGroupsStudentsWhithGroup(groupId);
-    console.log('Con grupo:', conGrupoResponse);
     enrolledStudentsList.value = conGrupoResponse?.success ? conGrupoResponse.data : [];
   } catch (error) {
     console.error('Error al cargar los datos:', error);
@@ -226,7 +168,6 @@ const fetchStudents = async (groupId: number) => {
   }
 };
 
-// Alumnos disponibles (con email generado)
 const availableStudents = computed(() => {
   return availableStudentsList.value.map((student) => ({
     ...student,
@@ -234,7 +175,6 @@ const availableStudents = computed(() => {
   }));
 });
 
-// Alumnos inscritos (con email generado)
 const enrolledStudents = computed(() => {
   return enrolledStudentsList.value.map((student) => ({
     ...student,
@@ -242,21 +182,18 @@ const enrolledStudents = computed(() => {
   }));
 });
 
-// Paginación para alumnos disponibles
 const paginatedAvailable = computed(() => {
   const start = firstAvailable.value;
   const end = start + itemsPerPage.value;
   return availableStudents.value.slice(start, end);
 });
 
-// Paginación para alumnos inscritos
 const paginatedEnrolled = computed(() => {
   const start = firstEnrolled.value;
   const end = start + itemsPerPage.value;
   return enrolledStudents.value.slice(start, end);
 });
 
-// Seleccionar todos los disponibles
 const toggleSelectAllAvailable = () => {
   if (selectAllAvailable.value) {
     selectedAvailable.value = [...paginatedAvailable.value];
@@ -265,7 +202,6 @@ const toggleSelectAllAvailable = () => {
   }
 };
 
-// Seleccionar todos los inscritos
 const toggleSelectAllEnrolled = () => {
   if (selectAllEnrolled.value) {
     selectedEnrolled.value = [...paginatedEnrolled.value];
@@ -274,7 +210,6 @@ const toggleSelectAllEnrolled = () => {
   }
 };
 
-// Añadir alumnos al grupo
 const addToGroup = async () => {
   try {
     const groupId = Number(route.params.id);
@@ -285,14 +220,7 @@ const addToGroup = async () => {
       return;
     }
 
-    console.log('Request que se enviará:', {
-      url: `/api/GruposAlumnos/PostAlumnosaGrupo/${groupId}`,
-      method: 'POST',
-      body: selectedIds,
-    });
-
     const response = await groupsStudentStore.PostStoreAlumnosaGrupo(groupId, selectedIds);
-    console.log('Respuesta del servidor:', response || 'No se recibió respuesta');
 
     if (response?.success) {
       await fetchStudents(groupId);
@@ -306,7 +234,6 @@ const addToGroup = async () => {
   }
 };
 
-// Quitar alumnos del grupo
 const removeFromGroup = async () => {
   try {
     const groupId = Number(route.params.id);
@@ -320,7 +247,7 @@ const removeFromGroup = async () => {
     for (const studentId of selectedIds) {
       const groupStudent = enrolledStudentsList.value.find((gs) => gs.id === studentId);
       if (groupStudent) {
-        await groupsStudentStore.DeleteStoreGroupsStudent(groupStudent.id);
+        await groupsStudentStore.DeleteStoreGroupsStudent(groupStudent.id, selectedIds);
       }
     }
     await fetchStudents(groupId);
@@ -331,12 +258,10 @@ const removeFromGroup = async () => {
   }
 };
 
-// Volver atrás
 const goBack = () => {
   router.push('/groups');
 };
 
-// Cargar datos al montar
 onMounted(async () => {
   const groupId = Number(route.params.id);
   await Promise.all([fetchGroup(groupId), fetchStudents(groupId)]);
@@ -363,18 +288,18 @@ h3 {
 }
 
 /* Ajustes de las tablas */
-.p-datatable .p-datatable-thead > tr > th {
+.p-datatable .p-datatable-thead>tr>th {
   background-color: #D4EFDF !important;
   color: #2D3748;
   font-weight: 600;
   font-family: 'Roboto', sans-serif;
 }
 
-.p-datatable .p-datatable-tbody > tr {
+.p-datatable .p-datatable-tbody>tr {
   transition: background-color 0.2s;
 }
 
-.p-datatable .p-datatable-tbody > tr:hover {
+.p-datatable .p-datatable-tbody>tr:hover {
   background-color: #F1F5F9 !important;
 }
 
@@ -413,7 +338,8 @@ h3 {
 }
 
 /* Ajustes de tipografía general */
-p, span {
+p,
+span {
   font-family: 'Roboto', sans-serif;
 }
 </style>

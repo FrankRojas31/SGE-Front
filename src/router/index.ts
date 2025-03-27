@@ -1,4 +1,5 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/stores/auth/AuthStore';
+import { createRouter, createWebHistory, type NavigationGuardNext, type RouteLocationNormalized } from 'vue-router'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -90,16 +91,6 @@ const router = createRouter({
       }
     },
     {
-      path: '/teachers',
-      name: 'Profesores',
-      component: () => import("@/views/crud/TeachersView.vue"),
-      meta: {
-        requiresAuth: false,
-        MenuOnly: true,
-        icon: 'pi pi-users'
-      }
-    },
-    {
       path: '/students',
       name: 'Estudiantes',
       component: () => import("@/views/crud/StudentView.vue"),
@@ -173,30 +164,27 @@ const router = createRouter({
   ],
 })
 
-// router.beforeEach((to, from, next) => {
-//   const verifyAuth = true; // Check if user is authenticated
-//   const publicRoutes = ['/login', '/register', '/NotFound'];
-//   const requiresAuth = !publicRoutes.includes(to.path);
-//   const isFirstLoad = from.name === null; // More reliable way to detect first load
+router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
+  const authStore = useAuthStore();
+  const verifyAuth = authStore.isAuthenticated();
+  const publicRoutes = ['/login', '/register', '/NotFound'];
+  const requiresAuth = !publicRoutes.includes(to.path);
+  const isFirstLoad = from.name === null;
 
-//   // Handle first page load scenario
-//   if (isFirstLoad && to.path === '/') {
-//     return next(verifyAuth ? '/dashboard' : '/login');
-//   }
+  if (isFirstLoad && to.path === '/') {
+    return next(verifyAuth ? '/dashboard' : '/login');
+  }
 
-//   // Redirect unauthorized users trying to access protected routes
-//   if (requiresAuth && !verifyAuth) {
-//     return next('/login'); // Is a Example of the Login.
-//   }
+  if (requiresAuth && !verifyAuth) {
+    return next('/login');
+  }
 
-//   // Prevent authenticated users from accessing login/register pages
-//   if (verifyAuth && (to.name === 'login' || to.name === 'register')) {
-//     return next('/dashboard'); // Is a Example of the Dashboard
-//   }
+  if (verifyAuth && (to.name === 'login' || to.name === 'register')) {
+    return next('/dashboard');
+  }
 
-//   // Allow normal navigation if none of the above conditions were met
-//   next();
-// });
+  next();
+});
 
 
 export default router

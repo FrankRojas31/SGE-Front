@@ -97,11 +97,8 @@ const HandleCancel = () => {
         <InputGroupAddon>
           <i class="pi pi-address-book"></i>
         </InputGroupAddon>
-        <InputNumber 
-          v-model="props.modalItem.matricula" 
-          :useGrouping="false"
-          :class="{ 'p-invalid': errors.matricula }"
-        />
+        <InputNumber v-model="props.modalItem.matricula" :useGrouping="false"
+          :class="{ 'p-invalid': errors.matricula }" />
       </InputGroup>
       <small v-if="errors.matricula" class="text-red-500 text-sm mt-1">{{ errors.matricula }}</small>
     </div>
@@ -112,11 +109,8 @@ const HandleCancel = () => {
         <InputGroupAddon>
           <i class="pi pi-phone"></i>
         </InputGroupAddon>
-        <InputText 
-          v-model="props.modalItem.contactoEmergencia" 
-          placeholder="Ej: 555-123-4567"
-          :class="{ 'p-invalid': errors.contactoEmergencia }"
-        />
+        <InputText v-model="props.modalItem.contactoEmergencia" placeholder="Ej: 555-123-4567"
+          :class="{ 'p-invalid': errors.contactoEmergencia }" />
       </InputGroup>
       <small v-if="errors.contactoEmergencia" class="text-red-500 text-sm mt-1">{{ errors.contactoEmergencia }}</small>
     </div>
@@ -128,26 +122,15 @@ const HandleCancel = () => {
 
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Fecha de Ingreso</label>
-      <DatePicker 
-        v-model="dateIncome" 
-        :showOnFocus="true" 
-        showIcon
-        :class="{ 'p-invalid': errors.fechaIngreso }"
-      />
+      <DatePicker v-model="dateIncome" :showOnFocus="true" showIcon :class="{ 'p-invalid': errors.fechaIngreso }"
+        fluid />
       <small v-if="errors.fechaIngreso" class="text-red-500 text-sm mt-1">{{ errors.fechaIngreso }}</small>
     </div>
 
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Curso Escolar</label>
-      <Select 
-        v-model="selectedSchoolYear" 
-        :options="formattedSchoolYears" 
-        optionLabel="nombre"
-        placeholder="Selecciona un curso escolar" 
-        class="w-full" 
-        filter
-        :class="{ 'p-invalid': errors.cursoEscolar }"
-      />
+      <Select v-model="selectedSchoolYear" :options="formattedSchoolYears" optionLabel="nombre"
+        placeholder="Selecciona un curso escolar" class="w-full" filter :class="{ 'p-invalid': errors.cursoEscolar }" />
       <small v-if="errors.cursoEscolar" class="text-red-500 text-sm mt-1">{{ errors.cursoEscolar }}</small>
     </div>
 
