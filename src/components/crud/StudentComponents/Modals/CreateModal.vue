@@ -17,6 +17,7 @@ import type { ISchoolYear } from '@/types/SchoolYear';
 const modalItem = ref<IStudent>({} as IStudent)
 const personStore = usePersonStore();
 const schoolYearStore = useSchoolYearStore()
+const errors = ref<Record<string, string>>({});
 
 const props = defineProps<{
   showModal: boolean;
@@ -41,26 +42,57 @@ const emit = defineEmits<{
   (e: 'create', student: IStudent): void
 }>();
 
+const validateFields = () => {
+  errors.value = {};
+  let isValid = true;
+
+  if (!modalItem.value.matricula) {
+    errors.value.matricula = 'La matrícula es requerida';
+    isValid = false;
+  }
+  if (!modalItem.value.contactoEmergencia?.trim()) {
+    errors.value.contactoEmergencia = 'El número de emergencia es requerido';
+    isValid = false;
+  }
+  if (!modalItem.value.fechaIngreso) {
+    errors.value.fechaIngreso = 'La fecha de ingreso es requerida';
+    isValid = false;
+  }
+  if (!selectedSchoolYear.value) {
+    errors.value.cursoEscolar = 'Debe seleccionar un curso escolar';
+    isValid = false;
+  }
+  if (!selectedPerson.value) {
+    errors.value.persona = 'Debe seleccionar una persona';
+    isValid = false;
+  }
+
+  return isValid;
+};
+
 const HandleCreate = () => {
-  if (selectedPerson.value) {
-    modalItem.value.idPersona = selectedPerson.value.id;
+  if (validateFields()) {
+    if (selectedPerson.value) {
+      modalItem.value.idPersona = selectedPerson.value.id;
+    }
+    if (selectedSchoolYear.value) {
+      modalItem.value.idCursoEscolar = selectedSchoolYear.value.id;
+    }
+    emit('create', modalItem.value);
+    modalItem.value = {} as IStudent;
+    selectedPerson.value = null;
+    selectedSchoolYear.value = null;
+    errors.value = {};
   }
-  if (selectedSchoolYear.value) {
-    modalItem.value.idCursoEscolar = selectedSchoolYear.value.id;
-  }
-  emit('create', modalItem.value);
-  modalItem.value = {} as IStudent;
-  selectedPerson.value = {} as IPerson;
-  selectedSchoolYear.value = {} as ISchoolYear;
 };
 
 const HandleClose = () => {
   emit('close')
   modalItem.value = {} as IStudent;
-  selectedPerson.value = {} as IPerson;
-  selectedSchoolYear.value = {} as ISchoolYear;
+  selectedPerson.value = null;
+  selectedSchoolYear.value = null;
+  errors.value = {};
 }
-
 </script>
 
 <template>
@@ -72,8 +104,14 @@ const HandleClose = () => {
         <InputGroupAddon>
           <i class="pi pi-address-book"></i>
         </InputGroupAddon>
-        <InputNumber placeholder="22393186" v-model="modalItem.matricula" :useGrouping="false" />
+        <InputNumber 
+          placeholder="22393186" 
+          v-model="modalItem.matricula" 
+          :useGrouping="false"
+          :class="{ 'p-invalid': errors.matricula }" 
+        />
       </InputGroup>
+      <small v-if="errors.matricula" class="text-red-500 text-sm mt-1">{{ errors.matricula }}</small>
     </div>
 
     <div class="mb-4">
@@ -82,31 +120,61 @@ const HandleClose = () => {
         <InputGroupAddon>
           <i class="pi pi-phone"></i>
         </InputGroupAddon>
-        <InputText v-model="modalItem.contactoEmergencia" placeholder="Ej: 555-123-4567" fluid />
+        <InputText 
+          v-model="modalItem.contactoEmergencia" 
+          placeholder="Ej: 555-123-4567"
+          :class="{ 'p-invalid': errors.contactoEmergencia }" 
+        />
       </InputGroup>
+      <small v-if="errors.contactoEmergencia" class="text-red-500 text-sm mt-1">{{ errors.contactoEmergencia }}</small>
     </div>
 
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Necesidades Especiales</label>
-      <InputText v-model="modalItem.necesidadesEspeciales" placeholder="Describa necesidades especiales" fluid />
+      <InputText 
+        v-model="modalItem.necesidadesEspeciales" 
+        placeholder="Describa necesidades especiales" 
+      />
     </div>
 
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Fecha de Ingreso</label>
-      <DatePicker v-model="modalItem.fechaIngreso" placeholder="Selecciona una Fecha de Ingreso" :showOnFocus="true"
-        showIcon fluid />
+      <DatePicker 
+        v-model="modalItem.fechaIngreso" 
+        placeholder="Selecciona una Fecha de Ingreso" 
+        :showOnFocus="true"
+        showIcon
+        :class="{ 'p-invalid': errors.fechaIngreso }"
+      />
+      <small v-if="errors.fechaIngreso" class="text-red-500 text-sm mt-1">{{ errors.fechaIngreso }}</small>
     </div>
 
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Curso Escolar</label>
-      <Select v-model="selectedSchoolYear" :options="formattedSchoolYears" optionLabel="nombre"
-        placeholder="Selecciona un curso escolar" class="w-full" filter />
+      <Select 
+        v-model="selectedSchoolYear" 
+        :options="formattedSchoolYears" 
+        optionLabel="nombre"
+        placeholder="Selecciona un curso escolar" 
+        class="w-full" 
+        filter
+        :class="{ 'p-invalid': errors.cursoEscolar }"
+      />
+      <small v-if="errors.cursoEscolar" class="text-red-500 text-sm mt-1">{{ errors.cursoEscolar }}</small>
     </div>
 
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Persona</label>
-      <Select v-model="selectedPerson" :options="formattedPersons" optionLabel="fullName"
-        placeholder="Selecciona una persona" class="w-full" filter />
+      <Select 
+        v-model="selectedPerson" 
+        :options="formattedPersons" 
+        optionLabel="fullName"
+        placeholder="Selecciona una persona" 
+        class="w-full" 
+        filter
+        :class="{ 'p-invalid': errors.persona }"
+      />
+      <small v-if="errors.persona" class="text-red-500 text-sm mt-1">{{ errors.persona }}</small>
     </div>
 
     <template #footer>
