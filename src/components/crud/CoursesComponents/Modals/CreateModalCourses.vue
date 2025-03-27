@@ -17,11 +17,13 @@ const emit = defineEmits<{
 
 const HandleCreate = () => {
   emit('create', modalItem.value);
+  modalItem.value = {} as Courses;
 };
 
 const HandleCancel = () => {
   modalItem.value = {} as Courses;
   emit('close');
+  modalItem.value = {} as Courses;
 };
 
 </script>

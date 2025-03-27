@@ -35,6 +35,7 @@ const handleCreate = () => {
     modalItem.value.idPersona = selectedPerson.value.id;
   }
   emit('create', modalItem.value);
+  modalItem.value = {} as ITeachers;
 };
 
 const handleClose = () => {
