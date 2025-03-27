@@ -17,6 +17,7 @@ const emit = defineEmits<{
 
 const HandleCreate = () => {
   emit('create', modalItem.value);
+  modalItem.value = {} as Groups;
 };
 
 const HandleCancel = () => {

@@ -29,11 +29,12 @@ const statusOptions = computed(() =>
 
 const HandleCreate = () => {
   emit('create', modalItem.value);
+  modalItem.value = {} as IPeriods;
 };
 
 const HandleCancel = () => {
-  modalItem.value = {} as IPeriods;
   emit('close');
+  modalItem.value = {} as IPeriods;
 };
 
 </script>

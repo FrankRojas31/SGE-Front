@@ -49,11 +49,16 @@ const HandleCreate = () => {
     modalItem.value.idCursoEscolar = selectedSchoolYear.value.id;
   }
   emit('create', modalItem.value);
+  modalItem.value = {} as IStudent;
+  selectedPerson.value = {} as IPerson;
+  selectedSchoolYear.value = {} as ISchoolYear;
 };
 
 const HandleClose = () => {
-  modalItem.value = {} as IStudent;
   emit('close')
+  modalItem.value = {} as IStudent;
+  selectedPerson.value = {} as IPerson;
+  selectedSchoolYear.value = {} as ISchoolYear;
 }
 
 </script>
