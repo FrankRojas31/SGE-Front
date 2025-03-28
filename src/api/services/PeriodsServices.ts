@@ -34,7 +34,7 @@ export async function GetPeriod(id: number){
 //PUT: '/Periodos/{id}
 
 export async function PutPeriod(period: IPeriods){
-  return await GenericRequest<IPeriods>({ url: `${urlBase}/${period.id}`, method: "PUT", data: {
+  return await GenericRequest<IPeriods>({ url: `${urlBase}/PutPeriodo`, method: "PUT", data: {
     id: period.id,
     nombre: period.nombre,
     descripcion: period.descripcion,
