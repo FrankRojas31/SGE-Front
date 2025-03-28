@@ -98,6 +98,15 @@ export async function GenericRequest<T>({
 
     return response.data as ResponseHelper<T>;
   } catch (error) {
+    const { useAuthStore } = await import("@/stores/auth/AuthStore");
+    const authStore = useAuthStore();
+
+    await axios.post(`${baseURL}/ErrorsLogs`, {
+      idUsuario: authStore.auth.id,
+      error: error,
+      timestamp: Date.now(),
+    });
+
     if (error instanceof AxiosError) {
       console.error("Error in the request:", error);
     } else {

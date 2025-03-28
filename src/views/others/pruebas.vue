@@ -7,22 +7,12 @@
           <Button icon="pi pi-arrow-left" class="p-button-text p-button-rounded p-button-lg mr-3" @click="goBack" />
           <div>
             <h2 class="text-3xl font-bold text-gray-800">
-              {{ group?.nombre || 'Cargando...' }} - Informática
+              {{ group?.nombre || 'Cargando...' }}
             </h2>
-            <p class="text-sm text-gray-600 mt-1">
-              {{ enrolledStudents.length }} de {{ availableStudents.length + enrolledStudents.length }} alumnos
-              inscritos
-            </p>
           </div>
-        </div>
-        <div class="flex items-center space-x-3">
-          <InputText v-model="searchQuery" placeholder="Buscar alumno..." class="p-inputtext-sm" style="width: 220px" />
-          <Dropdown v-model="itemsPerPage" :options="[10, 20, 30]" placeholder="Mostrar" class="p-dropdown-sm"
-            style="width: 120px" />
         </div>
       </div>
 
-      <!-- Contenido principal -->
       <div v-if="loading">Cargando...</div>
       <div v-else-if="!group">Grupo no encontrado</div>
       <div v-else class="grid grid-cols-2 gap-6">
@@ -33,16 +23,12 @@
               Alumnos Disponibles
               <span class="text-gray-500 text-sm">({{ availableStudents.length }})</span>
             </h3>
-            <div class="flex items-center">
-              <Checkbox v-model="selectAllAvailable" :binary="true" @change="toggleSelectAllAvailable" />
-              <span class="ml-2 text-sm text-gray-600">Seleccionar todos</span>
-            </div>
           </div>
-        </template>
-      </Card>
 
-          <DataTable :value="paginatedAvailable" :rows="itemsPerPage" class="p-datatable-sm" :rowHover="true"
-            v-model:selection="selectedAvailable" dataKey="id">
+
+          <DataTable :value="availableStudents" :rows="itemsPerPage" class="p-datatable-sm" :rowHover="true"
+            v-model:selection="selectedAvailable" dataKey="id" :paginator="true"
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink">
             <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
             <Column field="nombreCompleto" header="Nombre">
               <template #body="{ data }">
@@ -57,28 +43,25 @@
                 <span class="text-gray-700">{{ data.matricula }}</span>
               </template>
             </Column>
+            <template #empty>
+              <div class="text-center p-4 text-gray-600">
+                No hay alumnos disponibles
+              </div>
+            </template>
           </DataTable>
-
-          <!-- Paginación -->
-          <Paginator v-model:first="firstAvailable" :rows="itemsPerPage" :totalRecords="availableStudents.length"
-            template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink" class="mt-4" />
         </div>
 
-        <!-- Alumnos Inscritos -->
         <div class="bg-white shadow-lg rounded-lg p-6">
           <div class="flex justify-between items-center mb-4">
             <h3 class="text-xl font-semibold text-gray-800">
               Alumnos Inscritos
               <span class="text-gray-500 text-sm">({{ enrolledStudents.length }})</span>
             </h3>
-            <div class="flex items-center">
-              <Checkbox v-model="selectAllEnrolled" :binary="true" @change="toggleSelectAllEnrolled" />
-              <span class="ml-2 text-sm text-gray-600">Seleccionar todos</span>
-            </div>
           </div>
 
           <DataTable :value="paginatedEnrolled" :rows="itemsPerPage" class="p-datatable-sm" :rowHover="true"
-            v-model:selection="selectedEnrolled" dataKey="id">
+            v-model:selection="selectedEnrolled" dataKey="id" :paginator="true"
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink">
             <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
             <Column field="nombreCompleto" header="Nombre">
               <template #body="{ data }">
@@ -93,11 +76,12 @@
                 <span class="text-gray-700">{{ data.matricula }}</span>
               </template>
             </Column>
+            <template #empty>
+              <div class="text-center p-4 text-gray-600">
+                No hay alumnos disponibles
+              </div>
+            </template>
           </DataTable>
-
-          <!-- Paginación -->
-          <Paginator v-model:first="firstEnrolled" :rows="itemsPerPage" :totalRecords="enrolledStudents.length"
-            template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink" class="mt-4" />
         </div>
       </div>
 
@@ -124,7 +108,6 @@ import Dropdown from 'primevue/dropdown';
 import Select from 'primevue/select';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import Card from 'primevue/card';
 import AppLayout from '@/layout/AppLayout.vue';
 
 const route = useRoute();

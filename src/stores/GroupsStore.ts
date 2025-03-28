@@ -31,9 +31,6 @@ export const useGroupsStore = defineStore('Groups', () => {
     return response;
   }
 
-
-
-
   async function PutStoreGroup(group: Groups) {
     const response = await PutGroup(group);
     if (response?.success === true) {

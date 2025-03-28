@@ -6,14 +6,12 @@ import { useGroupsStore } from '@/stores/GroupsStore';
 import { useToast } from "primevue/usetoast";
 import Toast from 'primevue/toast';
 import { columns } from '@/components/crud/GroupsComponents/TableColumns';
-import { GetGroups } from '@/utils/helpers';
 import type { Groups } from '@/types/Groups';
 import DeleteModal from '@/components/crud/DeleteModal.vue';
 import CreateModal from './Modals/CreateModalGroups.vue';
 import EditModalGroups from '@/components/crud/GroupsComponents/Modals/EditModalGroups.vue';
 import { Button } from 'primevue';
-import { useRoute, useRouter } from 'vue-router';
-import MessageStatic from '@/components/helpers/MessageStatic.vue';
+import { useRouter } from 'vue-router';
 import { GetPeriodActive } from '@/api/services/PeriodsServices';
 import type { IPeriods } from '@/types/Periods';
 
@@ -25,7 +23,8 @@ const openModalEdit = ref<boolean>(false);
 const openModalDelete = ref<boolean>(false);
 const modalItem = ref<Groups>({} as Groups);
 const idItem = ref<number>(0);
-const periodActive = ref<IPeriods>({} as IPeriods);
+const periodActive = ref<IPeriods | string>({} as IPeriods);
+const periodNoActive = ref<boolean>(true);
 
 const HandleEdit = async (id: number) => {
   const response = await groupStore.GetStoreGroup(id);
@@ -80,7 +79,7 @@ const DeleteConfirm = async (id: number) => {
 onMounted(async () => {
   loading.value = true;
   try {
-    const res = await GetGroups();
+    const res = await groupStore.GetStoreGroups();
     await HandlePeriodActive();
     if (res?.success) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -108,9 +107,13 @@ const HandleButtonCalifications = (id: number) => {
 
 const HandlePeriodActive = async () => {
   const response = await GetPeriodActive();
-  console.log(response);
   if (response?.success) {
-    periodActive.value = response.data;
+    if(response.data != null) {
+      periodNoActive.value = false;
+      periodActive.value = response.data;
+    } else {
+      periodNoActive.value = true;
+    }
   }
 }
 
@@ -119,12 +122,8 @@ const HandlePeriodActive = async () => {
 <template>
   <AppLayout>
     <Toast />
-    <div class="px-2 mt-3">
-      <MessageStatic :message="`El período activo actualmente es: ${periodActive.nombre}`" icon="pi pi-spin pi-cog"
-        severity="success" />
-    </div>
     <GeneralTable :loading="loading" title="Grupos" :data="groupStore.groupsList" :columns="columns" @edit="HandleEdit"
-      @delete="HandleDelete" @create="openModalCreate = true">
+      @delete="HandleDelete" @create="openModalCreate = true" :disabled-create="false" >
       <template #customButton="{ data }">
         <Button v-tooltip="'Agregar Materias'" icon="pi pi-book" severity="warn" variant="outlined" rounded raised
           class="mr-2" @click="HandleButtonSubject(data.id)" />

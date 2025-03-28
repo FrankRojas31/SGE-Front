@@ -17,16 +17,15 @@ import Button from 'primevue/button';
 
             <p
               class="text-surface-0/90 lg:text-surface-700 dark:text-surface-200 text-xl leading-normal mb-8 max-w-xl lg:max-w-none">
-              Optimiza la gestión académica de tu institución con nuestra plataforma. Administra alumnos, docentes,
-              calificaciones, asistencia y documentos escolares de manera eficiente y segura.
+              Optimiza la gestión académica de tu institución con nuestra plataforma. Administra alumnos, Materias y
+              calificaciones de manera eficiente y segura.
             </p>
 
             <ul
               class="text-surface-0/90 lg:text-surface-700 dark:text-surface-200 text-lg leading-relaxed mb-8 list-disc list-inside">
-              <li>Registro y gestión de alumnos y docentes.</li>
-              <li>Control de calificaciones y asistencias.</li>
-              <li>Generación y administración de documentos académicos.</li>
-              <li>Interfaz intuitiva y segura con acceso basado en roles.</li>
+              <li>Registro y gestión de docentes.</li>
+              <li>Control de calificaciones y materias.</li>
+              <li>Interfaz intuitiva y segura.</li>
             </ul>
 
             <div class="flex items-center gap-4 justify-center lg:justify-start">
