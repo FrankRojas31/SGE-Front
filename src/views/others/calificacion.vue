@@ -1,7 +1,6 @@
 <template>
   <AppLayout>
     <div class="sistema-calificaciones container mx-auto p-6">
-      <!-- Cabecera con filtros -->
       <div class="flex flex-column md:flex-row justify-content-between gap-3 mb-4">
         <div class="flex flex-column sm:flex-row gap-2 align-items-center">
           <h1 class="text-3xl font-bold text-gray-800">Grupo: {{ group?.nombre || 'Cargando...' }}</h1>
@@ -337,8 +336,7 @@ const saveCalification = async (idAlumno: number, idUnidad: number) => {
   if (calificacion !== null && calificacion >= 0 && calificacion <= 10) {
     try {
       const calificationData: ICalifications = {
-        id: 0, // El backend debería generar el ID
-        esBorrado: false, // Asumimos que no está borrado al crearlo
+        id: 0,
         calificacion: calificacion,
         idAlumno: idAlumno,
         idUnidad: idUnidad,
@@ -347,7 +345,7 @@ const saveCalification = async (idAlumno: number, idUnidad: number) => {
       const response = await calificationsStore.PostStoreCalification(calificationData);
       if (response?.success) {
         console.log('Calificación guardada exitosamente:', response.data);
-        calificaciones.value[key] = calificacion; // Actualizar la calificación en la tabla
+        calificaciones.value[key] = calificacion;
       } else {
         console.error('Error al guardar la calificación:', response?.message);
       }
@@ -355,7 +353,7 @@ const saveCalification = async (idAlumno: number, idUnidad: number) => {
       console.error('Excepción al guardar la calificación:', error);
     }
   }
-  editingCell.value = null; // Cerrar el input después de guardar
+  editingCell.value = null;
   tempCalification.value = null;
   originalCalification.value = null;
 };

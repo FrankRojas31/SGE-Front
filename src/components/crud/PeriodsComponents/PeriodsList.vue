@@ -23,11 +23,12 @@ const idItem = ref<number>(0);
 
 const CreateConfirm = async (periods: IPeriods) => {
   const response = await periodsStore.PostStorePeriod(periods);
+  openModalCreate.value = false;
   if (response?.success) {
     openModalCreate.value = false;
     toast.add({ severity: 'success', summary: '¡Creado Correctamente!', detail: '¡Se ha creado el periodo!', life: 2000 });
   } else {
-    toast.add({ severity: 'error', summary: '¡Ocurrio un error!', detail: response?.message, life: 2000 });
+    toast.add({ severity: 'error', summary: '¡Ocurrio un error!', detail: response?.message, life: 3000 });
   }
 }
 

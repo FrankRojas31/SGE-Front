@@ -17,7 +17,7 @@ export async function GetPeriodActive(){
 //    data
 // }'
 export async function PostPeriod(period: IPeriods){
-  return await GenericRequest<IPeriods>({ url: urlBase, method : "POST", data: {
+  return await GenericRequest<IPeriods>({ url: `${urlBase}/PostPeriodo`, method : "POST", data: {
     nombre: period.nombre,
     descripcion: period.descripcion,
     fechaInicio: period.fechaInicio,

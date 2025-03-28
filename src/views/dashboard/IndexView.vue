@@ -9,6 +9,9 @@ import { useGroupsStore } from '@/stores/GroupsStore';
 import { useSubjectStore } from '@/stores/SubjectStore';
 import { usePeriodsStore } from '@/stores/PeriodsStore';
 import { usePersonStore } from '@/stores/PersonStore';
+import MessageStatic from '@/components/helpers/MessageStatic.vue'
+import { GetPeriodActive } from '@/api/services/PeriodsServices.ts'
+import type { IPeriods } from '@/types/Periods.ts'
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 
@@ -28,6 +31,7 @@ const studentCount = ref<string>('');
 const groupsCount = ref<string>('');
 const subjectsCount = ref<string>('');
 const personsCount = ref<string>('');
+const periodNoActive = ref<boolean>(true);
 
 onMounted(async () => {
   await studentStore.GetStoreStudents();
@@ -65,56 +69,36 @@ const chartOptions = ref({
   responsive: true,
   maintainAspectRatio: false
 });
+
+onMounted(async () => {
+  const response = await HandlePeriodActive();
+})
+
+const HandlePeriodActive = async () => {
+  const response = await GetPeriodActive();
+  if (response?.success) {
+    if(response.data != null) {
+      periodNoActive.value = false;
+    } else {
+      periodNoActive.value = true;
+    }
+  }
+}
+
 </script>
 
 <template>
   <AppLayout>
-    <div class="px-6 py-7">
-      <div class="grid grid-cols-4 gap-4">
+    <div class="px-2 py-7">
+      <div class="grid grid-cols-4 gap-4 mt-4">
         <CardsDashboard v-for="(card, index) in Cards" :key="index" :title="card.title" :value="card.value"
           :icon="card.icon" :iconColor="card.iconColor" :bgColor="card.bgColor" />
       </div>
-      <div class="grid grid-cols-2 gap-4 mt-6">
-        <div class="bg-white p-4 shadow rounded-lg overflow-auto">
-          <h2 class="text-lg font-semibold mb-2">Logs de cambios</h2>
-          <table class="w-full border-collapse border border-gray-300 text-sm">
-            <thead>
-              <tr class="bg-[#0f9761] text-white font-bold text-left whitespace-nowrap">
-                <th class="border border-gray-300 px-2 py-1">Acción</th>
-                <th class="border border-gray-300 px-2 py-1">Tabla</th>
-                <th class="border border-gray-300 px-2 py-1">Valor Anterior</th>
-                <th class="border border-gray-300 px-2 py-1">Nuevo Valor</th>
-                <th class="border border-gray-300 px-2 py-1">Usuario</th>
-                <th class="border border-gray-300 px-2 py-1">ID Usuario</th>
-                <th class="border border-gray-300 px-2 py-1">Rol</th>
-                <th class="border border-gray-300 px-2 py-1">IP</th>
-                <th class="border border-gray-300 px-2 py-1">Versión</th>
-                <th class="border border-gray-300 px-2 py-1">Borrado</th>
-                <th class="border border-gray-300 px-2 py-1">Entidad</th>
-              </tr>
-
-            </thead>
-            <tbody>
-              <tr v-for="log in tableData" :key="log.id" class="border border-gray-300">
-                <td class="px-2 py-1">{{ log.action }}</td>
-                <td class="px-2 py-1">{{ log.tableName }}</td>
-                <td class="px-2 py-1">{{ log.oldValue }}</td>
-                <td class="px-2 py-1">{{ log.newValue }}</td>
-                <td class="px-2 py-1">{{ log.user }}</td>
-                <td class="px-2 py-1">{{ log.userId }}</td>
-                <td class="px-2 py-1">{{ log.role }}</td>
-                <td class="px-2 py-1">{{ log.ip }}</td>
-                <td class="px-2 py-1">{{ log.rowVersion }}</td>
-                <td class="px-2 py-1">{{ log.isDeleted ? 'Sí' : 'No' }}</td>
-                <td class="px-2 py-1">{{ log.entity }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="bg-white p-4 shadow rounded-lg h-[300px]">
-          <h2 class="text-lg font-semibold mb-2">Gráfica de logs semanal</h2>
-          <Bar :data="chartData" :options="chartOptions" />
-        </div>
+      <div class="bg-white p-6 rounded-lg shadow-md mb-8 mt-4">
+        <h1 class="text-3xl font-semibold text-gray-800">¡Bienvenido!</h1>
+        <p class="text-gray-600 mt-2 text-lg font-extralight text-justify mt-4">
+          Estimado docente, le damos la más cordial bienvenida al sistema de gestión escolar. Este panel ha sido diseñado para facilitar la administración de sus actividades académicas, incluyendo la captura de calificaciones, la planificación de unidades y el seguimiento de sus materias asignadas. Le invitamos a utilizar esta herramienta con responsabilidad y precisión, contribuyendo así al desarrollo educativo de sus estudiantes. ¡Gracias por su compromiso!
+        </p>
       </div>
     </div>
   </AppLayout>

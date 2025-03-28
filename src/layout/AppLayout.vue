@@ -3,12 +3,19 @@ import AppLogo from '@/components/global/AppLogo.vue';
 import SimpleLogo from '@/components/global/SimpleLogo.vue';
 import { ref, onMounted, onUnmounted, computed, onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
+import MessageStatic from '@/components/helpers/MessageStatic.vue'
+import { GetPeriodActive } from '@/api/services/PeriodsServices.ts'
+import type { IPeriods } from '@/types/Periods';
+import { useAuthStore } from '@/stores/auth/AuthStore';
 
 const date = ref('');
 const showDropdown = ref(false);
 const isSidebarCollapsed = ref(false);
 const currentYear = new Date().getFullYear();
 const isMobile = ref<boolean>(false);
+const periodNoActive = ref<boolean>(true);
+const periodActive = ref<IPeriods>({} as IPeriods)
+const router = useRouter();
 
 const hoursReal = () => {
   const now = new Date();
@@ -42,7 +49,7 @@ const RoutesOnlyMenu = computed(() => {
 const updateMobile = async () => {
   isMobile.value = window.innerWidth <= 768;
   if (isMobile.value) {
-    isSidebarCollapsed.value = true; // Colapsado por defecto en móviles
+    isSidebarCollapsed.value = true;
   }
 };
 
@@ -52,6 +59,7 @@ onBeforeMount(async () => {
 })
 
 onMounted(async () => {
+  await HandlePeriodActive();
   hoursReal();
   setInterval(hoursReal, 1000);
   document.addEventListener('click', closeDropdown);
@@ -61,6 +69,25 @@ onUnmounted(async () => {
   document.removeEventListener('click', closeDropdown);
   window.removeEventListener('resize', updateMobile);
 });
+
+const HandlePeriodActive = async () => {
+  const response = await GetPeriodActive();
+  if (response?.success) {
+    if (response.data != null) {
+      periodNoActive.value = false;
+      periodActive.value = response.data;
+    } else {
+      periodNoActive.value = true;
+    }
+  }
+}
+
+const HandleLogout = () => {
+  router.push("/login")
+  const auth = useAuthStore()
+  auth.logout();
+}
+
 </script>
 
 <template>
@@ -110,17 +137,7 @@ onUnmounted(async () => {
 
           <div v-if="showDropdown"
             class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 border border-[#10b981bb]">
-            <a href="/profil"
-              class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#10b98170] hover:text-[#186219] transition ease-in-out duration-300 group">
-              <i class="pi pi-user text-[#10b981bb] group-hover:text-[#186219] transition ease-in-out duration-300"></i>
-              <span>Perfil</span>
-            </a>
-            <a href="#"
-              class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#10b98170] hover:text-[#186219] transition ease-in-out duration-300 group">
-              <i class="pi pi-cog text-[#10b981bb] group-hover:text-[#186219] transition ease-in-out duration-300"></i>
-              <span>Configuraciones</span>
-            </a>
-            <a href="#"
+            <a @click="HandleLogout"
               class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#10b98170] hover:text-[#186219] transition ease-in-out duration-300 group">
               <i
                 class="pi pi-sign-out text-[#10b981bb] group-hover:text-[#186219] transition ease-in-out duration-300"></i>
@@ -132,6 +149,14 @@ onUnmounted(async () => {
 
       <!-- Content -->
       <div class="flex-1 px-4">
+        <div class="mt-4 px-2">
+          <MessageStatic v-show="periodNoActive"
+            :message="`¡Actualmente, no se encuentra un período activo registrado en el sistema. Le recomendamos verificar la configuración o ponerse en contacto con el soporte técnico si necesita asistencia adicional! `"
+            icon="pi pi-spin pi-cog" severity="warn" />
+          <MessageStatic v-show="!periodNoActive"
+            :message="`¡El período que está vigente de manera oficial en el presente corresponde al denominado: ${periodActive.nombre}!`"
+            icon="pi pi-spin pi-cog" severity="success" />
+        </div>
         <slot></slot>
       </div>
 

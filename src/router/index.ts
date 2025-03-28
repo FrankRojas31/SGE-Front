@@ -81,16 +81,6 @@ const router = createRouter({
       }
     },
     {
-      path: '/users',
-      name: 'Usuarios',
-      component: () => import('@/views/crud/UsersView.vue'),
-      meta: {
-        requiresAuth: false,
-        MenuOnly: true,
-        icon: 'pi pi-users'
-      }
-    },
-    {
       path: '/students',
       name: 'Estudiantes',
       component: () => import("@/views/crud/StudentView.vue"),
@@ -177,7 +167,7 @@ const router = createRouter({
 router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
   const authStore = useAuthStore();
   const verifyAuth = authStore.isAuthenticated();
-  const publicRoutes = ['/login', '/register', '/NotFound'];
+  const publicRoutes = ['/', '/login', '/register', '/NotFound'];
   const requiresAuth = !publicRoutes.includes(to.path);
   const isFirstLoad = from.name === null;
 
