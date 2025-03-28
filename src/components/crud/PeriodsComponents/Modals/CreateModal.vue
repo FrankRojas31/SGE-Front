@@ -9,6 +9,7 @@ import { estatusPeriodo, type IPeriods } from '@/types/Periods';
 
 const props = defineProps<{
   showModal: boolean;
+  modalItem?: IPeriods;
 }>();
 
 const modalItem = ref<IPeriods>({} as IPeriods);
@@ -69,7 +70,6 @@ const validateFields = () => {
 const HandleCreate = () => {
   if (validateFields()) {
     emit('create', modalItem.value);
-    modalItem.value = {} as IPeriods;
     errors.value = {};
   }
 };
@@ -85,17 +85,17 @@ const HandleCancel = () => {
 <template>
   <Dialog v-model:visible="props.showModal" header="Crear Período" modal :style="{ width: '30rem' }"
     class="rounded-lg shadow-lg" @update:visible="HandleCancel">
-    
+
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Nombre</label>
-      <InputText v-model="modalItem.nombre" placeholder="Ingrese el nombre del período" class="w-full" 
+      <InputText v-model="modalItem.nombre" placeholder="Ingrese el nombre del período" class="w-full"
         :class="{ 'p-invalid': errors.nombre }" />
       <small v-if="errors.nombre" class="text-red-500 text-sm mt-1">{{ errors.nombre }}</small>
     </div>
 
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Descripción</label>
-      <InputText v-model="modalItem.descripcion" placeholder="Ingrese una descripción" class="w-full" 
+      <InputText v-model="modalItem.descripcion" placeholder="Ingrese una descripción" class="w-full"
         :class="{ 'p-invalid': errors.descripcion }" />
       <small v-if="errors.descripcion" class="text-red-500 text-sm mt-1">{{ errors.descripcion }}</small>
     </div>
@@ -103,7 +103,7 @@ const HandleCancel = () => {
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Fecha de Inicio</label>
       <DatePicker v-model="modalItem.fechaInicio" placeholder="Selecciona la fecha de inicio"
-        :showOnFocus="true" showIcon class="w-full" 
+        :showOnFocus="true" showIcon class="w-full"
         :class="{ 'p-invalid': errors.fechaInicio }" />
       <small v-if="errors.fechaInicio" class="text-red-500 text-sm mt-1">{{ errors.fechaInicio }}</small>
     </div>
@@ -111,7 +111,7 @@ const HandleCancel = () => {
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Fecha de Fin</label>
       <DatePicker v-model="modalItem.fechaFin" placeholder="Selecciona la fecha de fin"
-        :showOnFocus="true" showIcon class="w-full" 
+        :showOnFocus="true" showIcon class="w-full"
         :class="{ 'p-invalid': errors.fechaFin }" />
       <small v-if="errors.fechaFin" class="text-red-500 text-sm mt-1">{{ errors.fechaFin }}</small>
     </div>

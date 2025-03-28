@@ -1,7 +1,6 @@
 <template>
   <AppLayout>
     <div class="container mx-auto p-6">
-      <!-- Encabezado -->
       <div class="flex justify-between items-center mb-6">
         <div class="flex items-center">
           <Button
@@ -11,58 +10,37 @@
           />
           <div>
             <h2 class="text-3xl font-bold text-gray-800">
-              {{ group?.nombre || 'Cargando...' }} - Agregar Materias al Grupo
+              {{ group?.nombre || 'Cargando...' }} - Añadir Materias
             </h2>
             <p class="text-sm text-gray-600 mt-1">
               {{ enrolledSubjects.length }} de {{ availableSubjects.length + enrolledSubjects.length }} Materias Agregadas
             </p>
           </div>
         </div>
-        <div class="flex items-center space-x-3">
-          <InputText
-            v-model="searchQuery"
-            placeholder="Buscar Materias"
-            class="p-inputtext-sm"
-            style="width: 220px"
-          />
-          <Dropdown
-            v-model="itemsPerPage"
-            :options="[10, 20, 30]"
-            placeholder="Mostrar"
-            class="p-dropdown-sm"
-            style="width: 120px"
-          />
-        </div>
       </div>
 
-      <!-- Contenido principal -->
       <div v-if="loading">Cargando...</div>
       <div v-else-if="!group">Grupo no encontrado</div>
       <div v-else class="grid grid-cols-2 gap-6">
-        <!-- Materias Disponibles -->
         <div class="bg-white shadow-lg rounded-lg p-6">
           <div class="flex justify-between items-center mb-4">
             <h3 class="text-xl font-semibold text-gray-800">
               Materias Disponibles
               <span class="text-gray-500 text-sm">({{ availableSubjects.length }})</span>
             </h3>
-            <div class="flex items-center">
-              <Checkbox
-                v-model="selectAllAvailable"
-                :binary="true"
-                @change="toggleSelectAllAvailable"
-              />
-              <span class="ml-2 text-sm text-gray-600">Seleccionar todas</span>
-            </div>
           </div>
 
           <DataTable
-            :value="paginatedAvailable"
+            :value="availableSubjects"
             :rows="itemsPerPage"
             class="p-datatable-sm"
             :rowHover="true"
             v-model:selection="selectedAvailable"
             dataKey="id"
+            :paginator="true"
+            v-model:first="firstAvailable"
+            @page="onPageAvailable($event)"
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
           >
             <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
             <Column field="nombre" header="Nombre de la Materia">
@@ -75,42 +53,35 @@
                 <span class="text-gray-700">{{ data.descripcion || 'Sin descripción' }}</span>
               </template>
             </Column>
+            <template #empty>
+              <div class="text-center p-4 text-gray-600 empty-table-placeholder">
+                No hay materias disponibles
+              </div>
+            </template>
           </DataTable>
-
-          <!-- Paginación -->
-          <Paginator
-            v-model:first="firstAvailable"
-            :rows="itemsPerPage"
-            :totalRecords="availableSubjects.length"
-            template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
-            class="mt-4"
-          />
         </div>
 
-        <!-- Materias Agregadas -->
         <div class="bg-white shadow-lg rounded-lg p-6">
           <div class="flex justify-between items-center mb-4">
             <h3 class="text-xl font-semibold text-gray-800">
               Materias Agregadas
               <span class="text-gray-500 text-sm">({{ enrolledSubjects.length }})</span>
             </h3>
-            <div class="flex items-center">
-              <Checkbox
-                v-model="selectAllEnrolled"
-                :binary="true"
-                @change="toggleSelectAllEnrolled"
-              />
-              <span class="ml-2 text-sm text-gray-600">Seleccionar todos</span>
-            </div>
           </div>
 
           <DataTable
-            :value="paginatedEnrolled"
+            :value="enrolledSubjects"
             :rows="itemsPerPage"
             class="p-datatable-sm"
             :rowHover="true"
             v-model:selection="selectedEnrolled"
             dataKey="id"
+            :paginator="true"
+            v-model:first="firstEnrolled"
+            @page="onPageEnrolled($event)"
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
+            responsiveLayout="scroll"
+            :rowsPerPageOptions="[5, 10, 15, 25]"
           >
             <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
             <Column field="nombre" header="Nombre de la Materia">
@@ -123,16 +94,12 @@
                 <span class="text-gray-700">{{ data.descripcion || 'Sin descripción' }}</span>
               </template>
             </Column>
+            <template #empty>
+              <div class="text-center p-4 text-gray-600 empty-table-placeholder">
+                No hay materias disponibles
+              </div>
+            </template>
           </DataTable>
-
-          <!-- Paginación -->
-          <Paginator
-            v-model:first="firstEnrolled"
-            :rows="itemsPerPage"
-            :totalRecords="enrolledSubjects.length"
-            template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
-            class="mt-4"
-          />
         </div>
       </div>
 
@@ -165,12 +132,8 @@ import { useGroupsSubjectStore } from '@/stores/GroupsSubjectsStore';
 import type { Groups } from '@/types/Groups';
 import type { IGroupsSubjects } from '@/types/GroupsSubjects';
 import Button from 'primevue/button';
-import InputText from 'primevue/inputtext';
-import Dropdown from 'primevue/dropdown';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import Checkbox from 'primevue/checkbox';
-import Paginator from 'primevue/paginator';
 import AppLayout from '@/layout/AppLayout.vue';
 
 const route = useRoute();
@@ -181,10 +144,7 @@ const availableSubjectsList = ref<IGroupsSubjects[]>([]);
 const enrolledSubjectsList = ref<IGroupsSubjects[]>([]);
 const selectedAvailable = ref<IGroupsSubjects[]>([]);
 const selectedEnrolled = ref<IGroupsSubjects[]>([]);
-const selectAllAvailable = ref(false);
-const selectAllEnrolled = ref(false);
-const searchQuery = ref<string>('');
-const itemsPerPage = ref<number>(10);
+const itemsPerPage = ref<number>(5);
 const firstAvailable = ref<number>(0);
 const firstEnrolled = ref<number>(0);
 
@@ -219,32 +179,15 @@ const fetchSubjects = async (groupId: number) => {
 const availableSubjects = computed(() => availableSubjectsList.value);
 const enrolledSubjects = computed(() => enrolledSubjectsList.value);
 
-const paginatedAvailable = computed(() => {
-  const start = firstAvailable.value;
-  const end = start + itemsPerPage.value;
-  return availableSubjects.value.slice(start, end);
-});
-
-const paginatedEnrolled = computed(() => {
-  const start = firstEnrolled.value;
-  const end = start + itemsPerPage.value;
-  return enrolledSubjects.value.slice(start, end);
-});
-
-const toggleSelectAllAvailable = () => {
-  if (selectAllAvailable.value) {
-    selectedAvailable.value = [...paginatedAvailable.value];
-  } else {
-    selectedAvailable.value = [];
-  }
+// Manejadores de eventos de paginación
+const onPageAvailable = (event: any) => {
+  firstAvailable.value = event.first;
+  selectedAvailable.value = []; // Limpiar selección al cambiar de página
 };
 
-const toggleSelectAllEnrolled = () => {
-  if (selectAllEnrolled.value) {
-    selectedEnrolled.value = [...paginatedEnrolled.value];
-  } else {
-    selectedEnrolled.value = [];
-  }
+const onPageEnrolled = (event: any) => {
+  firstEnrolled.value = event.first;
+  selectedEnrolled.value = []; // Limpiar selección al cambiar de página
 };
 
 const addToGroup = async () => {
@@ -261,25 +204,19 @@ const addToGroup = async () => {
     if (response?.success) {
       await fetchSubjects(groupId);
       selectedAvailable.value = [];
-      selectAllAvailable.value = false;
-    } else {
-      console.error('Error al añadir materias:', response?.message);
     }
   } catch (error) {
     console.error('Error al añadir materias:', error);
   }
 };
 
-
-//Eliminar materias
 const removeFromGroup = async () => {
   try {
     const groupId = Number(route.params.id);
     const selectedIds = selectedEnrolled.value.map((subject) => subject.id);
-    await groupsSubjectStore.DeleteStoreGroupsSubjects(groupId,selectedIds);
+    await groupsSubjectStore.DeleteStoreGroupsSubjects(groupId, selectedIds);
     await fetchSubjects(groupId);
     selectedEnrolled.value = [];
-    selectAllEnrolled.value = false;
   } catch (error) {
     console.error('Error al quitar materias:', error);
   }
@@ -299,6 +236,13 @@ onMounted(async () => {
 /* Ajustes de estilo para mejorar la apariencia */
 .container {
   max-width: 1400px;
+}
+
+.empty-table-placeholder {
+  min-height: 175px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Estilo del título */

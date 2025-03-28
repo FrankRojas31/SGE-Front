@@ -23,12 +23,11 @@ const idItem = ref<number>(0);
 
 const CreateConfirm = async (periods: IPeriods) => {
   const response = await periodsStore.PostStorePeriod(periods);
-  openModalCreate.value = false;
   if (response?.success) {
     openModalCreate.value = false;
     toast.add({ severity: 'success', summary: '¡Creado Correctamente!', detail: '¡Se ha creado el periodo!', life: 2000 });
   } else {
-    toast.add({ severity: 'error', summary: '¡Ocurrio un error!', detail: response?.message, life: 3000 });
+    toast.add({ severity: 'warn', summary: '¡Ups..!', detail: response?.message, life: 5000 });
   }
 }
 
@@ -58,7 +57,7 @@ const EditConfirm = async (period: IPeriods) => {
     openModalEdit.value = false;
     toast.add({ severity: 'success', summary: '¡Actualizado Correctamente!', detail: '¡Se actualizado el periodo!', life: 2000 });
   } else {
-    toast.add({ severity: 'error', summary: '¡Ocurrio un error!', detail: response?.message, life: 2000 });
+    toast.add({ severity: 'warn', summary: '¡Ups...!', detail: response?.message, life: 5000 });
   }
 }
 
@@ -104,7 +103,7 @@ const FormatDate = () => {
     <Toast />
     <GeneralTable :title="'Periodos'" :columns="columns" :data="FormatDate()" :loading="loading" @edit="HandleEdit"
       @delete="HandleDelete" @create="openModalCreate = true" />
-    <CreateModal :showModal="openModalCreate" @close="openModalCreate = false" @create="CreateConfirm" />
+    <CreateModal :modalItem="{} as IPeriods" :showModal="openModalCreate" @close="openModalCreate = false" @create="CreateConfirm" />
     <DeleteModal :showModal="openModalDelete" :id="idItem" @close="openModalDelete = false" @delete="DeleteConfirm" />
     <EditModal :modalItem="modalItem" :showModal="openModalEdit" @close="openModalEdit = false" @update="EditConfirm" />
   </AppLayout>
