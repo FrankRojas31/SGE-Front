@@ -1,6 +1,6 @@
 // stores/AuthStore.ts
-import { LoginAuth } from "@/api/services/auth/AuthServices";
-import type { IAuthUser, ILoginUser } from "@/types/Auth/Users";
+import { LoginAuth, RegisterAuth } from '@/api/services/auth/AuthServices'
+import type { IAuthUser, ILoginUser, IRegisterUser } from '@/types/Auth/Users'
 import { useSessionStorage } from "@vueuse/core";
 import { defineStore } from "pinia";
 import { setInitialTokens } from "@/api/GenericRequest";
@@ -10,10 +10,22 @@ export const useAuthStore = defineStore('Auth', () => {
   const router = useRouter();
   const auth = useSessionStorage<IAuthUser>('auth', {} as IAuthUser);
 
+  async function RegisterStore(userRegister: IRegisterUser) {
+    const response = await RegisterAuth(userRegister);
+
+    if(response?.success){
+      const send: ILoginUser = {
+        email: userRegister.email,
+        password: userRegister.password
+      }
+      await LoginStore(send);
+    }
+
+    return response;
+  }
+
   async function LoginStore(userLogin: ILoginUser) {
     const response = await LoginAuth(userLogin);
-
-
     if (response?.success && response.data) {
       auth.value = response.data;
       setInitialTokens({
@@ -21,7 +33,11 @@ export const useAuthStore = defineStore('Auth', () => {
         refreshToken: response.data.refreshToken || "",
         accessTokenExpiration: response.data.accessTokenExpiration || "",
       });
-      router.push("/dashboard");
+
+      if(auth.value.role === "PROFESOR")
+        router.push("/groups");
+      else
+        router.push("/dashboard");
     }
 
     return response;
@@ -36,5 +52,5 @@ export const useAuthStore = defineStore('Auth', () => {
     localStorage.removeItem("tokens");
   }
 
-  return { LoginStore, auth, isAuthenticated, logout };
+  return { LoginStore, auth, isAuthenticated, logout, RegisterStore };
 });

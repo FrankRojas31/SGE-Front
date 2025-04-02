@@ -67,57 +67,8 @@ const router = createRouter({
       meta: {
         requiresAuth: true,
         MenuOnly: true,
-        icon: 'pi pi-chart-pie'
-      }
-    },
-    {
-      path: '/persons',
-      name: 'Personas',
-      component: () => import('@/views/crud/PersonsView.vue'),
-      meta: {
-        requiresAuth: false,
-        MenuOnly: true,
-        icon: 'pi pi-user'
-      }
-    },
-    {
-      path: '/students',
-      name: 'Estudiantes',
-      component: () => import("@/views/crud/StudentView.vue"),
-      meta: {
-        requiresAuth: false,
-        MenuOnly: true,
-        icon: 'pi pi-users'
-      }
-    },
-    {
-      path: '/periods',
-      name: 'Periodos',
-      component: () => import("@/views/crud/PeriodsView.vue"),
-      meta: {
-        requiresAuth: false,
-        MenuOnly: true,
-        icon: 'pi pi-calendar-clock'
-      }
-    },
-        {
-      path: '/subjects',
-      name: 'Materias',
-      component: () => import("@/views/crud/SubjectView.vue"),
-      meta: {
-        requiresAuth: false,
-        MenuOnly: true,
-        icon: 'pi pi-book'
-      }
-    },
-    {
-      path: '/groups',
-      name: 'Grupos',
-      component: () => import("@/views/crud/GroupsView.vue"),
-      meta: {
-        requiresAuth: false,
-        MenuOnly: true,
-        icon: 'pi pi-sitemap'
+        icon: 'pi pi-chart-pie',
+        roles: ["ADMIN", "SERVICIOS ESCOLARES"]
       }
     },
     {
@@ -125,9 +76,65 @@ const router = createRouter({
       name: 'Cursos',
       component: () => import("@/views/crud/CoursesView.vue"),
       meta: {
-        requiresAuth: false,
+        requiresAuth: true,
         MenuOnly: true,
-        icon: 'pi pi-th-large'
+        icon: 'pi pi-th-large',
+        roles: ["ADMIN", "SERVICIOS ESCOLARES"]
+      }
+    },
+    {
+      path: '/persons',
+      name: 'Personas',
+      component: () => import('@/views/crud/PersonsView.vue'),
+      meta: {
+        requiresAuth: true,
+        MenuOnly: true,
+        icon: 'pi pi-user',
+        roles: ["ADMIN", "SERVICIOS ESCOLARES"]
+      }
+    },
+    {
+      path: '/students',
+      name: 'Estudiantes',
+      component: () => import("@/views/crud/StudentView.vue"),
+      meta: {
+        requiresAuth: true,
+        MenuOnly: true,
+        icon: 'pi pi-users',
+        roles: ["ADMIN", "SERVICIOS ESCOLARES"]
+      }
+    },
+    {
+      path: '/periods',
+      name: 'Periodos',
+      component: () => import("@/views/crud/PeriodsView.vue"),
+      meta: {
+        requiresAuth: true,
+        MenuOnly: true,
+        icon: 'pi pi-calendar-clock',
+        roles: ["ADMIN", "SERVICIOS ESCOLARES"]
+      }
+    },
+        {
+      path: '/subjects',
+      name: 'Materias',
+      component: () => import("@/views/crud/SubjectView.vue"),
+      meta: {
+        requiresAuth: true,
+        MenuOnly: true,
+        icon: 'pi pi-book',
+        roles: ["ADMIN", "SERVICIOS ESCOLARES"]
+      }
+    },
+    {
+      path: '/groups',
+      name: 'Grupos',
+      component: () => import("@/views/crud/GroupsView.vue"),
+      meta: {
+        requiresAuth: true,
+        MenuOnly: true,
+        icon: 'pi pi-sitemap',
+        roles: ["ADMIN", "SERVICIOS ESCOLARES", "PROFESOR"]
       }
     },
 
@@ -135,21 +142,32 @@ const router = createRouter({
     {
       path: '/groupStudents/:id',
       name: 'Grupo Alumno',
-      component: () => import("@/views/others/pruebas.vue")
+      component: () => import("@/views/others/pruebas.vue"),
+      meta: {
+        requiresAuth: true,
+        MenuOnly: false,
+        roles: ["ADMIN", "SERVICIOS ESCOLARES"]
+      }
     },
     {
       path: '/subjectsunits/:id',
       name: 'a',
       component: () => import("@/components/crud/SubjectComponents/UnitsView.vue"),
       meta: {
-        requiresAuth: false,
+        requiresAuth: true,
         MenuOnly: false,
+        roles: ["ADMIN", "SERVICIOS ESCOLARES", "PROFESOR"]
       }
     },
     {
       path: '/groupSubjects/:id',
       name: 'Grupos Materias',
       component: () => import("@/views/others/GroupsSubjects.vue"),
+      meta: {
+        requiresAuth: true,
+        MenuOnly: false,
+        roles: ["ADMIN", "SERVICIOS ESCOLARES"]
+      }
     },
     {
       path: '/test',
@@ -160,6 +178,11 @@ const router = createRouter({
       path: '/groupCalifications/:id',
       name: 'Grupos Calificaciones',
       component: () => import("@/views/others/calificacion.vue"),
+      meta: {
+        requiresAuth: true,
+        MenuOnly: false,
+        roles: ["ADMIN", "SERVICIOS ESCOLARES", "PROFESOR"]
+      }
     }
   ],
 })
@@ -181,6 +204,14 @@ router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, n
 
   if (verifyAuth && (to.name === 'login' || to.name === 'register')) {
     return next('/dashboard');
+  }
+
+  if (to.meta.requiresAuth && to.meta.roles) {
+    const userRole = authStore.auth.role;
+    if (!userRole || !to.meta.roles.includes(userRole)) {
+      console.log('No tiene permisos para acceder a esta ruta');
+      return next('/NotFound');
+    }
   }
 
   next();

@@ -14,6 +14,8 @@ import { Button } from 'primevue';
 import { useRouter } from 'vue-router';
 import { GetPeriodActive } from '@/api/services/PeriodsServices';
 import type { IPeriods } from '@/types/Periods';
+import { GetUsers } from '@/utils/helpers.ts'
+import { useAuthStore } from '@/stores/auth/AuthStore.ts'
 
 const toast = useToast();
 const loading = ref<boolean>(false);
@@ -25,6 +27,9 @@ const modalItem = ref<Groups>({} as Groups);
 const idItem = ref<number>(0);
 const periodActive = ref<IPeriods | string>({} as IPeriods);
 const periodNoActive = ref<boolean>(true);
+const auth = useAuthStore();
+const userrole = auth.auth.role;
+
 
 const HandleEdit = async (id: number) => {
   const response = await groupStore.GetStoreGroup(id);
@@ -81,6 +86,7 @@ onMounted(async () => {
   try {
     const res = await groupStore.GetStoreGroups();
     await HandlePeriodActive();
+    await GetUsers();
     if (res?.success) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
@@ -123,11 +129,11 @@ const HandlePeriodActive = async () => {
   <AppLayout>
     <Toast />
     <GeneralTable :loading="loading" title="Grupos" :data="groupStore.groupsList" :columns="columns" @edit="HandleEdit"
-      @delete="HandleDelete" @create="openModalCreate = true" :disabled-create="false" >
+      @delete="HandleDelete" @create="openModalCreate = true" :disabled-create="periodNoActive" >
       <template #customButton="{ data }">
-        <Button v-tooltip="'Agregar Materias'" icon="pi pi-book" severity="warn" variant="outlined" rounded raised
+        <Button v-if="userrole !== 'PROFESOR'" v-tooltip="'Agregar Materias'" icon="pi pi-book" severity="warn" variant="outlined" rounded raised
           class="mr-2" @click="HandleButtonSubject(data.id)" />
-        <Button v-tooltip="'Agregar Alumnos'" icon="pi pi-users" severity="success" variant="outlined" raised rounded
+        <Button v-if="userrole !== 'PROFESOR'" v-tooltip="'Agregar Alumnos'" icon="pi pi-users" severity="success" variant="outlined" raised rounded
           class="mr-2" @click="HandleButtonStudents(data.id)" />
           <Button v-tooltip="'Agregar Calificaciones'" icon="pi pi-users" severity="success" variant="outlined" raised rounded
           class="mr-2" @click="HandleButtonCalifications(data.id)" />

@@ -1,5 +1,6 @@
 import type { Units } from "@/types/Unit";
 import { GenericRequest } from "../GenericRequest";
+import { AuthUser } from '@/utils/helpers.ts'
 
 const urlBase = "Unidades";
 
@@ -7,6 +8,7 @@ export async function GetUnits(id: number) {
   return await GenericRequest<Units[]>({
     url: `${urlBase}/GetUnidadesDeGrupo/${id}`,
     method: "GET",
+    authToken: AuthUser()
   });
 }
 
@@ -14,6 +16,7 @@ export async function GetUnit(id: number) {
   return await GenericRequest<Units>({
     url: `${urlBase}/${id}`,
     method: "GET",
+    authToken: AuthUser()
   });
 }
 
@@ -26,6 +29,7 @@ export async function PostUnit(unit: Units) {
       descripcion: unit.descripcion,
       idMateria: unit.idMateria,
     },
+    authToken: AuthUser()
   });
 }
 
@@ -39,6 +43,7 @@ export async function PutUnit(unit: Units) {
       descripcion: unit.descripcion,
       idMateria: unit.idMateria,
     },
+    authToken: AuthUser()
   });
 }
 
@@ -46,5 +51,6 @@ export async function DeleteUnit(id: number) {
   return await GenericRequest<Units>({
     url: `${urlBase}/${id}`,
     method: "DELETE",
+    authToken: AuthUser()
   });
 }

@@ -1,11 +1,12 @@
 import type { IGroupsStudent } from "@/types/GroupsStudent";
 import { GenericRequest } from "../GenericRequest";
+import { AuthUser } from '@/utils/helpers.ts'
 
 const urlBase = "GruposAlumnos";
 
 // GET: '/GruposAlumnos'
 export async function GetGroupsStudent() {
-  return await GenericRequest<IGroupsStudent[]>({ url: urlBase, method: "GET" });
+  return await GenericRequest<IGroupsStudent[]>({ url: urlBase, method: "GET", authToken: AuthUser()});
 }
 
 // POST: '/GruposAlumnos'
@@ -19,12 +20,13 @@ export async function PostGroupsStudent(groupStudent: IGroupsStudent) {
       idGrupo: groupStudent.idGrupo,
       idAlumno: groupStudent.idAlumno,
     },
+    authToken: AuthUser()
   });
 }
 
 // GET: '/GruposAlumnos/{id}'
 export async function GetGroupStudent(id: number) {
-  return await GenericRequest<IGroupsStudent>({ url: `${urlBase}/${id}`, method: "GET" });
+  return await GenericRequest<IGroupsStudent>({ url: `${urlBase}/${id}`, method: "GET", authToken: AuthUser() });
 }
 
 // PUT: '/GruposAlumnos/{id}'
@@ -39,22 +41,24 @@ export async function PutGroupStudent(groupStudent: IGroupsStudent) {
       idGrupo: groupStudent.idGrupo,
       idAlumno: groupStudent.idAlumno,
     },
+    authToken: AuthUser()
   });
 }
 
 // DELETE: '/GruposAlumnos/{id}'
 export async function DeleteGroupsStudent(id: number, IdStudents: number[]) {
-  return await GenericRequest<IGroupsStudent>({ url: `${urlBase}/DeleteAlumnosEnGrupo/${id}`, method: "DELETE", data: IdStudents });
+  return await GenericRequest<IGroupsStudent>({ url: `${urlBase}/DeleteAlumnosEnGrupo/${id}`, method: "DELETE", data: IdStudents,
+    authToken: AuthUser()});
 }
 
 // GET: '/GruposAlumnos/GetAlumnoSinGrupo'
 export async function GetAlumnoSinGrupo() {
-  return await GenericRequest<IGroupsStudent[]>({ url: `${urlBase}/GetAlumnosSinGrupo`, method: "GET" });
+  return await GenericRequest<IGroupsStudent[]>({ url: `${urlBase}/GetAlumnosSinGrupo`, method: "GET", authToken: AuthUser() });
 }
 
 // GET: '/GruposAlumnos/GetAlumnoConGrupo'
 export async function GetAlumnoConGrupo(id: number) {
-  return await GenericRequest<IGroupsStudent[]>({ url: `${urlBase}/GetAlumnosConGrupo/${id}`, method: "GET" });
+  return await GenericRequest<IGroupsStudent[]>({ url: `${urlBase}/GetAlumnosConGrupo/${id}`, method: "GET", authToken: AuthUser() });
 }
 
 // POST: '/GruposAlumnos/PostAlumnosaGrupo/{id}'
@@ -63,5 +67,6 @@ export async function PostAlumnosaGrupo(id: number, idAlumnos: number[]) {
     url: `${urlBase}/PostAlumnosaGrupo/${id}`,
     method: "POST",
     data: idAlumnos,
+    authToken: AuthUser()
   });
 }

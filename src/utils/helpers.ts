@@ -7,6 +7,7 @@ import { useSubjectStore } from '@/stores/SubjectStore';
 import { useCoursesStore } from '@/stores/CoursesStore';
 import { useUserStore } from '@/stores/userStore';
 import { useUnitsStore } from '@/stores/UnitStore';
+import { useAuthStore } from '@/stores/auth/AuthStore.ts'
 
 const groupStore = useGroupsStore();
 const schoolYearStore = useSchoolYearStore();
@@ -17,6 +18,7 @@ const periodsStore = usePeriodsStore();
 const courseStore = useCoursesStore();
 const usersStore = useUserStore();
 const UnitStore = useUnitsStore();
+const authStore = useAuthStore();
 
 
 export const GetPersons = async () => {
@@ -63,3 +65,13 @@ export const GetCourses = async () => {
 export const GetUnits = async (id: number) => {
   return await UnitStore.GetStoreUnits(id);
 };
+
+export const AuthUser = () => {
+  return authStore.auth.accessToken;
+}
+
+export const AuthUserId = () => {
+  return authStore.auth.id;
+}
+
+

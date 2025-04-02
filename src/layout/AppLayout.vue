@@ -16,6 +16,19 @@ const isMobile = ref<boolean>(false);
 const periodNoActive = ref<boolean>(true);
 const periodActive = ref<IPeriods>({} as IPeriods)
 const router = useRouter();
+const auth = useAuthStore();
+const userRole = computed(() => auth.auth?.role || null);
+
+const filteredRoutes = computed(() => {
+  return router.options.routes.filter((route) => {
+    return (
+      route.meta?.MenuOnly &&
+      route.meta?.roles &&
+      userRole.value &&
+      route.meta.roles.includes(userRole.value)
+    );
+  });
+});
 
 const hoursReal = () => {
   const now = new Date();
@@ -84,7 +97,6 @@ const HandlePeriodActive = async () => {
 
 const HandleLogout = () => {
   router.push("/login")
-  const auth = useAuthStore()
   auth.logout();
 }
 
@@ -102,19 +114,30 @@ const HandleLogout = () => {
       <AppLogo v-show="!isSidebarCollapsed && !isMobile" :route="true" :redirect="'/dashboard'" :class="'w-full'" />
 
       <nav class="mt-4" :class="[isSidebarCollapsed ? 'space-y-2' : 'space-y-1']">
-        <RouterLink v-for="route in RoutesOnlyMenu" :key="route.path" :to="route.path"
+        <RouterLink
+          v-for="route in filteredRoutes"
+          :key="route.path"
+          :to="route.path"
           v-tooltip="isSidebarCollapsed ? { value: route.name, class: '' } : null"
-          class="mt-1 block py-3 hover:bg-[#10b981bb] hover:text-white" :class="[
-            $route.path === route.path ? 'bg-[#10b98170] text-[#186219]' : '',
-            isSidebarCollapsed ? 'px-4 text-center' : 'px-4',
-          ]" style="transition: background-color 0.2s ease-in, color 0.2s ease-in;">
-          <i :class="[
-            route.icon,
-            isSidebarCollapsed ? 'text-base' : (isMobile ? 'text-sm' : 'text-base'),
-          ]"></i>
-          <span v-if="!isSidebarCollapsed" :class="[isMobile ? 'text-sm ml-2' : 'text-base ml-3']">
-            {{ route.name }}
-          </span>
+          class="mt-1 block py-3 hover:bg-[#10b981bb] hover:text-white"
+          :class="[
+        $route.path === route.path ? 'bg-[#10b98170] text-[#186219]' : '',
+        isSidebarCollapsed ? 'px-4 text-center' : 'px-4',
+      ]"
+          style="transition: background-color 0.2s ease-in, color 0.2s ease-in;"
+        >
+          <i
+            :class="[
+          route.meta?.icon,
+          isSidebarCollapsed ? 'text-base' : (isMobile ? 'text-sm' : 'text-base'),
+        ]"
+          ></i>
+          <span
+            v-if="!isSidebarCollapsed"
+            :class="[isMobile ? 'text-sm ml-2' : 'text-base ml-3']"
+          >
+        {{ route.name }}
+      </span>
         </RouterLink>
       </nav>
     </div>
