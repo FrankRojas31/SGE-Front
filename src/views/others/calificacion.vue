@@ -1,20 +1,21 @@
 <template>
   <AppLayout>
     <div class="sistema-calificaciones container mx-auto p-6">
-      <div class="flex flex-column md:flex-row justify-content-between gap-3 mb-4">
-        <div class="flex flex-column sm:flex-row gap-2 align-items-center">
+      <div class="flex flex-col md:flex-row items-center gap-3 mb-4">
+        <div class="flex flex-col sm:flex-row gap-2 items-center">
+          <Button icon="pi pi-arrow-left" class="p-button-text p-button-rounded p-button-lg mr-3" @click="goBack" />
           <h1 class="text-3xl font-bold text-gray-800">Grupo: {{ group?.nombre || 'Cargando...' }}</h1>
-          <p>Descripción: {{ group?.descripcion || 'N/A' }}</p>
+          <p v-if="materiasGrupo.length === 0" class="text-red-500 mt-2">No se encontraron materias para este grupo.</p>
+        </div>
+        <div class="ml-auto">
           <Select
             v-if="materiasGrupo.length > 0"
             v-model="materiaSeleccionada"
             :options="materiasOpciones"
             optionLabel="nombre"
             placeholder="Seleccionar materia"
-            class="w-full sm:w-14rem"
-            showClear
+            class="p-1 px-7"
           />
-          <p v-if="materiasGrupo.length === 0" class="text-red-500 mt-2">No se encontraron materias para este grupo.</p>
         </div>
       </div>
 
@@ -154,7 +155,7 @@
       </Card>
 
       <div class="text-sm text-gray-500 text-center mt-3">
-        Total: {{ students.length }} alumnos | Última actualización: 26/03/2025
+        Total: {{ students.length }} alumnos
       </div>
     </div>
   </AppLayout>
@@ -162,7 +163,7 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, watch, computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router'
 import { GetGroup } from '@/utils/helpers';
 import { useGroupsStudentStore } from '@/stores/GroupsStudentStore';
 import { useGroupsSubjectStore } from '@/stores/GroupsSubjectsStore';
@@ -176,13 +177,18 @@ import type { IStudent } from '@/types/Students';
 import type { ISubject } from '@/types/Subject';
 import type { Units } from '@/types/Unit';
 import type { ICalifications } from '@/types/Califications';
+import Button from 'primevue/button'
 
 // Instancias
 const route = useRoute();
+const router = useRouter()
 const groupsStudentStore = useGroupsStudentStore();
 const groupsSubjectStore = useGroupsSubjectStore();
 const subjectStore = useSubjectStore();
 const calificationsStore = useCalificationsStore();
+const goBack = () => {
+  router.push('/groups');
+};
 
 // Variables reactivas
 const groupId = ref(Number(route.params.id));

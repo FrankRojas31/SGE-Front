@@ -101,10 +101,18 @@ export async function GenericRequest<T>({
     const { useAuthStore } = await import("@/stores/auth/AuthStore");
     const authStore = useAuthStore();
 
+    let errorMessage: string;
+    if (error instanceof AxiosError) {
+      errorMessage = error.message || "Error desconocido en la solicitud Axios";
+    } else {
+      errorMessage = String(error) || "Error desconocido";
+    }
+
     await axios.post(`${baseURL}/ErrorsLogs`, {
-      idUsuario: authStore.auth.id,
-      error: error,
-      timestamp: Date.now(),
+      idUsuario: authStore.auth.id ?? "sin identificar",
+      error: errorMessage,
+      timestamp: Date.now().toLocaleString('dd-MM-yyyy'),
+      esBorrado: false,
     });
 
     if (error instanceof AxiosError) {

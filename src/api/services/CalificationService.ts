@@ -1,5 +1,6 @@
 import type { ICalifications } from '@/types/Califications';
 import { GenericRequest } from '../GenericRequest';
+import { AuthUser } from '@/utils/helpers.ts'
 
 const urlBase = "Calificaciones";
 
@@ -8,6 +9,7 @@ export async function GetCalifications() {
   return await GenericRequest<ICalifications[]>({
     url: `${urlBase}`,
     method: 'GET',
+    authToken: AuthUser()
   });
 }
 
@@ -22,6 +24,7 @@ export async function PostCalification(calificacion: ICalifications) {
       idAlumno: calificacion.idAlumno,
       idUnidad: calificacion.idUnidad
     },
+    authToken: AuthUser()
   });
 }
 
@@ -30,6 +33,7 @@ export async function GetCalification(id: number) {
   return await GenericRequest<ICalifications>({
     url: `${urlBase}/${id}`,
     method: 'GET',
+    authToken: AuthUser()
   });
 }
 
@@ -44,6 +48,7 @@ export async function PutCalification(calificacion: ICalifications) {
       idAlumno: calificacion.idAlumno,
       idUnidad: calificacion.idUnidad
     },
+    authToken: AuthUser()
   });
 }
 
@@ -52,5 +57,6 @@ export async function DeleteCalification(id: number) {
   return await GenericRequest<ICalifications>({
     url: `${urlBase}/${id}`,
     method: 'DELETE',
+    authToken: AuthUser()
   });
 }

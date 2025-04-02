@@ -1,11 +1,12 @@
 import type { IStudent } from "@/types/Students";
 import { GenericRequest } from "../GenericRequest";
+import { AuthUser } from '@/utils/helpers.ts'
 
 const urlBase = "Alumno";
 
 // GET: '/Alumnos'
 export async function GetStudents(){
-  return await GenericRequest<IStudent[]>({ url: `${urlBase}/GetAlumnosDatosCompletos`, method: "GET" });
+  return await GenericRequest<IStudent[]>({ url: `${urlBase}/GetAlumnosDatosCompletos`, method: "GET", authToken: AuthUser() });
 }
 
 // POST: '/Alumnos/{
@@ -19,12 +20,14 @@ export async function PostStudent(student: IStudent){
     idCursoEscolar: student.idCursoEscolar,
     contactoEmergencia: student.contactoEmergencia,
     necesidadesEspeciales: student.necesidadesEspeciales,
-  }});
+  },
+    authToken: AuthUser()
+  });
 }
 
 // GET: '/Alumnos/5
 export async function GetStudent(id: number){
-  return await GenericRequest<IStudent>({ url: `${urlBase}/GetAlumnoDatosCompletos/${id}`, method: "GET"})
+  return await GenericRequest<IStudent>({ url: `${urlBase}/GetAlumnoDatosCompletos/${id}`, method: "GET", authToken: AuthUser()})
 }
 
 //PUT: '/Alumno/5
@@ -37,10 +40,12 @@ export async function PutStudent(student: IStudent){
     idCursoEscolar: student.idCursoEscolar,
     contactoEmergencia: student.contactoEmergencia,
     necesidadesEspeciales: student.necesidadesEspeciales,
-  }});
+  },
+    authToken: AuthUser()
+  });
 }
 
 //DELETE: '/Alumno/5'
 export async function DeleteStudent(id: number) {
-  return await GenericRequest<IStudent>({ url: `${urlBase}/${id}`, method: 'DELETE'});
+  return await GenericRequest<IStudent>({ url: `${urlBase}/${id}`, method: 'DELETE', authToken: AuthUser()});
 }

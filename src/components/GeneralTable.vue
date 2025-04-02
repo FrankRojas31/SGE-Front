@@ -6,6 +6,11 @@ import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
+import { useAuthStore } from '@/stores/auth/AuthStore.ts'
+
+const auth = useAuthStore();
+const userrole = auth.auth.role;
+const role = userrole;
 
 interface ColumnConfig<T> {
   field: keyof T;
@@ -70,8 +75,8 @@ const tableAriaLabel = 'Tabla de datos interactiva';
             aria-label="Campo de búsqueda global" />
         </IconField>
 
-        <Button label="Nuevo" icon="pi pi-plus" class="p-button-raised p-button-success w-full sm:w-auto min-w-[100px]"
-          @click="$emit('create')" aria-label="Crear nuevo registro" :disabled="props.disabledCreate" />
+        <Button v-if="role !== 'PROFESOR'" label="Nuevo" icon="pi pi-plus" class="p-button-raised p-button-success w-full sm:w-auto min-w-[100px]"
+          @click="$emit('create')" aria-label="Crear nuevo registro" />
       </div>
     </div>
 
@@ -103,9 +108,9 @@ const tableAriaLabel = 'Tabla de datos interactiva';
         <Column header="Acciones">
           <template #body="{ data }">
             <slot name="customButton" :data="data" />
-            <Button v-tooltip="'Editar'" class="mr-2" icon="pi pi-pencil" severity="success" rounded raised
+            <Button v-if="role !== 'PROFESOR'" v-tooltip="'Editar'" class="mr-2" icon="pi pi-pencil" severity="success" rounded raised
               @click="$emit('edit', data.id)" aria-label="Editar registro" />
-            <Button v-tooltip="'Eliminar'" icon="pi pi-trash" severity="danger" rounded raised
+            <Button v-if="role !== 'PROFESOR'" v-tooltip="'Eliminar'" icon="pi pi-trash" severity="danger" rounded raised
               @click="$emit('delete', data.id)" aria-label="Eliminar registro" />
           </template>
         </Column>

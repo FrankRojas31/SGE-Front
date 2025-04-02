@@ -7,5 +7,6 @@ declare module 'vue-router' {
     requiresAuth: boolean
     MenuOnly: boolean
     icon?: string
+    roles?: string[]
   }
 }
