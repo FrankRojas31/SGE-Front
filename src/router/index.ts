@@ -193,6 +193,7 @@ router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, n
   const publicRoutes = ['/', '/login', '/register', '/NotFound'];
   const requiresAuth = !publicRoutes.includes(to.path);
   const isFirstLoad = from.name === null;
+  const userRole = authStore.auth.role;
 
   if (isFirstLoad && to.path === '/') {
     return next(verifyAuth ? '/dashboard' : '/login');
@@ -203,11 +204,13 @@ router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, n
   }
 
   if (verifyAuth && (to.name === 'login' || to.name === 'register')) {
-    return next('/dashboard');
+    if(userRole === 'ADMIN' || userRole === 'SERVICIOS ESCOLARES')
+      return next('/dashboard');
+    else
+      return next('/groups');
   }
 
   if (to.meta.requiresAuth && to.meta.roles) {
-    const userRole = authStore.auth.role;
     if (!userRole || !to.meta.roles.includes(userRole)) {
       console.log('No tiene permisos para acceder a esta ruta');
       return next('/NotFound');

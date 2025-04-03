@@ -1,4 +1,11 @@
-import { DeletePeriod, GetPeriod, GetPeriods, PostPeriod, PutPeriod } from "@/api/services/PeriodsServices";
+import {
+  DeletePeriod,
+  GetPeriod,
+  GetPeriodActive,
+  GetPeriods,
+  PostPeriod,
+  PutPeriod
+} from '@/api/services/PeriodsServices'
 import type { IPeriods } from "@/types/Periods";
 import { defineStore } from "pinia";
 import { ref } from "vue";
@@ -6,6 +13,18 @@ import { ref } from "vue";
 export const usePeriodsStore = defineStore("Periods", () => {
   const periodsList = ref<IPeriods[]>([]);
   const period = ref<IPeriods>({} as IPeriods);
+  const periodActive = ref<IPeriods>({} as IPeriods);
+
+  async function GetStorePeriodActive() {
+    const response = await GetPeriodActive();
+
+    if(response?.success){
+      periodActive.value = response.data;
+      return response;
+    }
+
+    return response;
+  }
 
   async function GetStorePeriods() {
     const response = await GetPeriods();
@@ -57,6 +76,6 @@ export const usePeriodsStore = defineStore("Periods", () => {
     return response;
   }
 
-  return { GetStorePeriods, PostStorePeriod, GetStorePeriod, PutStorePeriod, DeleteStorePeriod, periodsList, period };
+  return { GetStorePeriodActive, GetStorePeriods, PostStorePeriod, GetStorePeriod, PutStorePeriod, DeleteStorePeriod, periodsList, period, periodActive };
 
 });
