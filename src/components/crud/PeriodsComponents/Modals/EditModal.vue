@@ -21,7 +21,7 @@ const statusOptions = computed(() =>
   Object.entries(estatusPeriodo)
     .filter(([key]) => isNaN(Number(key)))
     .map(([key, value]) => ({
-      label: key.replace("_", " "),
+      label: key.replace("_", "_"),
       value: Number(value)
     }))
 );
@@ -29,6 +29,15 @@ const statusOptions = computed(() =>
 const dateFirst = ref(new Date(props.modalItem.fechaInicio));
 const dateEnd = ref(new Date(props.modalItem.fechaFin));
 const errors = ref<Record<string, string>>({});
+const selectedStatus = ref<number | null>(null);
+
+watch(() => props.modalItem.estatusPeriodo, (newStatus) => {
+  selectedStatus.value = statusOptions.value.find(option => option.label === newStatus)?.value ?? null;
+}, { immediate: true });
+
+watch(selectedStatus, (newValue) => {
+  props.modalItem.estatusPeriodo = statusOptions.value.find(option => option.value === newValue)?.label ?? "";
+});
 
 watch(() => props.modalItem.fechaInicio, (newVal) => {
   dateFirst.value = new Date(newVal);
@@ -123,7 +132,7 @@ const HandleCancel = () => {
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Estado</label>
       <Select :options="statusOptions" optionLabel="label" optionValue="value" class="w-full"
-        v-model="props.modalItem.estatusPeriodo" :class="{ 'p-invalid': errors.estatusPeriodo }" />
+        v-model="selectedStatus" :class="{ 'p-invalid': errors.estatusPeriodo }" />
       <small v-if="errors.estatusPeriodo" class="text-red-500 text-sm mt-1">{{ errors.estatusPeriodo }}</small>
     </div>
 

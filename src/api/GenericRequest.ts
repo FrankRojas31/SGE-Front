@@ -111,7 +111,7 @@ export async function GenericRequest<T>({
     await axios.post(`${baseURL}/ErrorsLogs`, {
       idUsuario: authStore.auth.id ?? "sin identificar",
       error: errorMessage,
-      timestamp: Date.now().toLocaleString('dd-MM-yyyy'),
+      timestamp: new Date().toISOString(),
       esBorrado: false,
     });
 

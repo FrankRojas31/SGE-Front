@@ -89,7 +89,6 @@ const FormatDate = () => {
   return periodsStore.periodsList.map((period) => {
     return {
       ...period,
-      estatusPeriodo: estatusPeriodo[period.estatusPeriodo],
       fechaInicio: new Date(period.fechaInicio).toLocaleDateString(),
       fechaFin: new Date(period.fechaFin).toLocaleDateString()
     }

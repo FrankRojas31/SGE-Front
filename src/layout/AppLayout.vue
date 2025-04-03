@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import AppLogo from '@/components/global/AppLogo.vue';
 import SimpleLogo from '@/components/global/SimpleLogo.vue';
-import { ref, onMounted, onUnmounted, computed, onBeforeMount } from 'vue';
+import { ref, onMounted, onUnmounted, computed, onBeforeMount, watch } from 'vue'
 import { useRouter } from 'vue-router';
 import MessageStatic from '@/components/helpers/MessageStatic.vue'
 import { GetPeriodActive } from '@/api/services/PeriodsServices.ts'
 import type { IPeriods } from '@/types/Periods';
 import { useAuthStore } from '@/stores/auth/AuthStore';
+import { PeriodActive } from '@/utils/helpers.ts'
+import { usePeriodsStore } from '@/stores/PeriodsStore.ts'
 
 const date = ref('');
 const showDropdown = ref(false);
@@ -14,10 +16,11 @@ const isSidebarCollapsed = ref(false);
 const currentYear = new Date().getFullYear();
 const isMobile = ref<boolean>(false);
 const periodNoActive = ref<boolean>(true);
-const periodActive = ref<IPeriods>({} as IPeriods)
 const router = useRouter();
 const auth = useAuthStore();
 const userRole = computed(() => auth.auth?.role || null);
+const period = usePeriodsStore();
+const periodcast = computed(() => period.periodActive || { nombre: 'Cargando...' });
 
 const filteredRoutes = computed(() => {
   return router.options.routes.filter((route) => {
@@ -50,15 +53,6 @@ const toggleSidebar = () => {
   isSidebarCollapsed.value = !isSidebarCollapsed.value;
 };
 
-const RoutesOnlyMenu = computed(() => {
-  return useRouter().options.routes
-    .filter((x) => x.meta?.MenuOnly === true)
-    .map((route) => ({
-      ...route,
-      icon: route.meta?.icon || 'pi pi-circle'
-    }));
-});
-
 const updateMobile = async () => {
   isMobile.value = window.innerWidth <= 768;
   if (isMobile.value) {
@@ -72,7 +66,6 @@ onBeforeMount(async () => {
 })
 
 onMounted(async () => {
-  await HandlePeriodActive();
   hoursReal();
   setInterval(hoursReal, 1000);
   document.addEventListener('click', closeDropdown);
@@ -83,17 +76,18 @@ onUnmounted(async () => {
   window.removeEventListener('resize', updateMobile);
 });
 
-const HandlePeriodActive = async () => {
-  const response = await GetPeriodActive();
-  if (response?.success) {
-    if (response.data != null) {
-      periodNoActive.value = false;
-      periodActive.value = response.data;
-    } else {
-      periodNoActive.value = true;
-    }
-  }
+const LoadPeriod = async () => {
+  const response = await PeriodActive();
+  periodNoActive.value = response!.data == null;
 }
+
+watch(
+  () => period.periodActive,
+  async (newPeriod) => {
+    await LoadPeriod();
+  },
+  { immediate: true }
+);
 
 const HandleLogout = () => {
   router.push("/login")
@@ -177,7 +171,7 @@ const HandleLogout = () => {
             :message="`¡Actualmente, no se encuentra un período activo registrado en el sistema. Le recomendamos verificar la configuración o ponerse en contacto con el soporte técnico si necesita asistencia adicional! `"
             icon="pi pi-spin pi-cog" severity="warn" />
           <MessageStatic v-show="!periodNoActive"
-            :message="`¡El período que está vigente de manera oficial en el presente corresponde al denominado: ${periodActive.nombre}!`"
+            :message="`¡El período que está vigente de manera oficial en el presente corresponde al denominado: ${periodcast.nombre}!`"
             icon="pi pi-spin pi-cog" severity="success" />
         </div>
         <slot></slot>
