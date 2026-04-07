@@ -1,0 +1,73 @@
+import type { Units } from '@/types/Unit'
+import { GenericRequest } from '../GenericRequest'
+import { AuthUser } from '@/utils/helpers.ts'
+import { isMockEnabled } from '../config/mock.config'
+import {
+  GetUnitsMock,
+  GetUnitMock,
+  PostUnitMock,
+  PutUnitMock,
+  DeleteUnitMock,
+} from '../mocks/unitService.mock'
+
+const urlBase = 'Unidades'
+
+export async function GetUnits(id: number) {
+  if (isMockEnabled()) return GetUnitsMock(id)
+
+  return await GenericRequest<Units[]>({
+    url: `${urlBase}/GetUnidadesDeGrupo/${id}`,
+    method: 'GET',
+    authToken: AuthUser(),
+  })
+}
+
+export async function GetUnit(id: number) {
+  if (isMockEnabled()) return GetUnitMock(id)
+
+  return await GenericRequest<Units>({
+    url: `${urlBase}/${id}`,
+    method: 'GET',
+    authToken: AuthUser(),
+  })
+}
+
+export async function PostUnit(unit: Units) {
+  if (isMockEnabled()) return PostUnitMock(unit)
+
+  return await GenericRequest<Units>({
+    url: urlBase,
+    method: 'POST',
+    data: {
+      nombre: unit.nombre,
+      descripcion: unit.descripcion,
+      idMateria: unit.idMateria,
+    },
+    authToken: AuthUser(),
+  })
+}
+
+export async function PutUnit(unit: Units) {
+  if (isMockEnabled()) return PutUnitMock(unit)
+
+  return await GenericRequest<Units>({
+    url: `${urlBase}/${unit.id}`,
+    method: 'PUT',
+    data: {
+      id: unit.id,
+      nombre: unit.nombre,
+      descripcion: unit.descripcion,
+      idMateria: unit.idMateria,
+    },
+    authToken: AuthUser(),
+  })
+}
+
+export async function DeleteUnit(id: number) {
+  if (isMockEnabled()) return DeleteUnitMock(id)
+  return await GenericRequest<Units>({
+    url: `${urlBase}/${id}`,
+    method: 'DELETE',
+    authToken: AuthUser(),
+  })
+}

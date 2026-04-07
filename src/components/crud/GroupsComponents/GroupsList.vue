@@ -5,14 +5,17 @@ import AppLayout from '@/layout/AppLayout.vue';
 import { useGroupsStore } from '@/stores/GroupsStore';
 import { useToast } from "primevue/usetoast";
 import Toast from 'primevue/toast';
-import { columns } from '@/components/crud/GroupsComponents/TableColumnsGroups';
-import { GetGroups } from '@/utils/helpers';
+import { columns } from '@/components/crud/GroupsComponents/TableColumns';
 import type { Groups } from '@/types/Groups';
 import DeleteModal from '@/components/crud/DeleteModal.vue';
-import CreateModal from './GroupsComponents/CreateModalGroups.vue';
-import EditModalGroups from '@/components/crud/GroupsComponents/EditModalGroups.vue';
+import CreateModal from './Modals/CreateModalGroups.vue';
+import EditModalGroups from '@/components/crud/GroupsComponents/Modals/EditModalGroups.vue';
 import { Button } from 'primevue';
 import { useRouter } from 'vue-router';
+import { GetPeriodActive } from '@/api/services/PeriodsServices';
+import type { IPeriods } from '@/types/Periods';
+import { GetUsers } from '@/utils/helpers.ts'
+import { useAuthStore } from '@/stores/auth/AuthStore.ts'
 
 const toast = useToast();
 const loading = ref<boolean>(false);
@@ -22,8 +25,12 @@ const openModalEdit = ref<boolean>(false);
 const openModalDelete = ref<boolean>(false);
 const modalItem = ref<Groups>({} as Groups);
 const idItem = ref<number>(0);
+const periodActive = ref<IPeriods | string>({} as IPeriods);
+const periodNoActive = ref<boolean>(true);
+const auth = useAuthStore();
+const userrole = auth.auth.role;
 
-// Acción para editar un grupo
+
 const HandleEdit = async (id: number) => {
   const response = await groupStore.GetStoreGroup(id);
   if (response?.success) {
@@ -34,9 +41,6 @@ const HandleEdit = async (id: number) => {
   }
 };
 
-
-
-// Confirmación de edición
 const EditConfirm = async (group: Groups) => {
   const response = await groupStore.PutStoreGroup(group);
   if (response?.success) {
@@ -47,7 +51,6 @@ const EditConfirm = async (group: Groups) => {
   }
 };
 
-// Confirmación de creación
 const CreateConfirm = async (group: Groups) => {
   const response = await groupStore.PostStoreGroup(group);
   if (response?.success) {
@@ -58,10 +61,6 @@ const CreateConfirm = async (group: Groups) => {
   }
 };
 
-
-
-
-// Acción para eliminar un grupo
 const HandleDelete = async (id: number) => {
   const response = await groupStore.GetStoreGroup(id);
   if (response?.success) {
@@ -72,7 +71,6 @@ const HandleDelete = async (id: number) => {
   }
 };
 
-// Confirmación de eliminación
 const DeleteConfirm = async (id: number) => {
   const response = await groupStore.DeleteStoreGroup(id);
   if (response?.success) {
@@ -83,12 +81,12 @@ const DeleteConfirm = async (id: number) => {
   }
 };
 
-
-// Cargar los grupos al montar el componente
 onMounted(async () => {
   loading.value = true;
   try {
-    const res = await GetGroups();
+    const res = await groupStore.GetStoreGroups();
+    await HandlePeriodActive();
+    await GetUsers();
     if (res?.success) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
@@ -101,9 +99,28 @@ onMounted(async () => {
 
 const router = useRouter();
 
-const HandleButton = (id: number) => {
-  console.log(id);
-  router.push(`groupsstudents/${id}`)
+const HandleButtonStudents = (id: number) => {
+  router.push(`/groupStudents/${id}`)
+}
+
+const HandleButtonSubject = (id: number) => {
+  router.push(`/groupSubjects/${id}`)
+}
+
+const HandleButtonCalifications = (id: number) => {
+  router.push(`/groupCalifications/${id}`)
+}
+
+const HandlePeriodActive = async () => {
+  const response = await GetPeriodActive();
+  if (response?.success) {
+    if(response.data != null) {
+      periodNoActive.value = false;
+      periodActive.value = response.data;
+    } else {
+      periodNoActive.value = true;
+    }
+  }
 }
 
 </script>
@@ -112,17 +129,20 @@ const HandleButton = (id: number) => {
   <AppLayout>
     <Toast />
     <GeneralTable :loading="loading" title="Grupos" :data="groupStore.groupsList" :columns="columns" @edit="HandleEdit"
-      @delete="HandleDelete" @create="openModalCreate = true">
+      @delete="HandleDelete" @create="openModalCreate = true" :disabled-create="periodNoActive" >
       <template #customButton="{ data }">
-        <Button icon="pi pi-users" rounded class="mr-2" @click="HandleButton(data.id)" />
+        <Button v-if="userrole !== 'PROFESOR'" v-tooltip="'Agregar Materias'" icon="pi pi-book" severity="warn" variant="outlined" rounded raised
+          class="mr-2" @click="HandleButtonSubject(data.id)" />
+        <Button v-if="userrole !== 'PROFESOR'" v-tooltip="'Agregar Alumnos'" icon="pi pi-users" severity="success" variant="outlined" raised rounded
+          class="mr-2" @click="HandleButtonStudents(data.id)" />
+          <Button v-tooltip="'Agregar Calificaciones'" icon="pi pi-users" severity="success" variant="outlined" raised rounded
+          class="mr-2" @click="HandleButtonCalifications(data.id)" />
       </template>
     </GeneralTable>
 
     <CreateModal :showModal="openModalCreate" @close="openModalCreate = false" @create="CreateConfirm" />
-
     <EditModalGroups :modalItem="modalItem" :showModal="openModalEdit" @close="openModalEdit = false"
       @update="EditConfirm" />
-
     <DeleteModal :showModal="openModalDelete" :id="idItem" @close="openModalDelete = false" @delete="DeleteConfirm" />
   </AppLayout>
 </template>

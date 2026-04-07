@@ -6,6 +6,11 @@ import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
+import { useAuthStore } from '@/stores/auth/AuthStore.ts'
+
+const auth = useAuthStore();
+const userrole = auth.auth.role;
+const role = userrole;
 
 interface ColumnConfig<T> {
   field: keyof T;
@@ -15,7 +20,7 @@ interface ColumnConfig<T> {
 }
 
 interface TableData {
-  id: number;
+  id: number | string;
   [key: string]: any;
 }
 
@@ -24,6 +29,7 @@ const props = defineProps<{
   data: TableData[];
   columns: ColumnConfig<TableData>[];
   loading?: boolean;
+  disabledCreate?: boolean;
 }>();
 
 defineEmits<{
@@ -69,7 +75,7 @@ const tableAriaLabel = 'Tabla de datos interactiva';
             aria-label="Campo de búsqueda global" />
         </IconField>
 
-        <Button label="Nuevo" icon="pi pi-plus" class="p-button-raised p-button-success w-full sm:w-auto min-w-[100px]"
+        <Button v-if="role !== 'PROFESOR'" label="Nuevo" icon="pi pi-plus" class="p-button-raised p-button-success w-full sm:w-auto min-w-[100px]"
           @click="$emit('create')" aria-label="Crear nuevo registro" />
       </div>
     </div>
@@ -102,10 +108,10 @@ const tableAriaLabel = 'Tabla de datos interactiva';
         <Column header="Acciones">
           <template #body="{ data }">
             <slot name="customButton" :data="data" />
-            <Button class="mr-2" icon="pi pi-pencil" severity="success" rounded @click="$emit('edit', data.id)"
-              aria-label="Editar registro" />
-            <Button icon="pi pi-trash" severity="danger" rounded @click="$emit('delete', data.id)"
-              aria-label="Eliminar registro" />
+            <Button v-if="role !== 'PROFESOR'" v-tooltip="'Editar'" class="mr-2" icon="pi pi-pencil" severity="success" rounded raised
+              @click="$emit('edit', data.id)" aria-label="Editar registro" />
+            <Button v-if="role !== 'PROFESOR'" v-tooltip="'Eliminar'" icon="pi pi-trash" severity="danger" rounded raised
+              @click="$emit('delete', data.id)" aria-label="Eliminar registro" />
           </template>
         </Column>
       </DataTable>

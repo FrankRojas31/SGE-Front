@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import CoursesList from '@/components/crud/CoursesList.vue';
+import CoursesList from '@/components/crud/CoursesComponents/CoursesList.vue';
 </script>
 <template>
   <div>

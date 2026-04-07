@@ -15,16 +15,16 @@ import { columnsPerson } from '@/components/crud/PersonComponents/TableColumns'
 const toast = useToast()
 const loading = ref(false)
 const personsStore = usePersonStore()
-const showCreateModal = ref(false)
-const showEditModal = ref(false)
-const showDeleteModal = ref(false)
+const openCreateModal = ref(false)
+const openEditModal = ref(false)
+const openDeleteModal = ref(false)
 const modalItem = ref<IPerson>({} as IPerson)
 const idItem = ref<number>(0)
 
 const HandleEdit = async (id: number) => {
   const response = await personsStore.GetStorePerson(id)
   if (response?.success) {
-    showEditModal.value = true
+    openEditModal.value = true
     modalItem.value = response.data
   } else {
     toast.add({
@@ -39,7 +39,7 @@ const HandleEdit = async (id: number) => {
 const EditConfirm = async (person: IPerson) => {
   const response = await personsStore.PutStorePerson(person)
   if (response?.success) {
-    showEditModal.value = false
+    openEditModal.value = false
     toast.add({
       severity: 'success',
       summary: '¡Actualizado Correctamente!',
@@ -59,7 +59,7 @@ const EditConfirm = async (person: IPerson) => {
 const CreateConfirm = async (person: IPerson) => {
   const response = await personsStore.PostStorePerson(person)
   if (response?.success) {
-    showCreateModal.value = false
+    openCreateModal.value = false
     toast.add({
       severity: 'success',
       summary: '¡Creado Correctamente!',
@@ -79,7 +79,7 @@ const CreateConfirm = async (person: IPerson) => {
 const HandleDelete = async (id: number) => {
   const response = await personsStore.GetStorePerson(id)
   if (response?.success) {
-    showDeleteModal.value = true
+    openDeleteModal.value = true
     idItem.value = id
   } else {
     toast.add({
@@ -94,7 +94,7 @@ const HandleDelete = async (id: number) => {
 const DeleteConfirm = async (id: number) => {
   const response = await personsStore.DeleteStorePerson(id)
   if (response?.success) {
-    showDeleteModal.value = false
+    openDeleteModal.value = false
     toast.add({
       severity: 'success',
       summary: '¡Eliminado Correctamente!',
@@ -133,20 +133,18 @@ onMounted(async () => {
     loading.value = false
   }
 })
+
 </script>
 
 <template>
   <AppLayout>
     <Toast />
-    <GeneralTable :loading="loading" :title="'Personas'" :data="FormatDate()" :columns="columnsPerson" @edit="HandleEdit"
-      @delete="HandleDelete" @create="showCreateModal = true" />
+    <GeneralTable :loading="loading" :title="'Personas'" :data="FormatDate()" :columns="columnsPerson"
+      @edit="HandleEdit" @delete="HandleDelete" @create="openCreateModal = true" />
 
-    <CreateModal :showModal="showCreateModal" @close="showCreateModal = false" @create="CreateConfirm"
-      @update="EditConfirm" @update:visible="showCreateModal = false" />
-    <EditModal :showModal="showEditModal" :modalItem="modalItem" @close="showEditModal = false" @update="EditConfirm"
-      @update:visible="showEditModal = false" />
-
-    <DeleteModal :showModal="showDeleteModal" :id="idItem" @close="showDeleteModal = false" @delete="DeleteConfirm"
-      @update:visible="showDeleteModal = false" />
+    <CreateModal :showModal="openCreateModal" @close="openCreateModal = false" @create="CreateConfirm"
+      @update="EditConfirm" />
+    <EditModal :showModal="openEditModal" :modalItem="modalItem" @close="openEditModal = false" @update="EditConfirm" />
+    <DeleteModal :showModal="openDeleteModal" :id="idItem" @close="openDeleteModal = false" @delete="DeleteConfirm" />
   </AppLayout>
 </template>

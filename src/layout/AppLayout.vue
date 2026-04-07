@@ -1,14 +1,38 @@
 <script setup lang="ts">
 import AppLogo from '@/components/global/AppLogo.vue';
 import SimpleLogo from '@/components/global/SimpleLogo.vue';
-import { ref, onMounted, onUnmounted, computed, onBeforeMount } from 'vue';
+import { ref, onMounted, onUnmounted, computed, onBeforeMount, watch } from 'vue'
 import { useRouter } from 'vue-router';
+import MessageStatic from '@/components/helpers/MessageStatic.vue'
+import { GetPeriodActive } from '@/api/services/PeriodsServices.ts'
+import type { IPeriods } from '@/types/Periods';
+import { useAuthStore } from '@/stores/auth/AuthStore';
+import { PeriodActive } from '@/utils/helpers.ts'
+import { usePeriodsStore } from '@/stores/PeriodsStore.ts'
+import { isMockEnabled } from '@/api/config/mock.config'
 
 const date = ref('');
 const showDropdown = ref(false);
 const isSidebarCollapsed = ref(false);
 const currentYear = new Date().getFullYear();
 const isMobile = ref<boolean>(false);
+const periodNoActive = ref<boolean>(true);
+const router = useRouter();
+const auth = useAuthStore();
+const userRole = computed(() => auth.auth?.role || null);
+const period = usePeriodsStore();
+const periodcast = computed(() => period.periodActive || { nombre: 'Cargando...' });
+
+const filteredRoutes = computed(() => {
+  return router.options.routes.filter((route) => {
+    return (
+      route.meta?.MenuOnly &&
+      route.meta?.roles &&
+      userRole.value &&
+      route.meta.roles.includes(userRole.value)
+    );
+  });
+});
 
 const hoursReal = () => {
   const now = new Date();
@@ -30,19 +54,10 @@ const toggleSidebar = () => {
   isSidebarCollapsed.value = !isSidebarCollapsed.value;
 };
 
-const RoutesOnlyMenu = computed(() => {
-  return useRouter().options.routes
-    .filter((x) => x.meta?.MenuOnly === true)
-    .map((route) => ({
-      ...route,
-      icon: route.meta?.icon || 'pi pi-circle'
-    }));
-});
-
 const updateMobile = async () => {
   isMobile.value = window.innerWidth <= 768;
   if (isMobile.value) {
-    isSidebarCollapsed.value = true; // Colapsado por defecto en móviles
+    isSidebarCollapsed.value = true;
   }
 };
 
@@ -61,6 +76,25 @@ onUnmounted(async () => {
   document.removeEventListener('click', closeDropdown);
   window.removeEventListener('resize', updateMobile);
 });
+
+const LoadPeriod = async () => {
+  const response = await PeriodActive();
+  periodNoActive.value = response!.data == null;
+}
+
+watch(
+  () => period.periodActive,
+  async (newPeriod) => {
+    await LoadPeriod();
+  },
+  { immediate: true }
+);
+
+const HandleLogout = () => {
+  router.push("/login")
+  auth.logout();
+}
+
 </script>
 
 <template>
@@ -75,14 +109,14 @@ onUnmounted(async () => {
       <AppLogo v-show="!isSidebarCollapsed && !isMobile" :route="true" :redirect="'/dashboard'" :class="'w-full'" />
 
       <nav class="mt-4" :class="[isSidebarCollapsed ? 'space-y-2' : 'space-y-1']">
-        <RouterLink v-for="route in RoutesOnlyMenu" :key="route.path" :to="route.path"
+        <RouterLink v-for="route in filteredRoutes" :key="route.path" :to="route.path"
           v-tooltip="isSidebarCollapsed ? { value: route.name, class: '' } : null"
           class="mt-1 block py-3 hover:bg-[#10b981bb] hover:text-white" :class="[
             $route.path === route.path ? 'bg-[#10b98170] text-[#186219]' : '',
             isSidebarCollapsed ? 'px-4 text-center' : 'px-4',
           ]" style="transition: background-color 0.2s ease-in, color 0.2s ease-in;">
           <i :class="[
-            route.icon,
+            route.meta?.icon,
             isSidebarCollapsed ? 'text-base' : (isMobile ? 'text-sm' : 'text-base'),
           ]"></i>
           <span v-if="!isSidebarCollapsed" :class="[isMobile ? 'text-sm ml-2' : 'text-base ml-3']">
@@ -110,17 +144,7 @@ onUnmounted(async () => {
 
           <div v-if="showDropdown"
             class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 border border-[#10b981bb]">
-            <a href="#"
-              class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#10b98170] hover:text-[#186219] transition ease-in-out duration-300 group">
-              <i class="pi pi-user text-[#10b981bb] group-hover:text-[#186219] transition ease-in-out duration-300"></i>
-              <span>Perfil</span>
-            </a>
-            <a href="#"
-              class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#10b98170] hover:text-[#186219] transition ease-in-out duration-300 group">
-              <i class="pi pi-cog text-[#10b981bb] group-hover:text-[#186219] transition ease-in-out duration-300"></i>
-              <span>Configuraciones</span>
-            </a>
-            <a href="#"
+            <a @click="HandleLogout"
               class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#10b98170] hover:text-[#186219] transition ease-in-out duration-300 group">
               <i
                 class="pi pi-sign-out text-[#10b981bb] group-hover:text-[#186219] transition ease-in-out duration-300"></i>
@@ -132,6 +156,14 @@ onUnmounted(async () => {
 
       <!-- Content -->
       <div class="flex-1 px-4">
+        <div class="mt-4 px-2">
+          <MessageStatic v-show="periodNoActive"
+            :message="`¡Actualmente, no se encuentra un período activo registrado en el sistema. Le recomendamos verificar la configuración o ponerse en contacto con el soporte técnico si necesita asistencia adicional! `"
+            icon="pi pi-spin pi-cog" severity="warn" />
+          <MessageStatic v-show="!periodNoActive"
+            :message="`¡El período que está vigente de manera oficial en el presente corresponde al denominado: ${periodcast.nombre}!`"
+            icon="pi pi-spin pi-cog" severity="success" />
+        </div>
         <slot></slot>
       </div>
 
@@ -142,6 +174,12 @@ onUnmounted(async () => {
           <span>{{ date }}</span>
         </div>
       </footer>
+    </div>
+
+    <!-- Indicador de Modo Demo -->
+    <div v-if="isMockEnabled()"
+      class="fixed bottom-6 right-6 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg font-semibold text-sm z-50">
+      Modo Demo
     </div>
   </div>
 </template>

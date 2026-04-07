@@ -12,7 +12,6 @@ import AboutUs from '@/components/landing/AboutUs.vue'
     <TopBar />
     <RightAligment />
     <CenteredAligment />
-    <AboutUs/>
     <FooterBar />
   </div>
 </template>

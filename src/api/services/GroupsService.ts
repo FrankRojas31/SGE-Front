@@ -1,55 +1,87 @@
-import type {Groups} from "@/types/Groups";
-import { GenericRequest } from "../GenericRequest";
+import type { Groups } from '@/types/Groups'
+import { GenericRequest } from '../GenericRequest'
+import { useAuthStore } from '@/stores/auth/AuthStore.ts'
+import { AuthUser, AuthUserId } from '@/utils/helpers.ts'
+import { isMockEnabled } from '../config/mock.config'
+import {
+  GetGroupsMock,
+  GetGroupsInPeriodActiveMock,
+  GetGroupMock,
+  PostGroupMock,
+  PutGroupMock,
+  DeleteGroupMock,
+} from '../mocks/GroupsService.mock'
 
-const urlBase = "Grupos";
+const urlBase = 'Grupos'
 
-// Obtener todos los grupos
 export async function GetGroups() {
+  if (isMockEnabled()) return GetGroupsMock()
+
   return await GenericRequest<Groups[]>({
     url: `${urlBase}`,
-    method: "GET",
-  });
+    method: 'GET',
+    authToken: AuthUser(),
+  })
 }
 
-// Obtener un grupo por ID
+// GET: '/GetGruposEnPeriodo'
+export async function GetGroupsInPeriodActive() {
+  if (isMockEnabled()) return GetGroupsInPeriodActiveMock()
+
+  return await GenericRequest<Groups[]>({
+    url: `${urlBase}/GetGruposEnPeriodo/${AuthUserId()}`,
+    method: 'GET',
+    authToken: AuthUser(),
+  })
+}
+
 export async function GetGroup(id: number) {
+  if (isMockEnabled()) return GetGroupMock(id)
+
   return await GenericRequest<Groups>({
     url: `${urlBase}/${id}`,
-    method: "GET",
-  });
+    method: 'GET',
+    authToken: AuthUser(),
+  })
 }
 
-// Crear un nuevo grupo
 export async function PostGroup(group: Groups) {
+  if (isMockEnabled()) return PostGroupMock(group)
+
   return await GenericRequest<Groups>({
-    url: urlBase,
-    method: "POST",
+    url: `${urlBase}/PostGrupoEnPeriodo`,
+    method: 'POST',
     data: {
       nombre: group.nombre,
       descripcion: group.descripcion,
-      // Agrega aquí otros campos necesarios para crear un grupo
+      idUsuario: group.idUsuario,
     },
-  });
+    authToken: AuthUser(),
+  })
 }
 
-// Actualizar un grupo existente
 export async function PutGroup(group: Groups) {
+  if (isMockEnabled()) return PutGroupMock(group)
+
   return await GenericRequest<Groups>({
     url: `${urlBase}/${group.id}`,
-    method: "PUT",
+    method: 'PUT',
     data: {
       id: group.id,
       nombre: group.nombre,
       descripcion: group.descripcion,
-      // Agrega aquí otros campos que puedan ser actualizados
+      idUsuario: group.idUsuario,
     },
-  });
+    authToken: AuthUser(),
+  })
 }
 
-// Eliminar un grupo por ID
 export async function DeleteGroup(id: number) {
+  if (isMockEnabled()) return DeleteGroupMock(id)
+
   return await GenericRequest<Groups>({
     url: `${urlBase}/${id}`,
-    method: "DELETE",
-  });
+    method: 'DELETE',
+    authToken: AuthUser(),
+  })
 }

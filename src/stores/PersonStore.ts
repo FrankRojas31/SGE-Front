@@ -1,10 +1,11 @@
-import { DeletePerson, GetPerson, GetPersons, PostPerson, PutPerson } from "@/api/services/PersonsServices";
+import { DeletePerson, GetPerson, GetPersons, GetPersonsWithOutStudent, PostPerson, PutPerson } from "@/api/services/PersonsServices";
 import type { IPerson } from "@/types/Persons";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
 export const usePersonStore = defineStore('Persons', () => {
   const personsList = ref<IPerson[]>([]);
+  const personsWithOutStudent = ref<IPerson[]>([]);
   const person = ref<IPerson>({} as IPerson);
 
   async function GetStorePersons(){
@@ -16,6 +17,16 @@ export const usePersonStore = defineStore('Persons', () => {
 
       return response;
     }
+
+  async function GetStorePersonsWithOutStudent(){
+    const response = await GetPersonsWithOutStudent();
+
+    if(response?.success === true){
+      personsWithOutStudent.value = response.data;
+    }
+
+    return response;
+  }
 
     async function PostStorePerson(person: IPerson){
       const response = await PostPerson(person);
@@ -55,5 +66,5 @@ export const usePersonStore = defineStore('Persons', () => {
       return response;
     }
 
-    return { GetStorePersons, PostStorePerson, GetStorePerson, PutStorePerson, DeleteStorePerson, personsList, person}
+    return { GetStorePersons, GetStorePersonsWithOutStudent, PostStorePerson, GetStorePerson, PutStorePerson, DeleteStorePerson, personsList, person, personsWithOutStudent}
 });

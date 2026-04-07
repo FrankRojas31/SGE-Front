@@ -4,13 +4,13 @@ export interface IPeriods {
   descripcion: string;
   fechaInicio: Date;
   fechaFin: Date;
-  estatusPeriodo: estatusPeriodo;
+  estatusPeriodo: string;
 }
 
 
 export enum estatusPeriodo {
-  "EN ESPERA" = 0,
-  "ACTIVO" = 1,
-  "FINALIZADO" = 2
+  "EN_ESPERA",
+  "ACTIVO",
+  "FINALIZADO"
 }
 
