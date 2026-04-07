@@ -138,6 +138,12 @@ const onSubmit = handleSubmit(async (values) => {
             Todos los derechos Reservados</p>
         </div>
       </div>
+
+      <!-- Indicador de Modo Demo -->
+      <div v-if="isMockEnabled()"
+        class="fixed bottom-6 right-6 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg font-semibold text-sm z-50">
+        Modo Demo
+      </div>
     </div>
   </div>
 </template>

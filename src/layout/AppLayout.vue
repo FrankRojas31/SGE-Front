@@ -109,30 +109,19 @@ const HandleLogout = () => {
       <AppLogo v-show="!isSidebarCollapsed && !isMobile" :route="true" :redirect="'/dashboard'" :class="'w-full'" />
 
       <nav class="mt-4" :class="[isSidebarCollapsed ? 'space-y-2' : 'space-y-1']">
-        <RouterLink
-          v-for="route in filteredRoutes"
-          :key="route.path"
-          :to="route.path"
+        <RouterLink v-for="route in filteredRoutes" :key="route.path" :to="route.path"
           v-tooltip="isSidebarCollapsed ? { value: route.name, class: '' } : null"
-          class="mt-1 block py-3 hover:bg-[#10b981bb] hover:text-white"
-          :class="[
-        $route.path === route.path ? 'bg-[#10b98170] text-[#186219]' : '',
-        isSidebarCollapsed ? 'px-4 text-center' : 'px-4',
-      ]"
-          style="transition: background-color 0.2s ease-in, color 0.2s ease-in;"
-        >
-          <i
-            :class="[
-          route.meta?.icon,
-          isSidebarCollapsed ? 'text-base' : (isMobile ? 'text-sm' : 'text-base'),
-        ]"
-          ></i>
-          <span
-            v-if="!isSidebarCollapsed"
-            :class="[isMobile ? 'text-sm ml-2' : 'text-base ml-3']"
-          >
-        {{ route.name }}
-      </span>
+          class="mt-1 block py-3 hover:bg-[#10b981bb] hover:text-white" :class="[
+            $route.path === route.path ? 'bg-[#10b98170] text-[#186219]' : '',
+            isSidebarCollapsed ? 'px-4 text-center' : 'px-4',
+          ]" style="transition: background-color 0.2s ease-in, color 0.2s ease-in;">
+          <i :class="[
+            route.meta?.icon,
+            isSidebarCollapsed ? 'text-base' : (isMobile ? 'text-sm' : 'text-base'),
+          ]"></i>
+          <span v-if="!isSidebarCollapsed" :class="[isMobile ? 'text-sm ml-2' : 'text-base ml-3']">
+            {{ route.name }}
+          </span>
         </RouterLink>
       </nav>
     </div>
@@ -188,7 +177,8 @@ const HandleLogout = () => {
     </div>
 
     <!-- Indicador de Modo Demo -->
-    <div v-if="isMockEnabled()" class="fixed bottom-6 right-6 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg font-semibold text-sm z-50">
+    <div v-if="isMockEnabled()"
+      class="fixed bottom-6 right-6 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg font-semibold text-sm z-50">
       Modo Demo
     </div>
   </div>
