@@ -9,6 +9,7 @@ import type { IPeriods } from '@/types/Periods';
 import { useAuthStore } from '@/stores/auth/AuthStore';
 import { PeriodActive } from '@/utils/helpers.ts'
 import { usePeriodsStore } from '@/stores/PeriodsStore.ts'
+import { isMockEnabled } from '@/api/config/mock.config'
 
 const date = ref('');
 const showDropdown = ref(false);
@@ -184,6 +185,11 @@ const HandleLogout = () => {
           <span>{{ date }}</span>
         </div>
       </footer>
+    </div>
+
+    <!-- Indicador de Modo Demo -->
+    <div v-if="isMockEnabled()" class="fixed bottom-6 right-6 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg font-semibold text-sm z-50">
+      Modo Demo
     </div>
   </div>
 </template>

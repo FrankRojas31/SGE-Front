@@ -16,11 +16,12 @@ El Sistema de Gestión Escolar (SGE) busca solucionar estos problemas proporcion
 ## 2. Equipo de Desarrollo
 
 **Equipo #6:**
-- *JuanSSalmeron* **Juan de Dios Salmerón Rivera** *22393224* (Líder del equipo)
-- *SACPA* **William Joel Chávez López** *20393144*
-- *GabrieLag00* **Gabriel David Lizama Gómez** *22393278*
-- *alsaem5* **Saúl García López** *21393194*
-- *FrankRojas31* **Francisco Emmanuel Rojas Cerón** *22393186*
+
+- _JuanSSalmeron_ **Juan de Dios Salmerón Rivera** _22393224_ (Líder del equipo)
+- _SACPA_ **William Joel Chávez López** _20393144_
+- _GabrieLag00_ **Gabriel David Lizama Gómez** _22393278_
+- _alsaem5_ **Saúl García López** _21393194_
+- _FrankRojas31_ **Francisco Emmanuel Rojas Cerón** _22393186_
 
 ---
 
@@ -47,16 +48,19 @@ Antes de comenzar, asegúrese de tener instalados:
 ### **Pasos para Ejecutar el Proyecto**
 
 1. **Clonar el repositorio:**
+
    ```bash
    git clone https://github.com/JuanSSalmeron/SGE-Front
    ```
 
 2. **Acceder al directorio del proyecto:**
+
    ```bash
    cd SGE
    ```
 
 3. **Instalar dependencias del frontend:**
+
    ```bash
    npm install
    ```
@@ -70,6 +74,54 @@ Una vez completados estos pasos, el frontend estará listo para su uso en el ent
 
 ---
 
-## 5. Conclusión
+## 5. Sistema de Mockeo
+
+Para facilitar el desarrollo sin depender del servidor backend, SGE-Front incluye un sistema de mockeo integrado que permite simular datos de API.
+
+### Activando el Mockeo
+
+**Opción 1: Variable de Entorno (Recomendado)**
+
+```bash
+VITE_USE_MOCK=true npm run dev
+```
+
+**Opción 2: En `.env` o `.env.local`**
+
+```env
+VITE_USE_MOCK=true
+```
+
+### Datos Mockeados Disponibles
+
+El sistema incluye datos simulados para:
+
+- Cursos/Asignaturas
+- Grupos/Clases
+- Estudiantes
+- Períodos académicos
+- Personas
+- Usuarios
+- Calificaciones
+- Y más...
+
+### Documentación Completa
+
+Para información detallada sobre el sistema de mockeo, consulta:
+
+```
+src/api/mocks/README.md
+```
+
+Aquí encontrarás:
+
+- Cómo agregar nuevos mocks
+- Estructura de datos
+- Debugging
+- Mantener datos realistas
+
+---
+
+## 6. Conclusión
 
 El módulo frontend del Sistema de Gestión Escolar (SGE) está diseñado con tecnologías modernas como Vue.js 3 y TailwindCSS, permitiendo una experiencia de usuario optimizada y un desarrollo eficiente. La implementación de herramientas como PrimeVue, Pinia y Axios facilita la gestión del estado y la comunicación con la API, asegurando una interfaz dinámica y funcional.

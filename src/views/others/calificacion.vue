@@ -8,14 +8,8 @@
           <p v-if="materiasGrupo.length === 0" class="text-red-500 mt-2">No se encontraron materias para este grupo.</p>
         </div>
         <div class="ml-auto">
-          <Select
-            v-if="materiasGrupo.length > 0"
-            v-model="materiaSeleccionada"
-            :options="materiasOpciones"
-            optionLabel="nombre"
-            placeholder="Seleccionar materia"
-            class="p-1 px-7"
-          />
+          <Select v-if="materiasGrupo.length > 0" v-model="materiaSeleccionada" :options="materiasOpciones"
+            optionLabel="nombre" placeholder="Seleccionar materia" class="p-1 px-7" />
         </div>
       </div>
 
@@ -62,31 +56,29 @@
                     <template v-for="materia in materiasGrupo" :key="materia.id">
                       <template v-for="unit in materiaUnidades[materia.id]" :key="unit.id">
                         <td>
-                          <div class="calificacion-celda relative" :class="getCalificacionClass(calificaciones[student.id + '-' + unit.id])">
+                          <div class="calificacion-celda relative"
+                            :class="getCalificacionClass(calificaciones[student.id + '-' + unit.id])">
                             <span class="block w-full h-full py-1 px-2">
                               {{ calificaciones[student.id + '-' + unit.id] ?? '-' }}
                             </span>
-                            <div class="calificacion-menu absolute top-0 left-0 w-full h-full flex align-items-center justify-content-center bg-white bg-opacity-90" tabindex="0" @click.stop>
+                            <div
+                              class="calificacion-menu absolute top-0 left-0 w-full h-full flex align-items-center justify-content-center bg-white bg-opacity-90"
+                              tabindex="0" @click.stop>
                               <div v-if="editingCell !== `${student.id}-${unit.id}`" class="flex gap-1 p-1">
-                                <button class="text-blue-500 hover:text-blue-700" aria-label="Editar calificación" @click="editCalification(student.id, unit.id)">
+                                <button class="text-blue-500 hover:text-blue-700" aria-label="Editar calificación"
+                                  @click="editCalification(student.id, unit.id)">
                                   <i class="pi pi-file-edit text-sm"></i>
                                 </button>
                               </div>
                               <div v-else class="flex gap-1 p-1">
-                                <input
-                                  type="number"
-                                  min="0"
-                                  max="10"
-                                  step="0.1"
-                                  v-model.number="tempCalification"
-                                  class="calification-input"
-                                  ref="calificationInput"
-                                  autofocus
-                                />
-                                <button class="text-gray-500 hover:text-gray-700" aria-label="Guardar cambios" @click="saveCalification(student.id, unit.id)">
+                                <input type="number" min="0" max="10" step="0.1" v-model.number="tempCalification"
+                                  class="calification-input" ref="calificationInput" autofocus />
+                                <button class="text-gray-500 hover:text-gray-700" aria-label="Guardar cambios"
+                                  @click="saveCalification(student.id, unit.id)">
                                   <i class="pi pi-save text-sm"></i>
                                 </button>
-                                <button class="text-gray-500 hover:text-gray-700" aria-label="Cerrar menú" @click="cancelEdit()">
+                                <button class="text-gray-500 hover:text-gray-700" aria-label="Cerrar menú"
+                                  @click="cancelEdit()">
                                   <i class="pi pi-times text-sm"></i>
                                 </button>
                               </div>
@@ -95,7 +87,8 @@
                         </td>
                       </template>
                       <td>
-                        <div :class="getCalificacionClass(calculateAverageForMateria(student.id, materia.id))" class="font-medium px-2 py-1 border-round">
+                        <div :class="getCalificacionClass(calculateAverageForMateria(student.id, materia.id))"
+                          class="font-medium px-2 py-1 border-round">
                           {{ calculateAverageForMateria(student.id, materia.id) || '-' }}
                         </div>
                       </td>
@@ -104,31 +97,29 @@
                   <template v-else>
                     <template v-for="unit in unidades" :key="unit.id">
                       <td>
-                        <div class="calificacion-celda relative" :class="getCalificacionClass(calificaciones[student.id + '-' + unit.id])">
+                        <div class="calificacion-celda relative"
+                          :class="getCalificacionClass(calificaciones[student.id + '-' + unit.id])">
                           <span class="block w-full h-full py-1 px-2">
                             {{ calificaciones[student.id + '-' + unit.id] ?? '-' }}
                           </span>
-                          <div class="calificacion-menu absolute top-0 left-0 w-full h-full flex align-items-center justify-content-center bg-white bg-opacity-90" tabindex="0" @click.stop>
+                          <div
+                            class="calificacion-menu absolute top-0 left-0 w-full h-full flex align-items-center justify-content-center bg-white bg-opacity-90"
+                            tabindex="0" @click.stop>
                             <div v-if="editingCell !== `${student.id}-${unit.id}`" class="flex gap-1 p-1">
-                              <button class="text-blue-500 hover:text-blue-700" aria-label="Editar calificación" @click="editCalification(student.id, unit.id)">
+                              <button class="text-blue-500 hover:text-blue-700" aria-label="Editar calificación"
+                                @click="editCalification(student.id, unit.id)">
                                 <i class="pi pi-file-edit text-sm"></i>
                               </button>
                             </div>
                             <div v-else class="flex gap-1 p-1">
-                              <input
-                                type="number"
-                                min="0"
-                                max="10"
-                                step="0.1"
-                                v-model.number="tempCalification"
-                                class="calification-input"
-                                ref="calificationInput"
-                                autofocus
-                              />
-                              <button class="text-gray-500 hover:text-gray-700" aria-label="Guardar cambios" @click="saveCalification(student.id, unit.id)">
+                              <input type="number" min="0" max="10" step="0.1" v-model.number="tempCalification"
+                                class="calification-input" ref="calificationInput" autofocus />
+                              <button class="text-gray-500 hover:text-gray-700" aria-label="Guardar cambios"
+                                @click="saveCalification(student.id, unit.id)">
                                 <i class="pi pi-save text-sm"></i>
                               </button>
-                              <button class="text-gray-500 hover:text-gray-700" aria-label="Cerrar menú" @click="cancelEdit()">
+                              <button class="text-gray-500 hover:text-gray-700" aria-label="Cerrar menú"
+                                @click="cancelEdit()">
                                 <i class="pi pi-times text-sm"></i>
                               </button>
                             </div>
@@ -137,13 +128,16 @@
                       </td>
                     </template>
                     <td>
-                      <div :class="getCalificacionClass(calculateAverageForMateria(student.id, materiaSeleccionada?.id))" class="font-medium px-2 py-1 border-round">
+                      <div
+                        :class="getCalificacionClass(calculateAverageForMateria(student.id, materiaSeleccionada?.id))"
+                        class="font-medium px-2 py-1 border-round">
                         {{ calculateAverageForMateria(student.id, materiaSeleccionada?.id) || '-' }}
                       </div>
                     </td>
                   </template>
                   <td>
-                    <div :class="getCalificacionClass(calculateGeneralAverage(student.id))" class="font-medium px-2 py-1 border-round">
+                    <div :class="getCalificacionClass(calculateGeneralAverage(student.id))"
+                      class="font-medium px-2 py-1 border-round">
                       {{ calculateGeneralAverage(student.id) || '-' }}
                     </div>
                   </td>
@@ -235,7 +229,7 @@ const fetchData = async () => {
     console.log('Cargando alumnos...');
     const studentsResponse = await groupsStudentStore.GetStoreGroupsStudentsWhithGroup(groupId.value);
     if (studentsResponse?.success) {
-      students.value = groupsStudentStore.groupsStudentList || [];
+      students.value = groupsStudentStore.studentsList || [];
       console.log('Alumnos cargados:', students.value);
     } else {
       console.error('Error al cargar alumnos:', studentsResponse?.message);
@@ -251,7 +245,7 @@ const fetchData = async () => {
     console.log('Cargando materias del grupo...');
     const materiasResponse = await groupsSubjectStore.GetStoreGroupsSubjectsWithGroup(groupId.value);
     if (materiasResponse?.success) {
-      materiasGrupo.value = groupsSubjectStore.groupsSubjectsList || [];
+      materiasGrupo.value = groupsSubjectStore.subjectsList || [];
       console.log('Materias del grupo cargadas:', materiasGrupo.value);
 
       // Cargar las unidades de todas las materias
@@ -539,7 +533,8 @@ h1 {
   color: #2D3748;
 }
 
-p, span {
+p,
+span {
   font-family: 'Roboto', sans-serif;
 }
 </style>

@@ -1,18 +1,29 @@
 <script lang="ts" setup>
 import AppLogo from '@/components/global/AppLogo.vue'
 import { useAuthStore } from '@/stores/auth/AuthStore';
+import { isMockEnabled } from '@/api/config/mock.config'
 import type { ILoginUser } from '@/types/Auth/Users';
 import { toTypedSchema } from '@vee-validate/yup';
 import { Button } from 'primevue';
+import Dropdown from 'primevue/dropdown';
 import Toast from 'primevue/toast';
 import { useToast } from "primevue/usetoast";
 import { useForm } from 'vee-validate';
+import { ref } from 'vue';
 import * as yup from 'yup';
 import Message from 'primevue/message';
 
 const toast = useToast();
 const auth = useAuthStore();
-const { errors, defineField, handleSubmit } = useForm({
+
+// Usuarios de demo con roles
+const demoUsers = [
+  { label: 'Admin', value: { email: 'admin@escuela.com', password: 'password123', rol: 'ADMIN' } },
+]
+
+const selectedUser = ref(null)
+
+const { errors, defineField, handleSubmit, setValues } = useForm({
   validationSchema: toTypedSchema(
     yup.object({
       email: yup.string().email('Por favor ingresa un email valido').required('Porfavor ingresa un email'),
@@ -32,6 +43,15 @@ const [password, passwordAttrs] = defineField('password', {
   validateOnModelUpdate: true
 })
 
+const onUserSelect = (user: any) => {
+  if (user) {
+    setValues({
+      email: user.email,
+      password: user.password
+    })
+  }
+}
+
 const onSubmit = handleSubmit(async (values) => {
   if (Object.keys(errors.value).length === 0) {
     const login: ILoginUser = {
@@ -45,6 +65,7 @@ const onSubmit = handleSubmit(async (values) => {
       toast.add({ severity: "error", summary: "¡Error!", detail: `¡Upss... ${response?.message}!`, life: 2000 })
   }
 });
+
 
 </script>
 
@@ -60,6 +81,12 @@ const onSubmit = handleSubmit(async (values) => {
           </label>
 
           <form class="mt-2" @submit.prevent="onSubmit">
+            <!-- Inicio: Seleccionar Rol de Demo -->
+            <label class="block mb-2 text-sm font-medium">Selecciona un rol (Demo)</label>
+            <Dropdown v-model="selectedUser" :options="demoUsers" optionLabel="label" optionValue="value"
+              placeholder="Elige un usuario demo..." class="w-full mb-4" @update:modelValue="onUserSelect" />
+            <!-- Fin: Seleccionar Rol de Demo -->
+
             <!-- Inicio: Correo Electronico -->
             <label class="block mb-2 text-sm font-medium">Correo Electrónico</label>
             <div class="relative" v-bind="emailAttrs" :class="{ 'mb-4': !errors.email, 'mb-1': errors.email }">
