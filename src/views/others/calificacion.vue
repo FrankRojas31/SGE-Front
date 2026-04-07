@@ -129,9 +129,9 @@
                     </template>
                     <td>
                       <div
-                        :class="getCalificacionClass(calculateAverageForMateria(student.id, materiaSeleccionada?.id))"
+                        :class="getCalificacionClass(calculateAverageForMateria(student.id, materiaSeleccionada?.id || 0))"
                         class="font-medium px-2 py-1 border-round">
-                        {{ calculateAverageForMateria(student.id, materiaSeleccionada?.id) || '-' }}
+                        {{ calculateAverageForMateria(student.id, materiaSeleccionada?.id || 0) || '-' }}
                       </div>
                     </td>
                   </template>

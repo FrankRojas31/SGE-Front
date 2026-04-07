@@ -69,8 +69,9 @@ const handleClose = () => {
 
     <div class="mb-4">
       <label class="block text-gray-600 text-lg font-medium">Fecha de Ingreso</label>
-      <DatePicker v-model="modalItem.fechaIngreso" :showOnFocus="true" showIcon fluid class="w-full"
-        placeholder="Selecciona la fecha de ingreso" />
+      <DatePicker :showOnFocus="true" showIcon fluid class="w-full" placeholder="Selecciona la fecha de ingreso"
+        @update:modelValue="(date) => { if (date instanceof Date) modalItem.fechaIngreso = date.toISOString().split('T')[0] }"
+        :modelValue="new Date(modalItem.fechaIngreso || new Date())" />
     </div>
 
 

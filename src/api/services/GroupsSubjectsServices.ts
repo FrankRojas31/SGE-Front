@@ -33,7 +33,7 @@ export async function PostGroupsSubjects(groupsSubjects: IGroupsSubjects) {
   return await GenericRequest<IGroupsSubjects>({
     url: urlBase,
     method: 'POST',
-    data: groupsSubjects,
+    data: groupsSubjects as any,
     authToken: AuthUser(),
   })
 }
@@ -56,7 +56,7 @@ export async function PutGroupSubjects(groupsSubjects: IGroupsSubjects) {
   return await GenericRequest<IGroupsSubjects>({
     url: `${urlBase}/${groupsSubjects.Id}`,
     method: 'PUT',
-    data: groupsSubjects,
+    data: groupsSubjects as any,
     authToken: AuthUser(),
   })
 }
@@ -99,7 +99,7 @@ export async function PostMateriasaGrupos(id: number, IdMaterias: number[]) {
   return await GenericRequest<{ success: boolean }>({
     url: `${urlBase}/PostMateriaAGrupo/${id}`,
     method: 'POST',
-    data: IdMaterias,
+    data: { ids: IdMaterias } as any,
     authToken: AuthUser(),
   })
 }
@@ -107,7 +107,7 @@ export async function DeleteGroupsSubject(id: number, IdMaterias: number[]) {
   return await GenericRequest<{ success: boolean }>({
     url: `${urlBase}/DeleteMateriaAGrupo/${id}`,
     method: 'DELETE',
-    data: IdMaterias,
+    data: { ids: IdMaterias } as any,
     authToken: AuthUser(),
   })
 }

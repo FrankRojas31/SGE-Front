@@ -120,7 +120,7 @@ const selectedAvailable = ref<IStudent[]>([]);
 const selectedEnrolled = ref<IStudent[]>([]);
 const selectAllAvailable = ref(false);
 const selectAllEnrolled = ref(false);
-const searchQuery = ref<string>('');
+const searchQuery = ref<string | { id: number }>('');
 const itemsPerPage = ref<number>(10);
 const firstAvailable = ref<number>(0);
 const firstEnrolled = ref<number>(0);
@@ -174,8 +174,8 @@ const paginatedAvailable = computed(() => {
 
 const paginatedEnrolled = computed(() => {
   let filtered = enrolledStudents.value;
-  if (searchQuery.value && typeof searchQuery.value !== 'string') {
-    filtered = filtered.filter(student => student.id === searchQuery.value.id);
+  if (searchQuery.value && typeof searchQuery.value === 'object' && 'id' in searchQuery.value && typeof (searchQuery.value as any).id === 'number') {
+    filtered = filtered.filter(student => student.id === (searchQuery.value as any).id);
   }
   const start = firstEnrolled.value;
   const end = start + itemsPerPage.value;

@@ -7,7 +7,7 @@ import { useToast } from "primevue/usetoast";
 import Toast from 'primevue/toast';
 import { columns } from '@/components/crud/GradesComponents/TableColumns';
 import { GetGrades } from '@/utils/helpers';
-import type { Grades } from '@/types/Grades';
+import type { ICalifications } from '@/types/Califications';
 import DeleteModal from '@/components/crud/DeleteModal.vue';
 import CreateModal from './Modals/CreateModalGrades.vue';
 import EditModalGrades from '@/components/crud/GradesComponents/Modals/EditModalGrades.vue';
@@ -18,7 +18,7 @@ const gradesStore = useGradesStore();
 const openModalCreate = ref<boolean>(false);
 const openModalEdit = ref<boolean>(false);
 const openModalDelete = ref<boolean>(false);
-const modalItem = ref<Grades>({} as Grades);
+const modalItem = ref<ICalifications>({} as ICalifications);
 const idItem = ref<number>(0);
 
 const HandleEdit = async (id: number) => {
@@ -31,7 +31,7 @@ const HandleEdit = async (id: number) => {
   }
 };
 
-const EditConfirm = async (grade: Grades) => {
+const EditConfirm = async (grade: ICalifications) => {
   const response = await gradesStore.PutStoreGrade(grade);
   if (response?.success) {
     openModalEdit.value = false;
@@ -41,7 +41,7 @@ const EditConfirm = async (grade: Grades) => {
   }
 };
 
-const CreateConfirm = async (grade: Grades) => {
+const CreateConfirm = async (grade: ICalifications) => {
   const response = await gradesStore.PostStoreGrade(grade);
   if (response?.success) {
     openModalCreate.value = false;
@@ -89,8 +89,8 @@ onMounted(async () => {
 <template>
   <AppLayout>
     <Toast />
-    <GeneralTable :loading="loading" title="Calificaciones" :data="gradesStore.gradesList" :columns="columns" @edit="HandleEdit"
-      @delete="HandleDelete" @create="openModalCreate = true">
+    <GeneralTable :loading="loading" title="Calificaciones" :data="gradesStore.gradesList" :columns="columns"
+      @edit="HandleEdit" @delete="HandleDelete" @create="openModalCreate = true">
     </GeneralTable>
 
     <CreateModal :showModal="openModalCreate" @close="openModalCreate = false" @create="CreateConfirm" />

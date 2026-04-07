@@ -79,7 +79,7 @@ export async function DeleteGroupsStudent(id: number, IdStudents: number[]) {
   return await GenericRequest<IGroupsStudent>({
     url: `${urlBase}/DeleteAlumnosEnGrupo/${id}`,
     method: 'DELETE',
-    data: IdStudents,
+    data: { ids: IdStudents } as any,
     authToken: AuthUser(),
   })
 }
@@ -111,7 +111,7 @@ export async function PostAlumnosaGrupo(id: number, idAlumnos: number[]) {
   return await GenericRequest<{ success: boolean }>({
     url: `${urlBase}/PostAlumnosaGrupo/${id}`,
     method: 'POST',
-    data: idAlumnos,
+    data: { ids: idAlumnos } as any,
     authToken: AuthUser(),
   })
 }

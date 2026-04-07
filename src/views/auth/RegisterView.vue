@@ -103,17 +103,19 @@ const validateForm = () => {
   return isValid
 }
 
-const onSubmit = async() => {
-  if(validateForm()) {
+const onSubmit = async () => {
+  if (validateForm()) {
     const userregister: IRegisterUser = {
       name: formData.value.fullName,
       password: formData.value.password,
       confirmPassword: formData.value.confirmPassword,
-      email: formData.value.email
+      email: formData.value.email,
+      rol: "PROFESOR",
+      estatusUsuario: "ACTIVO"
     };
     const response = await auth.RegisterStore(userregister);
 
-    if(response?.success == false) {
+    if (response?.success == false) {
       toast.add({ summary: response.message, severity: 'warn', life: 3000 });
     }
   }
@@ -121,7 +123,7 @@ const onSubmit = async() => {
 </script>
 
 <template>
-  <Toast/>
+  <Toast />
   <div class="font-sans">
     <div class="relative min-h-screen flex items-center justify-center bg-[#f8f8f8]">
       <div class="relative sm:max-w-sm w-full">
@@ -136,17 +138,13 @@ const onSubmit = async() => {
             <div class="relative mb-4">
               <IconField iconPosition="left">
                 <InputIcon class="pi pi-user text-gray-400" />
-                <input
-                  v-model="formData.fullName"
-                  type="text"
+                <input v-model="formData.fullName" type="text"
                   class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5"
-                  placeholder="Juan de Dios Salmeron Rivera"
-                  :class="{ 'border-red-500': errors.fullName }"
-                />
+                  placeholder="Juan de Dios Salmeron Rivera" :class="{ 'border-red-500': errors.fullName }" />
               </IconField>
               <small v-if="errors.fullName" class="text-red-500 text-xs mt-1 block">{{
-                  errors.fullName
-                }}</small>
+                errors.fullName
+              }}</small>
             </div>
 
             <!-- Email -->
@@ -154,17 +152,13 @@ const onSubmit = async() => {
             <div class="relative mb-4">
               <IconField iconPosition="left">
                 <InputIcon class="pi pi-envelope text-gray-400" />
-                <input
-                  v-model="formData.email"
-                  type="email"
+                <input v-model="formData.email" type="email"
                   class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5"
-                  placeholder="ejemplo@gmail.com"
-                  :class="{ 'border-red-500': errors.email }"
-                />
+                  placeholder="ejemplo@gmail.com" :class="{ 'border-red-500': errors.email }" />
               </IconField>
               <small v-if="errors.email" class="text-red-500 text-xs mt-1 block">{{
-                  errors.email
-                }}</small>
+                errors.email
+              }}</small>
             </div>
 
             <!-- Password -->
@@ -172,17 +166,13 @@ const onSubmit = async() => {
             <div class="relative mb-[28px]">
               <IconField iconPosition="left">
                 <InputIcon class="pi pi-lock text-gray-400" />
-                <input
-                  v-model="formData.password"
-                  type="password"
+                <input v-model="formData.password" type="password"
                   class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5"
-                  placeholder="••••••••"
-                  :class="{ 'border-red-500': errors.password }"
-                />
+                  placeholder="••••••••" :class="{ 'border-red-500': errors.password }" />
               </IconField>
               <small v-if="errors.password" class="text-red-500 text-xs mt-1 block">{{
-                  errors.password
-                }}</small>
+                errors.password
+              }}</small>
             </div>
 
             <!-- Confirm Password -->
@@ -190,35 +180,26 @@ const onSubmit = async() => {
             <div class="relative mb-[28px]">
               <IconField iconPosition="left">
                 <InputIcon class="pi pi-lock text-gray-400" />
-                <input
-                  v-model="formData.confirmPassword"
-                  type="password"
+                <input v-model="formData.confirmPassword" type="password"
                   class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5"
-                  placeholder="••••••••"
-                  :class="{ 'border-red-500': errors.confirmPassword }"
-                />
+                  placeholder="••••••••" :class="{ 'border-red-500': errors.confirmPassword }" />
               </IconField>
               <small v-if="errors.confirmPassword" class="text-red-500 text-xs mt-1 block">{{
-                  errors.confirmPassword
-                }}</small>
+                errors.confirmPassword
+              }}</small>
             </div>
 
             <!-- Terms Checkbox -->
             <div class="mt-5 flex">
               <label class="inline-flex items-center w-full cursor-pointer">
-                <input
-                  v-model="formData.terms"
-                  type="checkbox"
-                  class=""
-                  name="terms"
-                  :class="{ 'border-red-500': errors.terms }"
-                />
+                <input v-model="formData.terms" type="checkbox" class="" name="terms"
+                  :class="{ 'border-red-500': errors.terms }" />
                 <span class="ml-1 text-sm text-gray-600">Acepto los términos y condiciones</span>
               </label>
             </div>
             <small v-if="errors.terms" class="text-red-500 text-xs mt-1 block">{{
-                errors.terms
-              }}</small>
+              errors.terms
+            }}</small>
 
             <!-- Submit Button -->
             <div class="mt-4">

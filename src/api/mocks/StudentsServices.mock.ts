@@ -67,7 +67,7 @@ export async function GetStudentsMock(): Promise<ResponseHelper<IStudent[]>> {
 
 export async function GetStudentMock(id: number): Promise<ResponseHelper<IStudent>> {
   const student = mockStudentsData.find((s) => s.id === id)
-  return mockResponse(student || null)
+  return mockResponse(student || null) as any
 }
 
 export async function PostStudentMock(student: IStudent): Promise<ResponseHelper<IStudent>> {
@@ -85,7 +85,7 @@ export async function PutStudentMock(student: IStudent): Promise<ResponseHelper<
     mockStudentsData[index] = student
     return mockResponse(student)
   }
-  return mockResponse(null)
+  return mockResponse(null) as any
 }
 
 export async function DeleteStudentMock(id: number): Promise<ResponseHelper<boolean>> {

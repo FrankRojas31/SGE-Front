@@ -107,7 +107,7 @@ export async function GetGroupsSubjectsMock(): Promise<ResponseHelper<IGroupsSub
 
 export async function GetGroupSubjectsMock(id: number): Promise<ResponseHelper<IGroupsSubjects>> {
   const groupSubjects = mockGroupsSubjectsData.find((gs) => gs.Id === id)
-  return mockResponse(groupSubjects || null)
+  return mockResponse(groupSubjects || null) as any
 }
 
 export async function PostGroupsSubjectsMock(
@@ -129,7 +129,7 @@ export async function PutGroupSubjectsMock(
     mockGroupsSubjectsData[index] = groupSubjects
     return mockResponse(groupSubjects)
   }
-  return mockResponse(null)
+  return mockResponse(null) as any
 }
 
 export async function DeleteGroupSubjectsMock(id: number): Promise<ResponseHelper<boolean>> {
@@ -138,7 +138,7 @@ export async function DeleteGroupSubjectsMock(id: number): Promise<ResponseHelpe
     mockGroupsSubjectsData.splice(index, 1)
     return mockResponse(true)
   }
-  return mockResponse(false)
+  return mockResponse(null) as any
 }
 
 // Devuelve materias de un grupo específico (como ISubject[])

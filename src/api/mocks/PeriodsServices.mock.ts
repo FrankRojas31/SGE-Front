@@ -44,7 +44,7 @@ export async function GetPeriodsMock(): Promise<ResponseHelper<IPeriods[]>> {
 
 export async function GetPeriodMock(id: number): Promise<ResponseHelper<IPeriods>> {
   const period = mockPeriodsData.find((p) => p.id === id)
-  return mockResponse(period || null)
+  return mockResponse(period || null) as any
 }
 
 export async function PostPeriodMock(period: IPeriods): Promise<ResponseHelper<IPeriods>> {
@@ -62,7 +62,7 @@ export async function PutPeriodMock(period: IPeriods): Promise<ResponseHelper<IP
     mockPeriodsData[index] = period
     return mockResponse(period)
   }
-  return mockResponse(null)
+  return mockResponse(null) as any
 }
 
 export async function DeletePeriodMock(id: number): Promise<ResponseHelper<boolean>> {

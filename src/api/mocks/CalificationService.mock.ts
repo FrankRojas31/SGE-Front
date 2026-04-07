@@ -60,7 +60,7 @@ export async function GetCalificationsMock(): Promise<ResponseHelper<ICalificati
 
 export async function GetCalificationMock(id: number): Promise<ResponseHelper<ICalifications>> {
   const calification = mockCalificationsData.find((c) => c.id === id)
-  return mockResponse(calification || null)
+  return mockResponse(calification || null) as any
 }
 
 export async function PostCalificationMock(
@@ -82,7 +82,7 @@ export async function PutCalificationMock(
     mockCalificationsData[index] = calification
     return mockResponse(calification)
   }
-  return mockResponse(null)
+  return mockResponse(null) as any
 }
 
 export async function DeleteCalificationMock(id: number): Promise<ResponseHelper<boolean>> {
@@ -91,5 +91,5 @@ export async function DeleteCalificationMock(id: number): Promise<ResponseHelper
     mockCalificationsData.splice(index, 1)
     return mockResponse(true)
   }
-  return mockResponse(false)
+  return mockResponse(null) as any
 }

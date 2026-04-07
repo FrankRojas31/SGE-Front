@@ -3,9 +3,12 @@
     <!-- Cabecera con filtros -->
     <div class="flex flex-column md:flex-row justify-content-between gap-3 mb-4">
       <div class="flex flex-column sm:flex-row gap-2 align-items-center">
-        <Dropdown v-model="grupoSeleccionado" :options="grupos" optionLabel="nombre" optionValue="id" placeholder="Seleccionar grupo" class="w-full sm:w-14rem" />
-        <Dropdown v-model="materiaSeleccionada" :options="materiasFiltradas" optionLabel="nombre" optionValue="id" placeholder="Todas las materias" class="w-full sm:w-14rem" />
-        <Select v-model="alumnoSeleccionado" :options="alumnosFiltrados" showClear optionLabel="nombre" placeholder="Buscar alumno..." class="w-full sm:w-14rem" />
+        <Dropdown v-model="grupoSeleccionado" :options="grupos" optionLabel="nombre" optionValue="id"
+          placeholder="Seleccionar grupo" class="w-full sm:w-14rem" />
+        <Dropdown v-model="materiaSeleccionada" :options="materiasFiltradas" optionLabel="nombre" optionValue="id"
+          placeholder="Todas las materias" class="w-full sm:w-14rem" />
+        <Select v-model="alumnoSeleccionado" :options="alumnosFiltrados" showClear optionLabel="nombre"
+          placeholder="Buscar alumno..." class="w-full sm:w-14rem" />
       </div>
     </div>
 
@@ -20,20 +23,30 @@
                 <template v-for="unidad in unidadesPorMateria(materia.id)" :key="unidad.id">
                   <Column :header="unidad.nombre" class="text-center p-2 border-left-1 border-gray-200">
                     <template #body="{ data }">
-                      <div class="calificacion-celda relative" :class="getCalificacionClass(obtenerCalificacion(data.id, materia.id, unidad.id))">
+                      <div class="calificacion-celda relative"
+                        :class="getCalificacionClass(obtenerCalificacion(data.id, materia.id, unidad.id))">
                         <span class="block w-full h-full py-1 px-2">
-                          {{ obtenerCalificacion(data.id, materia.id, unidad.id) === '-' ? '-' : obtenerCalificacion(data.id, materia.id, unidad.id) }}
+                          {{ obtenerCalificacion(data.id, materia.id, unidad.id) === '-' ? '-' :
+                            obtenerCalificacion(data.id, materia.id, unidad.id) }}
                         </span>
                         <!-- Menú que aparece al pasar el cursor o al hacer focus -->
-                        <div class="calificacion-menu absolute top-0 left-0 w-full h-full flex align-items-center justify-content-center bg-white bg-opacity-90" tabindex="0" @click.stop>
-                          <div v-if="obtenerCalificacion(data.id, materia.id, unidad.id) !== '-'" class="flex gap-1 p-1">
-                            <button class="text-blue-500 hover:text-blue-700" aria-label="Editar calificación"><i class="pi pi-file-edit text-sm"></i></button>
-                            <button class="text-gray-500 hover:text-gray-700" aria-label="Agregar calificación"><i class="pi pi-file-plus text-sm"></i></button>
-                            <button class="text-gray-500 hover:text-gray-700" aria-label="Guardar cambios"><i class="pi pi-save text-sm"></i></button>
-                            <button class="text-gray-500 hover:text-gray-700" aria-label="Cerrar menú"><i class="pi pi-times text-sm"></i></button>
+                        <div
+                          class="calificacion-menu absolute top-0 left-0 w-full h-full flex align-items-center justify-content-center bg-white bg-opacity-90"
+                          tabindex="0" @click.stop>
+                          <div v-if="obtenerCalificacion(data.id, materia.id, unidad.id) !== '-'"
+                            class="flex gap-1 p-1">
+                            <button class="text-blue-500 hover:text-blue-700" aria-label="Editar calificación"><i
+                                class="pi pi-file-edit text-sm"></i></button>
+                            <button class="text-gray-500 hover:text-gray-700" aria-label="Agregar calificación"><i
+                                class="pi pi-file-plus text-sm"></i></button>
+                            <button class="text-gray-500 hover:text-gray-700" aria-label="Guardar cambios"><i
+                                class="pi pi-save text-sm"></i></button>
+                            <button class="text-gray-500 hover:text-gray-700" aria-label="Cerrar menú"><i
+                                class="pi pi-times text-sm"></i></button>
                           </div>
                           <div v-else class="flex gap-1 p-1">
-                            <button class="text-gray-500 hover:text-gray-700" aria-label="Agregar calificación"><i class="pi pi-file-edit text-sm"></i></button>
+                            <button class="text-gray-500 hover:text-gray-700" aria-label="Agregar calificación"><i
+                                class="pi pi-file-edit text-sm"></i></button>
                           </div>
                         </div>
                       </div>
@@ -42,7 +55,8 @@
                 </template>
                 <Column header="Prom." class="text-center p-2 border-left-1 border-gray-200">
                   <template #body="{ data }">
-                    <div :class="getCalificacionClass(calcularPromedioMateria(data.id, materia.id))" class="font-medium px-2 py-1 border-round">
+                    <div :class="getCalificacionClass(calcularPromedioMateria(data.id, materia.id))"
+                      class="font-medium px-2 py-1 border-round">
                       {{ calcularPromedioMateria(data.id, materia.id) }}
                     </div>
                   </template>
@@ -51,7 +65,8 @@
             </template>
             <Column header="PROMEDIO GENERAL" class="text-center p-2 border-left-1 border-gray-200">
               <template #body="{ data }">
-                <div :class="getCalificacionClass(calcularPromedioGeneral(data.id))" class="font-medium px-2 py-1 border-round">
+                <div :class="getCalificacionClass(calcularPromedioGeneral(data.id))"
+                  class="font-medium px-2 py-1 border-round">
                   {{ calcularPromedioGeneral(data.id) }}
                 </div>
               </template>
@@ -139,8 +154,8 @@ const alumnoSeleccionado = ref(null);
 const materiasFiltradas = computed(() => materias.value.filter(m => m.grupoId === grupoSeleccionado.value));
 const alumnosFiltrados = computed(() => {
   const filtered = alumnos.value.filter(a => a.grupoId === grupoSeleccionado.value);
-  if (alumnoSeleccionado.value) {
-    return filtered.filter(a => a.id === alumnoSeleccionado.value.id);
+  if (alumnoSeleccionado.value && typeof alumnoSeleccionado.value !== 'string') {
+    return filtered.filter(a => a.id === (alumnoSeleccionado.value as any).id);
   }
   return filtered;
 });
@@ -182,12 +197,15 @@ const getCalificacionClass = (calificacion: any) => {
   padding: 0.5rem !important;
   min-width: 60px !important;
 }
+
 :deep(.p-datatable .p-datatable-tbody > tr) {
   background-color: #ffffff !important;
 }
+
 :deep(.p-datatable .p-datatable-tbody > tr:nth-child(even)) {
   background-color: #f9fafb !important;
 }
+
 :deep(.p-datatable .p-datatable-tbody > tr > td) {
   color: #374151 !important;
   padding: 0 !important;
@@ -199,22 +217,27 @@ const getCalificacionClass = (calificacion: any) => {
   justify-content: center;
   position: relative;
 }
+
 :deep(.p-dropdown) {
   border-color: #d1d5db !important;
   font-size: 0.85rem !important;
 }
+
 :deep(.p-dropdown .p-dropdown-label) {
   color: #374151 !important;
   padding: 0.25rem 0.5rem !important;
 }
+
 :deep(.p-select) {
   border-color: #d1d5db !important;
   font-size: 0.85rem !important;
 }
+
 :deep(.p-select .p-select-label) {
   color: #374151 !important;
   padding: 0.25rem 0.5rem !important;
 }
+
 .calificacion-celda {
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
@@ -225,11 +248,13 @@ const getCalificacionClass = (calificacion: any) => {
   justify-content: center;
   position: relative;
 }
+
 .calificacion-celda:hover .calificacion-menu,
 .calificacion-celda:focus-within .calificacion-menu {
   display: flex;
   opacity: 1;
 }
+
 .calificacion-menu {
   display: none;
   opacity: 0;

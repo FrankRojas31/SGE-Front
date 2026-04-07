@@ -47,7 +47,7 @@ export async function GetPersonsMock(): Promise<ResponseHelper<IPerson[]>> {
 
 export async function GetPersonMock(id: number): Promise<ResponseHelper<IPerson>> {
   const person = mockPersonsData.find((p) => p.id === id)
-  return mockResponse(person || null)
+  return mockResponse(person || null) as any
 }
 
 export async function PostPersonMock(person: IPerson): Promise<ResponseHelper<IPerson>> {
@@ -65,7 +65,7 @@ export async function PutPersonMock(person: IPerson): Promise<ResponseHelper<IPe
     mockPersonsData[index] = person
     return mockResponse(person)
   }
-  return mockResponse(null)
+  return mockResponse(null) as any
 }
 
 export async function DeletePersonMock(id: number): Promise<ResponseHelper<boolean>> {

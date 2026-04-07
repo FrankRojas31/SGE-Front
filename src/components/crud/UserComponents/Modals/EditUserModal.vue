@@ -28,7 +28,7 @@ const HandleCancel = () => {
   <Dialog v-model:visible="props.showModal" header="Editar Usuario" modal :style="{ width: '30rem' }">
     <div class="mb-4">
       <label class="block">Nombre de Usuario</label>
-      <InputText v-model="props.modalItem.username" class="w-full" required />
+      <InputText v-model="props.modalItem.name" class="w-full" required />
     </div>
 
     <div class="mb-4">

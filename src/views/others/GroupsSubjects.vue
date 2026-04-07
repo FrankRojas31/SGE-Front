@@ -3,17 +3,14 @@
     <div class="container mx-auto p-6">
       <div class="flex justify-between items-center mb-6">
         <div class="flex items-center">
-          <Button
-            icon="pi pi-arrow-left"
-            class="p-button-text p-button-rounded p-button-lg mr-3"
-            @click="goBack"
-          />
+          <Button icon="pi pi-arrow-left" class="p-button-text p-button-rounded p-button-lg mr-3" @click="goBack" />
           <div>
             <h2 class="text-3xl font-bold text-gray-800">
               {{ group?.nombre || 'Cargando...' }} - Añadir Materias
             </h2>
             <p class="text-sm text-gray-600 mt-1">
-              {{ enrolledSubjects.length }} de {{ availableSubjects.length + enrolledSubjects.length }} Materias Agregadas
+              {{ enrolledSubjects.length }} de {{ availableSubjects.length + enrolledSubjects.length }} Materias
+              Agregadas
             </p>
           </div>
         </div>
@@ -30,18 +27,10 @@
             </h3>
           </div>
 
-          <DataTable
-            :value="availableSubjects"
-            :rows="itemsPerPage"
-            class="p-datatable-sm"
-            :rowHover="true"
-            v-model:selection="selectedAvailable"
-            dataKey="id"
-            :paginator="true"
-            v-model:first="firstAvailable"
+          <DataTable :value="availableSubjects" :rows="itemsPerPage" class="p-datatable-sm" :rowHover="true"
+            v-model:selection="selectedAvailable" dataKey="id" :paginator="true" v-model:first="firstAvailable"
             @page="onPageAvailable($event)"
-            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
-          >
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink">
             <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
             <Column field="nombre" header="Nombre de la Materia">
               <template #body="{ data }">
@@ -69,20 +58,11 @@
             </h3>
           </div>
 
-          <DataTable
-            :value="enrolledSubjects"
-            :rows="itemsPerPage"
-            class="p-datatable-sm"
-            :rowHover="true"
-            v-model:selection="selectedEnrolled"
-            dataKey="id"
-            :paginator="true"
-            v-model:first="firstEnrolled"
+          <DataTable :value="enrolledSubjects" :rows="itemsPerPage" class="p-datatable-sm" :rowHover="true"
+            v-model:selection="selectedEnrolled" dataKey="id" :paginator="true" v-model:first="firstEnrolled"
             @page="onPageEnrolled($event)"
-            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
-            responsiveLayout="scroll"
-            :rowsPerPageOptions="[5, 10, 15, 25]"
-          >
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink" responsiveLayout="scroll"
+            :rowsPerPageOptions="[5, 10, 15, 25]">
             <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
             <Column field="nombre" header="Nombre de la Materia">
               <template #body="{ data }">
@@ -105,20 +85,10 @@
 
       <!-- Botones de acción -->
       <div class="flex justify-between mt-6">
-        <Button
-          label="Añadir al grupo"
-          icon="pi pi-plus"
-          class="p-button-raised p-button-success text-sm"
-          @click="addToGroup"
-          :disabled="!selectedAvailable.length"
-        />
-        <Button
-          label="Quitar del grupo"
-          icon="pi pi-minus"
-          class="p-button-raised p-button-danger text-sm"
-          @click="removeFromGroup"
-          :disabled="!selectedEnrolled.length"
-        />
+        <Button label="Añadir al grupo" icon="pi pi-plus" class="p-button-raised p-button-success text-sm"
+          @click="addToGroup" :disabled="!selectedAvailable.length" />
+        <Button label="Quitar del grupo" icon="pi pi-minus" class="p-button-raised p-button-danger text-sm"
+          @click="removeFromGroup" :disabled="!selectedEnrolled.length" />
       </div>
     </div>
   </AppLayout>
@@ -131,6 +101,7 @@ import { GetGroup } from '@/utils/helpers';
 import { useGroupsSubjectStore } from '@/stores/GroupsSubjectsStore';
 import type { Groups } from '@/types/Groups';
 import type { IGroupsSubjects } from '@/types/GroupsSubjects';
+import type { ISubject } from '@/types/Subject';
 import Button from 'primevue/button';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
@@ -140,10 +111,10 @@ const route = useRoute();
 const router = useRouter();
 const group = ref<Groups | null>(null);
 const loading = ref(true);
-const availableSubjectsList = ref<IGroupsSubjects[]>([]);
-const enrolledSubjectsList = ref<IGroupsSubjects[]>([]);
-const selectedAvailable = ref<IGroupsSubjects[]>([]);
-const selectedEnrolled = ref<IGroupsSubjects[]>([]);
+const availableSubjectsList = ref<ISubject[]>([]);
+const enrolledSubjectsList = ref<ISubject[]>([]);
+const selectedAvailable = ref<ISubject[]>([]);
+const selectedEnrolled = ref<ISubject[]>([]);
 const itemsPerPage = ref<number>(5);
 const firstAvailable = ref<number>(0);
 const firstEnrolled = ref<number>(0);
@@ -259,18 +230,18 @@ h3 {
 }
 
 /* Ajustes de las tablas */
-.p-datatable .p-datatable-thead > tr > th {
+.p-datatable .p-datatable-thead>tr>th {
   background-color: #D4EFDF !important;
   color: #2D3748;
   font-weight: 600;
   font-family: 'Roboto', sans-serif;
 }
 
-.p-datatable .p-datatable-tbody > tr {
+.p-datatable .p-datatable-tbody>tr {
   transition: background-color 0.2s;
 }
 
-.p-datatable .p-datatable-tbody > tr:hover {
+.p-datatable .p-datatable-tbody>tr:hover {
   background-color: #F1F5F9 !important;
 }
 
@@ -309,7 +280,8 @@ h3 {
 }
 
 /* Ajustes de tipografía general */
-p, span {
+p,
+span {
   font-family: 'Roboto', sans-serif;
 }
 </style>

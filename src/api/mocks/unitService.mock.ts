@@ -79,7 +79,7 @@ export async function GetUnitsMock(groupId?: number): Promise<ResponseHelper<Uni
 
 export async function GetUnitMock(id: number): Promise<ResponseHelper<Units>> {
   const unit = mockUnitsData.find((u) => u.id === id)
-  return mockResponse(unit || null)
+  return mockResponse(unit || null) as any
 }
 
 export async function PostUnitMock(unit: Units): Promise<ResponseHelper<Units>> {
@@ -97,7 +97,7 @@ export async function PutUnitMock(unit: Units): Promise<ResponseHelper<Units>> {
     mockUnitsData[index] = unit
     return mockResponse(unit)
   }
-  return mockResponse(null)
+  return mockResponse(null) as any
 }
 
 export async function DeleteUnitMock(id: number): Promise<ResponseHelper<boolean>> {

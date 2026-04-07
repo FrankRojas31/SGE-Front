@@ -53,7 +53,7 @@ export async function GetSubjectsMock(): Promise<ResponseHelper<ISubject[]>> {
 
 export async function GetSubjectMock(id: number): Promise<ResponseHelper<ISubject>> {
   const subject = mockSubjectsData.find((s) => s.id === id)
-  return mockResponse(subject || null)
+  return mockResponse(subject || null) as any
 }
 
 export async function PostSubjectMock(subject: ISubject): Promise<ResponseHelper<ISubject>> {
@@ -72,7 +72,7 @@ export async function PutSubjectMock(subject: ISubject): Promise<ResponseHelper<
     mockSubjectsData[index] = subject
     return mockResponse(subject)
   }
-  return mockResponse(null)
+  return mockResponse(null) as any
 }
 
 export async function DeleteSubjectMock(id: number): Promise<ResponseHelper<boolean>> {

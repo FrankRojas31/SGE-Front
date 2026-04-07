@@ -68,7 +68,7 @@ export async function PutGroupMock(group: Groups): Promise<ResponseHelper<Groups
     mockGroupsData[index] = group
     return mockResponse(group)
   }
-  return mockResponse(null)
+  return mockResponse(null) as any
 }
 
 export async function DeleteGroupMock(id: number): Promise<ResponseHelper<boolean>> {
@@ -77,5 +77,5 @@ export async function DeleteGroupMock(id: number): Promise<ResponseHelper<boolea
     mockGroupsData.splice(index, 1)
     return mockResponse(true)
   }
-  return mockResponse(false)
+  return mockResponse(null) as any
 }

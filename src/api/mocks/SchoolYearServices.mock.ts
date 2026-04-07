@@ -36,7 +36,7 @@ export async function GetSchoolYearsMock(): Promise<ResponseHelper<ISchoolYear[]
 
 export async function GetSchoolYearMock(id: number): Promise<ResponseHelper<ISchoolYear>> {
   const schoolYear = mockSchoolYearsData.find((sy) => sy.id === id)
-  return mockResponse(schoolYear || null)
+  return mockResponse(schoolYear || null) as any
 }
 
 export async function PostSchoolYearMock(
@@ -58,7 +58,7 @@ export async function PutSchoolYearMock(
     mockSchoolYearsData[index] = schoolYear
     return mockResponse(schoolYear)
   }
-  return mockResponse(null)
+  return mockResponse(null) as any
 }
 
 export async function DeleteSchoolYearMock(id: number): Promise<ResponseHelper<boolean>> {

@@ -62,7 +62,7 @@ export async function GetUsersMock(): Promise<ResponseHelper<IUser[]>> {
 
 export async function GetUserMock(id: number): Promise<ResponseHelper<IUser>> {
   const user = mockUsersData.find((u) => u.id === id)
-  return mockResponse(user || null)
+  return mockResponse(user || null) as any
 }
 
 export async function PostUserMock(user: IUser): Promise<ResponseHelper<IUser>> {
@@ -80,7 +80,7 @@ export async function PutUserMock(user: IUser): Promise<ResponseHelper<IUser>> {
     mockUsersData[index] = user
     return mockResponse(user)
   }
-  return mockResponse(null)
+  return mockResponse(null) as any
 }
 
 export async function DeleteUserMock(id: number): Promise<ResponseHelper<boolean>> {

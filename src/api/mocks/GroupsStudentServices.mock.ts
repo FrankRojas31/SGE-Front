@@ -107,7 +107,7 @@ export async function GetGroupsStudentMock(): Promise<ResponseHelper<IGroupsStud
 
 export async function GetGroupStudentMock(id: number): Promise<ResponseHelper<IGroupsStudent>> {
   const groupStudent = mockGroupsStudentData.find((gs) => gs.id === id)
-  return mockResponse(groupStudent || null)
+  return mockResponse(groupStudent || null) as any
 }
 
 export async function PostGroupsStudentMock(
@@ -129,7 +129,7 @@ export async function PutGroupStudentMock(
     mockGroupsStudentData[index] = groupStudent
     return mockResponse(groupStudent)
   }
-  return mockResponse(null)
+  return mockResponse(null) as any
 }
 
 export async function DeleteGroupStudentMock(id: number): Promise<ResponseHelper<boolean>> {
@@ -138,7 +138,7 @@ export async function DeleteGroupStudentMock(id: number): Promise<ResponseHelper
     mockGroupsStudentData.splice(index, 1)
     return mockResponse(true)
   }
-  return mockResponse(false)
+  return mockResponse(null) as any
 }
 
 // Devuelve alumnos de un grupo específico (como IStudent[])
